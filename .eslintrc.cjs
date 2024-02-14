@@ -23,5 +23,8 @@ module.exports = {
     sourceType: 'module',
     project: ['./tsconfig.json', './tsconfig.node.json'],
     tsconfigRootDir: __dirname,
-  }
+  },
+  settings: {
+    react: { version: 'detect' },
+  },
 }
