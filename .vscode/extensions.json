@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    // linting
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    
+    // prettify typescript errors
+    "yoavbls.pretty-ts-errors"
+  ]
+}
