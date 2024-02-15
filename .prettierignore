@@ -1,0 +1,7 @@
+.github
+.vscode
+
+.eslintrc.*
+
+package.json
+package-lock.json
