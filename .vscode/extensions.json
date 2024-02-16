@@ -5,6 +5,9 @@
     "dbaeumer.vscode-eslint",
     
     // prettify typescript errors
-    "yoavbls.pretty-ts-errors"
+    "yoavbls.pretty-ts-errors",
+
+    // tailwind
+    "bradlc.vscode-tailwindcss"
   ]
 }
