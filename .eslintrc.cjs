@@ -1,4 +1,7 @@
-module.exports = {
+// @ts-check
+
+/** @type {import('eslint').Linter.Config} */
+const config = {
   root: true,
   env: { browser: true, es2020: true },
   extends: [
@@ -9,7 +12,17 @@ module.exports = {
     'plugin:react-hooks/recommended',
     'prettier',
   ],
-  ignorePatterns: ['dist', '.eslintrc.cjs', 'postcss.config.js', 'tailwind.config.js'],
+  ignorePatterns: [
+    '.eslintrc.cjs',
+    
+    // we need to duplicate gitignore information here :(
+    // while we can pass in --ignore-path from cli,
+    // ide doesn't recognize that
+    'node_modules',
+    'dist',
+    'coverage',
+    'dev-dist',
+  ],
   parser: '@typescript-eslint/parser',
   plugins: ['react-refresh'],
   rules: {
@@ -28,3 +41,5 @@ module.exports = {
     react: { version: 'detect' },
   },
 }
+
+module.exports = config
