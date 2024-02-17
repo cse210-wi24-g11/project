@@ -24,12 +24,32 @@ const config = {
     'dev-dist',
   ],
   parser: '@typescript-eslint/parser',
-  plugins: ['react-refresh'],
+  plugins: ['react-refresh', 'import'],
   rules: {
     'react-refresh/only-export-components': [
       'warn',
       { allowConstantExport: true },
     ],
+    'import/extensions': ['error', 'ignorePackages'],
+    'import/order': ['error', {
+      groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'type'],
+      'newlines-between': 'always',
+      pathGroups: [
+        // components
+        {
+          pattern: '**/*.tsx',
+          group: 'internal',
+          position: 'after',
+        },
+        // absolute imports (i.e. using `public` directory)
+        {
+          pattern: "/**",
+          group: 'sibling',
+          position: 'after',
+        },
+      ],
+      distinctGroup: true,
+    }],
   },
   parserOptions: {
     ecmaVersion: 'latest',
@@ -39,6 +59,7 @@ const config = {
   },
   settings: {
     react: { version: 'detect' },
+    'import/internal-regex': '^@/',
   },
 }
 
