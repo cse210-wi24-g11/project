@@ -12,7 +12,7 @@ export function SummaryBar() {
 
   return (
     <div className="w-full bg-white">
-      <div className="fixed left-0 top-0 w-full flex-row rounded-3xl border bg-white">
+      <div className="fixed left-0 top-10 w-full flex-row rounded-3xl border bg-white">
         <button
           className={buttonStyle('Day')}
           onClick={() => setSelectedButton('Day')}
