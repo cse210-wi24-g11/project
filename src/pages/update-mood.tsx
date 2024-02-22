@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom'
 
-const UpdateMood = () => {
+export function UpdateMood() {
   return (
     <>
       <NavLink to="/" className="fixed left-5 top-10">
@@ -9,5 +9,3 @@ const UpdateMood = () => {
     </>
   )
 }
-
-export default UpdateMood

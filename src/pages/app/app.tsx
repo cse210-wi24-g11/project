@@ -1,9 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 
-import { MainNavBar } from '@/components/navigation/mainNavBar.tsx'
-
-import DaySummary from '../DaySummary.tsx'
-import UpdateMood from '../UpdateMood.tsx'
+import { DaySummary } from '../day-summary.tsx'
+import { UpdateMood } from '../update-mood.tsx'
 
 import './app.css'
 
@@ -14,7 +12,6 @@ function App() {
         <Route path="/DaySummary" element={<DaySummary />} />
         <Route path="/UpdateMood" element={<UpdateMood />} />
       </Routes>
-      <MainNavBar />
     </Router>
   )
 }

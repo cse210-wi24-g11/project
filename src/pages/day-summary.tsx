@@ -1,8 +1,9 @@
 import { NavLink } from 'react-router-dom'
 
-import { SummaryBar } from '@/components/navigation/summaryBar.tsx'
+import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
+import { SummaryBar } from '@/components/navigation/summary-bar.tsx'
 
-const DaySummary = () => {
+export function DaySummary() {
   return (
     <>
       <SummaryBar />
@@ -26,8 +27,7 @@ const DaySummary = () => {
           </div>
         </NavLink>
       </div>
+      <MainNavBar />
     </>
   )
 }
-
-export default DaySummary
