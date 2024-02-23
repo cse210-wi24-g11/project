@@ -24,6 +24,9 @@ dist-ssr
 *.sln
 *.sw?
 
+# vite temporary/dev folder created sometimes (?)
+.vite
+
 # vitest coverage
 /coverage
 
