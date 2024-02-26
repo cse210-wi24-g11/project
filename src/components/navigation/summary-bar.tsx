@@ -1,16 +1,10 @@
 import { useState } from 'react'
 
 export function SummaryBar() {
-  enum SummaryButton {
-    Day = 'Day',
-    Week = 'Week',
-    Month = 'Month',
-  }
+  type SummaryNavbarItem = 'Day' | 'Week' | 'Month'
 
-  const [selectedButton, setSelectedButton] = useState<SummaryButton>(
-    SummaryButton.Day,
-  )
-  const buttonStyle = (button: SummaryButton) => {
+  const [selectedButton, setSelectedButton] = useState<SummaryNavbarItem>('Day')
+  const buttonStyle = (button: SummaryNavbarItem) => {
     if (button === selectedButton) {
       return 'rounded-3xl border w-1/3 bg-blue-500 text-white hover:border-blue-500'
     } else {
@@ -22,20 +16,20 @@ export function SummaryBar() {
     <div className="w-full bg-white">
       <div className="fixed left-0 top-10 w-full flex-row rounded-3xl border bg-white">
         <button
-          className={buttonStyle(SummaryButton.Day)}
-          onClick={() => setSelectedButton(SummaryButton.Day)}
+          className={buttonStyle('Day')}
+          onClick={() => setSelectedButton('Day')}
         >
           Day
         </button>
         <button
-          className={buttonStyle(SummaryButton.Week)}
-          onClick={() => setSelectedButton(SummaryButton.Week)}
+          className={buttonStyle('Week')}
+          onClick={() => setSelectedButton('Week')}
         >
           Week
         </button>
         <button
-          className={buttonStyle(SummaryButton.Month)}
-          onClick={() => setSelectedButton(SummaryButton.Month)}
+          className={buttonStyle('Month')}
+          onClick={() => setSelectedButton('Month')}
         >
           Month
         </button>

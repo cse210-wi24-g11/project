@@ -5,16 +5,10 @@ import plusIcon from '../../assets/icons/plus.svg'
 import settingIcon from '../../assets/icons/setting.svg'
 
 export function MainNavBar() {
-  enum NavButton {
-    Calendar = 'Calendar',
-    Add = 'Add',
-    Settings = 'Settings',
-  }
+  type NavbarItem = 'calendar' | 'add' | 'settings'
 
-  const [selectedButton, setSelectedButton] = useState<NavButton>(
-    NavButton.Calendar,
-  )
-  const buttonStyle = (button: NavButton) => {
+  const [selectedButton, setSelectedButton] = useState<NavbarItem>('calendar')
+  const buttonStyle = (button: NavbarItem) => {
     if (button === selectedButton) {
       return 'rounded-3xl mx-8 my-2 border w-1/3 bg-blue-500 text-white hover:border-blue-500 flex items-center justify-center'
     } else {
@@ -26,20 +20,20 @@ export function MainNavBar() {
     <div className="w-full bg-white">
       <div className="fixed bottom-0 left-0 flex w-full bg-white">
         <button
-          className={buttonStyle(NavButton.Calendar)}
-          onClick={() => setSelectedButton(NavButton.Calendar)}
+          className={buttonStyle('calendar')}
+          onClick={() => setSelectedButton('calendar')}
         >
           <img src={calendarIcon} alt="calendar" height={35} width={35} />
         </button>
         <button
-          className={buttonStyle(NavButton.Add)}
-          onClick={() => setSelectedButton(NavButton.Add)}
+          className={buttonStyle('add')}
+          onClick={() => setSelectedButton('add')}
         >
           <img src={plusIcon} alt="add mood" height={35} width={35} />
         </button>
         <button
-          className={buttonStyle(NavButton.Settings)}
-          onClick={() => setSelectedButton(NavButton.Settings)}
+          className={buttonStyle('settings')}
+          onClick={() => setSelectedButton('settings')}
         >
           <img src={settingIcon} alt="settings" height={35} width={35} />
         </button>
