@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { SummaryBar } from '@/components/navigation/summary-bar.tsx'
 
-export function DaySummary() {
+export function DaySummary({db: IDBDatabase}) {
   return (
     <>
       <SummaryBar />
