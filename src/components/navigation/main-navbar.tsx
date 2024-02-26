@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
-import calendarIcon from '../../assets/icons/calendar.png'
-import plusIcon from '../../assets/icons/plus.png'
-import settingIcon from '../../assets/icons/setting.png'
+import calendarIcon from '../../assets/icons/calendar.svg'
+import plusIcon from '../../assets/icons/plus.svg'
+import settingIcon from '../../assets/icons/setting.svg'
 
 export function MainNavBar() {
   enum NavButton {
@@ -29,19 +29,19 @@ export function MainNavBar() {
           className={buttonStyle(NavButton.Calendar)}
           onClick={() => setSelectedButton(NavButton.Calendar)}
         >
-          <img src={calendarIcon} alt="calendar" />
+          <img src={calendarIcon} alt="calendar" height={35} width={35} />
         </button>
         <button
           className={buttonStyle(NavButton.Add)}
           onClick={() => setSelectedButton(NavButton.Add)}
         >
-          <img src={plusIcon} alt="add mood" />
+          <img src={plusIcon} alt="add mood" height={35} width={35} />
         </button>
         <button
           className={buttonStyle(NavButton.Settings)}
           onClick={() => setSelectedButton(NavButton.Settings)}
         >
-          <img src={settingIcon} alt="settings" />
+          <img src={settingIcon} alt="settings" height={35} width={35} />
         </button>
       </div>
     </div>
