@@ -6,7 +6,7 @@ const DB_NAME = 'user_db'
  ** returns a promise that resolves to the database object
  ** or rejects with an error message
  */
-export const openDB = () => {
+export const openDb = () => {
   return new Promise<IDBDatabase>((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, 1)
 
@@ -30,7 +30,7 @@ export const openDB = () => {
 }
 
 /* insert data instances to the corresponding object store */
-export const putData = (db: IDBDatabase, data: object, STORE_NAME: string) => {
+export function putData(db: IDBDatabase, data: object, STORE_NAME: string) {
   return new Promise((resolve, reject) => {
     const transaction = db.transaction(STORE_NAME, 'readwrite')
     const store = transaction.objectStore(STORE_NAME)
@@ -47,37 +47,37 @@ export const putData = (db: IDBDatabase, data: object, STORE_NAME: string) => {
 }
 
 /* insert data instances to the corresponding object store */
-export const putMood = (
+export function putMood(
   db: IDBDatabase,
   data: { id: string; mood: string; imagePath: string },
-) => {
+) {
   return putData(db, data, 'mood')
 }
 
 /* string[] should be list of mood ids */
-export const putMoodCollection = (
+export function putMoodCollection(
   db: IDBDatabase,
   data: { favorites: string[]; general: string[]; archived: string[] },
-) => {
+) {
   return putData(db, data, 'moodCollection')
 }
 
-export const putEntry = (
+export function putEntry(
   db: IDBDatabase,
   data: { id: string; moodId: string; description: string; timestamp: Date },
-) => {
+) {
   return putData(db, data, 'entry')
 }
 
-export const putSettings = (
+export function putSettings(
   db: IDBDatabase,
   data: { notificationTime: string; defaultViewId: string },
-) => {
+) {
   return putData(db, data, 'settings')
 }
 
 /* get all data instances from the corresponding object store */
-export const getDataAll = (db: IDBDatabase, STORE_NAME: string) => {
+export function getDataAll(db: IDBDatabase, STORE_NAME: string) {
   /* the return type is unknown
    ** need to actually fetch some data to see */
   return new Promise<unknown>((resolve, reject) => {
@@ -98,18 +98,18 @@ export const getDataAll = (db: IDBDatabase, STORE_NAME: string) => {
   })
 }
 
-export const getMoodAll = (db: IDBDatabase) => {
+export function getMoodAll(db: IDBDatabase) {
   return getDataAll(db, 'mood')
 }
 
-export const getMoodCollectionAll = (db: IDBDatabase) => {
+export function getMoodCollectionAll(db: IDBDatabase) {
   return getDataAll(db, 'moodCollection')
 }
 
-export const getEntryAll = (db: IDBDatabase) => {
+export function getEntryAll(db: IDBDatabase) {
   return getDataAll(db, 'entry')
 }
 
-export const getSettingsAll = (db: IDBDatabase) => {
+export function getSettingsAll(db: IDBDatabase) {
   return getDataAll(db, 'settings')
 }

@@ -3,14 +3,14 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 
 import { DaySummary } from '../day-summary.tsx'
 import { UpdateMood } from '../update-mood.tsx'
-import { openDB } from '../../utils/db.ts'
+import { openDb } from '../../utils/db.ts'
 
 import './app.css'
 
 function App() {
   const [db, setDb] = useState<IDBDatabase | null>(null)
   useEffect(() => {
-    openDB()
+    openDb()
       .then((db) => {
         // create a global reference to the database
         // this will allow us to access the database from anywhere in the app
