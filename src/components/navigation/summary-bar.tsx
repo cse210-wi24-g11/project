@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
-export function SummaryBar() {
-  type SummaryNavbarItem = 'Day' | 'Week' | 'Month'
+type SummaryNavbarItem = 'Day' | 'Week' | 'Month'
 
+export function SummaryBar() {
   const [selectedButton, setSelectedButton] = useState<SummaryNavbarItem>('Day')
   const buttonStyle = (button: SummaryNavbarItem) => {
     if (button === selectedButton) {

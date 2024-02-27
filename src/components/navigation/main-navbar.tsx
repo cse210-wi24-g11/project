@@ -4,9 +4,9 @@ import calendarIcon from '../../assets/icons/calendar.svg'
 import plusIcon from '../../assets/icons/plus.svg'
 import settingIcon from '../../assets/icons/setting.svg'
 
-export function MainNavBar() {
-  type NavbarItem = 'calendar' | 'add' | 'settings'
+type NavbarItem = 'calendar' | 'add' | 'settings'
 
+export function MainNavBar() {
   const [selectedButton, setSelectedButton] = useState<NavbarItem>('calendar')
   const buttonStyle = (button: NavbarItem) => {
     if (button === selectedButton) {
