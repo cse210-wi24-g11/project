@@ -14,7 +14,7 @@ class ColorPicker extends Component<ColorPickerProps, ColorPickerState> {
   state: ColorPickerState = {
     color: this.props.color
       ? {
-          hex: this.props.color as any,
+          hex: this.props.color,
           rgb: { r: 0, g: 0, b: 0, a: 1 },
           hsl: { h: 0, s: 0, l: 0, a: 1 },
         }
@@ -34,7 +34,7 @@ class ColorPicker extends Component<ColorPickerProps, ColorPickerState> {
     return (
       <div>
         <CompactPicker
-          color={this.state.color.rgb as any}
+          color={this.state.color.rgb}
           onChange={this.handleChange}
         />
       </div>

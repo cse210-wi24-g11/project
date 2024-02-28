@@ -25,7 +25,7 @@ const EditMoodPage: React.FC = () => {
   const handleSubmitMood = () => {
     if (!isSubmitDisabled) {
       // Ensure that ToastQueue is properly typed and positive is accessed on the correct object/type
-      (ToastQueue as any).positive('Edited Mood!') // add alert to have the user confirm that all previous usages of this mood will change accordingly
+      ToastQueue.positive('Edited Mood!') // add alert to have the user confirm that all previous usages of this mood will change accordingly
     }
     // Save the mood data to local storage general mood collection or database
     // Banner with success of edited mood, refresh page

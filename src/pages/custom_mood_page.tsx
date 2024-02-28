@@ -6,7 +6,6 @@ import ColorPicker from '@/components/ColorPicker.tsx' // Adjust the import path
 import ImageUploadComponent from '@/components/UploadImage.tsx'
 import DisplayImageComponent from '@/components/DisplayImage.tsx'
 
-
 function CustomMoodPage() {
   const [selectedColor, setSelectedColor] = useState<string | undefined>(
     '#000000',
@@ -26,7 +25,7 @@ function CustomMoodPage() {
   const handleSubmitMood = () => {
     if (!isSubmitDisabled) {
       // Ensure that ToastQueue is properly typed and positive is accessed on the correct object/type
-      (ToastQueue as any).positive('Custom Mood Added!')
+      ToastQueue.positive('Custom Mood Added!')
     }
     // Save the mood data to local storage general mood collection or database
     // Banner with success of uploaded mood, refresh page
