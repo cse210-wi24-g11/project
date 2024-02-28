@@ -15,7 +15,7 @@ const MoodIcon: React.FC<MoodIconProps> = ({ color, image_URL, id }) => {
 
   const onLongPress = useLongPress(() => {
     // TODO: Navigate to EditMoodPage
-    navigate(`/EditMoodPage/${id}`)
+    navigate(`/EditMoodPage/${id}` as any)
   }, 500)
 
   return (
