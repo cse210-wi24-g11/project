@@ -6,25 +6,37 @@ interface ColorPickerProps {
   onChange: (color: string) => void
 }
 
-class ColorPicker extends Component<ColorPickerProps> {
-  state = {
-    color: this.props.color || {
-      r: 241,
-      g: 112,
-      b: 19,
-      a: 1,
-    },
+interface ColorPickerState {
+  color: ColorResult
+}
+
+class ColorPicker extends Component<ColorPickerProps, ColorPickerState> {
+  state: ColorPickerState = {
+    color: this.props.color
+      ? {
+          hex: this.props.color,
+          rgb: { r: 0, g: 0, b: 0, a: 1 },
+          hsl: { h: 0, s: 0, l: 0, a: 1 },
+        }
+      : {
+          hex: '#000000',
+          rgb: { r: 0, g: 0, b: 0, a: 1 },
+          hsl: { h: 0, s: 0, l: 0, a: 1 },
+        },
   }
 
   handleChange = (color: ColorResult) => {
-    this.setState({ color: color.rgb })
+    this.setState({ color })
     this.props.onChange(color.hex)
   }
 
   render() {
     return (
       <div>
-        <CompactPicker color={this.state.color} onChange={this.handleChange} />
+        <CompactPicker
+          color={this.state.color.rgb}
+          onChange={this.handleChange}
+        />
       </div>
     )
   }

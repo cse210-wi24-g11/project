@@ -22,9 +22,9 @@ const MoodSection: React.FC<MoodSectionProps> = ({ moods }) => {
       {moods.map((mood, i) => (
         <MoodIcon
           key={i}
-          color={moods[i].color}
-          image_URL={moods[i].image}
-          id={moods[i].id}
+          color={mood.color}
+          image_URL={mood.image}
+          id={mood.id}
         />
       ))}
     </div>

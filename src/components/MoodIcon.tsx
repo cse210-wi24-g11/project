@@ -2,7 +2,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { useLongPress } from '../components/useLongPress.tsx'
+import { useLongPress } from './useLongPress.tsx'
 
 export type MoodIconProps = {
   color: string

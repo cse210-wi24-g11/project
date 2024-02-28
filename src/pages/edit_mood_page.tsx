@@ -2,36 +2,37 @@ import React, { useState } from 'react'
 import { Button, Picker, Item } from '@adobe/react-spectrum'
 import { ToastContainer, ToastQueue } from '@react-spectrum/toast'
 
-import ColorPicker from '@/components/ColorPicker.tsx'
+import ColorPicker from '@/components/ColorPicker.tsx' // Adjust the import path based on the actual location
 import ImageUploadComponent from '@/components/UploadImage.tsx'
 import DisplayImageComponent from '@/components/DisplayImage.tsx'
 
-//import { useParams } from 'react-router-dom';
-
 const EditMoodPage: React.FC = () => {
-  //const { id } = useParams();
   const [selectedColor, setSelectedColor] = useState<string | undefined>(
     '#000000',
-  ) //set to data base value
+  ) // set to database value
   const [uploadedImage, setUploadedImage] = useState<string | null>(
     './assets/No-Image-Placeholder.png',
-  ) //set to database value
+  ) // set to database value
 
   const handleImageUpload = (imageData: string) => {
     setUploadedImage(imageData)
   }
+
   const handleColorChange = (color: string) => {
     setSelectedColor(color)
   }
+
   const handleSubmitMood = () => {
     if (!isSubmitDisabled) {
-      ToastQueue.positive('Edited Mood!') //add alert to have user confirm that all previous usages of this mood will change accordingly
+      // Ensure that ToastQueue is properly typed and positive is accessed on the correct object/type
+      ToastQueue.positive('Edited Mood!') // add alert to have the user confirm that all previous usages of this mood will change accordingly
     }
-    // Save the mood data to local storage general mood collection or data base
-    //banner with success of uploaded mood, refresh page
-    //selectedColor..., uploadedImage...
+    // Save the mood data to local storage general mood collection or database
+    // Banner with success of edited mood, refresh page
+    // selectedColor..., uploadedImage...
   }
-  const isSubmitDisabled = !selectedColor || !uploadedImage //test this
+
+  const isSubmitDisabled = !selectedColor || !uploadedImage // test this
 
   return (
     <div>
@@ -41,7 +42,7 @@ const EditMoodPage: React.FC = () => {
         uploadedImage={uploadedImage}
       />
       <div
-        className=" rounded-lg"
+        className="rounded-lg"
         style={{ border: `20px solid ${selectedColor}`, padding: '1px' }}
       >
         <DisplayImageComponent uploadedImage={uploadedImage} />

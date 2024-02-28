@@ -2,32 +2,37 @@ import { useState } from 'react'
 import { Button, Picker, Item } from '@adobe/react-spectrum'
 import { ToastContainer, ToastQueue } from '@react-spectrum/toast'
 
-import ColorPicker from '@/components/ColorPicker.tsx'
+import ColorPicker from '@/components/ColorPicker.tsx' // Adjust the import path based on the actual location
 import ImageUploadComponent from '@/components/UploadImage.tsx'
 import DisplayImageComponent from '@/components/DisplayImage.tsx'
 
 function CustomMoodPage() {
   const [selectedColor, setSelectedColor] = useState<string | undefined>(
     '#000000',
-  ) //default white
+  ) // default white
   const [uploadedImage, setUploadedImage] = useState<string | null>(
     'src/assets/No-Image-Placeholder.svg',
   )
+
   const handleImageUpload = (imageData: string) => {
     setUploadedImage(imageData)
   }
+
   const handleColorChange = (color: string) => {
     setSelectedColor(color)
   }
+
   const handleSubmitMood = () => {
     if (!isSubmitDisabled) {
+      // Ensure that ToastQueue is properly typed and positive is accessed on the correct object/type
       ToastQueue.positive('Custom Mood Added!')
     }
-    // Save the mood data to local storage general mood collection or data base
-    //banner with success of uploaded mood, refresh page
-    //selectedColor..., uploadedImage...
+    // Save the mood data to local storage general mood collection or database
+    // Banner with success of uploaded mood, refresh page
+    // selectedColor..., uploadedImage...
   }
-  const isSubmitDisabled = !selectedColor || !uploadedImage //test this
+
+  const isSubmitDisabled = !selectedColor || !uploadedImage // test this
 
   return (
     <div>
@@ -37,7 +42,7 @@ function CustomMoodPage() {
         uploadedImage={uploadedImage}
       />
       <div
-        className=" rounded-lg"
+        className="rounded-lg"
         style={{ border: `20px solid ${selectedColor}`, padding: '1px' }}
       >
         <DisplayImageComponent uploadedImage={uploadedImage} />
