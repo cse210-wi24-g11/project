@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom'
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useNavigate,
+} from 'react-router-dom'
 import { Provider, defaultTheme } from '@adobe/react-spectrum'
 
 import { DbProvider } from './context/db.tsx'
