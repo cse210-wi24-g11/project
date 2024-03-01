@@ -1,35 +1,29 @@
-import { useEffect, useState } from 'react'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom'
+import { Provider, defaultTheme } from '@adobe/react-spectrum'
 
+import { DbProvider } from './context/db.tsx'
 import { DaySummary } from './pages/day-summary.tsx'
 import { UpdateMood } from './pages/update-mood.tsx'
-import { openDb } from './utils/db.ts'
 
 export function App() {
-  const [db, setDb] = useState<IDBDatabase | null>(null)
-
-  useEffect(() => {
-    openDb()
-      .then((db) => {
-        // create a global reference to the database
-        // this will allow us to access the database from anywhere in the app
-        // without having to pass the database object around
-        setDb(db)
-        console.log('launch: database opened successfully')
-      })
-      .catch((error) => {
-        console.error('error: failed to open database:', error)
-      })
-  }, [])
+  const navigate = useNavigate()
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/DaySummary" element={<DaySummary db={db} />} />
-        <Route path="/UpdateMood" element={<UpdateMood />} />
-      </Routes>
-    </Router>
+    <Provider
+      // force light mode. dark mode is stretch goal
+      colorScheme="light"
+      // we'll just use the default theme for now, can customize later
+      theme={defaultTheme}
+      router={{ navigate }}
+    >
+      <DbProvider>
+        <Router>
+          <Routes>
+            <Route path="/DaySummary" element={<DaySummary />} />
+            <Route path="/UpdateMood" element={<UpdateMood />} />
+          </Routes>
+        </Router>
+      </DbProvider>
+    </Provider>
   )
 }
-
-export default App
