@@ -21,7 +21,7 @@ export function App() {
         console.error('error: failed to open database:', error)
       })
   }, [])
-  
+
   return (
     <Router>
       <Routes>

@@ -1,4 +1,10 @@
-import { PropsWithChildren, createContext, useContext, useEffect, useState } from 'react'
+import {
+  PropsWithChildren,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
 
 import { openDb } from '../utils/db.ts'
 
@@ -37,8 +43,6 @@ export function DbProvider({ children }: DbProviderProps) {
   }, [])
 
   return (
-    <IndexeddbContext.Provider value={db}>
-      {children}
-    </IndexeddbContext.Provider>
+    <IndexeddbContext.Provider value={db}>{children}</IndexeddbContext.Provider>
   )
 }
