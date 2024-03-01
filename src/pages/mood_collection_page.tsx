@@ -1,7 +1,6 @@
 import { Button, Text } from '@adobe/react-spectrum'
-import { BrowserRouter as Router } from 'react-router-dom'
 import React from 'react'
-//import { useNavigate } from 'react-router-dom'
+import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 //import { useDrag, useDrop } from 'react-dnd'
 
 import MoodIcon from '@/components/MoodIcon.tsx'
@@ -74,7 +73,7 @@ function MoodCollectionPage() {
     // navigate(`/CustomMoodPage`);
   }
   return (
-    <Router>
+    <>
       <div>
         <Button variant="primary" onPress={handleClick}>
           <Text>Add New Mood</Text>
@@ -86,7 +85,8 @@ function MoodCollectionPage() {
         <h1>Archived</h1>
         <MoodSection moods={favoriteMoods} />
       </div>
-    </Router>
+      <MainNavBar />
+    </>
   )
 }
 
