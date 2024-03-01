@@ -49,7 +49,7 @@ export function putData(db: IDBDatabase, data: object, STORE_NAME: string) {
 /* insert data instances to the corresponding object store */
 export function putMood(
   db: IDBDatabase,
-  data: { id: string; mood: string; imagePath: string },
+  data: { id: string; mood: string; image: Blob },
 ) {
   return putData(db, data, 'mood')
 }
@@ -74,6 +74,44 @@ export function putSettings(
   data: { notificationTime: string; defaultViewId: string },
 ) {
   return putData(db, data, 'settings')
+}
+
+/* get mood by id
+ ** usage: getMoodById(db, 'id').then((mood) => console.log(mood))
+ */
+export function getMoodById(db: IDBDatabase, id: string) {
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction('mood', 'readonly')
+    const store = transaction.objectStore('mood')
+    const request = store.get(id)
+
+    request.onsuccess = function () {
+      resolve(request.result)
+    }
+
+    request.onerror = function () {
+      reject('Error retrieving data')
+    }
+  })
+}
+
+/* get entry by id
+ ** usage: getEntryById(db, 'id').then((entry) => console.log(entry))
+ */
+export function getEntryById(db: IDBDatabase, id: string) {
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction('entry', 'readonly')
+    const store = transaction.objectStore('entry')
+    const request = store.get(id)
+
+    request.onsuccess = function () {
+      resolve(request.result)
+    }
+
+    request.onerror = function () {
+      reject('Error retrieving data')
+    }
+  })
 }
 
 /* get all data instances from the corresponding object store */
