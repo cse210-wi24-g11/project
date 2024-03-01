@@ -9,7 +9,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: white;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -68,5 +68,84 @@ button:focus-visible {
   }
   button {
     background-color: #f9f9f9;
+  }
+}
+
+.react-calendar {
+  width: 350px;
+  max-width: 100%;
+  background: #fff;
+  color: #222;
+  border-radius: 8px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  /* border: 1px solid #a0a096; */
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.125em;
+}
+
+.react-calendar__month-view__days__day--neighboringMonth {
+  color: #d0d0d0; /* 淡灰色 */
+}
+
+.month-summary-page-calendar {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.mood-month-summary-graph {
+  border-radius: 8px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  padding-top: 10px;
+  padding-bottom: 10px;
+  .title {
+    /*margin-top: 10px;*/
+    color: #1a1a1a;
+  }
+  .description {
+    color: #1a1a1a;
+  }
+}
+
+.mood-summary-page-calendar {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.mood-week-summary-graph {
+  border-radius: 8px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  padding-top: 10px;
+  padding-bottom: 10px;
+  .title {
+    /*margin-top: 10px;*/
+    color: #1a1a1a;
+  }
+  .description {
+    color: #1a1a1a;
+  }
+}
+
+.day-summary-page {
+  .mood-list {
+    .item {
+      margin-bottom: 20px;
+    }
+  }
+}
+
+.mood-list-item {
+  width: 240px;
+  /*width: calc(100vw - 40px);*/
+  /*margin-left: 20px;*/
+  /*margin-right: 20px;*/
+  height: 80px;
+  border-radius: 16px;
+  border-width: 2px;
+  /*border-color: #d0d0d0;*/
+  background-color: #f9f9f9;
+  .title {
+    color: #1a1a1a;
   }
 }
