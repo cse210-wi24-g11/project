@@ -5,6 +5,7 @@ import { ToastContainer, ToastQueue } from '@react-spectrum/toast'
 import ColorPicker from '@/components/ColorPicker.tsx' // Adjust the import path based on the actual location
 import ImageUploadComponent from '@/components/UploadImage.tsx'
 import DisplayImageComponent from '@/components/DisplayImage.tsx'
+import { MainNavBar } from '@/components/navigation/main-navbar'
 
 const EditMoodPage: React.FC = () => {
   const [selectedColor, setSelectedColor] = useState<string | undefined>(
@@ -58,6 +59,7 @@ const EditMoodPage: React.FC = () => {
           Edit Mood
         </Button>
       </div>
+      <MainNavBar />
     </div>
   )
 }
