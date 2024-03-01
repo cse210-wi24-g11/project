@@ -3,7 +3,13 @@ import { NavLink } from 'react-router-dom'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { SummaryBar } from '@/components/navigation/summary-bar.tsx'
 
-export function DaySummary({ db: IDBDatabase }) {
+// pass database from app.tsx to DaySummary
+interface dbProps {
+  db: IDBDatabase | null
+}
+
+export function DaySummary({ db }: dbProps) {
+  console.log('db:', db)
   return (
     <>
       <SummaryBar />
