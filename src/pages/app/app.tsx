@@ -19,7 +19,7 @@ function App() {
         console.log('launch: database opened successfully')
       })
       .catch((error) => {
-        console.error('Failed to open database:', error)
+        console.error('error: failed to open database:', error)
       })
   }, [])
   return (
