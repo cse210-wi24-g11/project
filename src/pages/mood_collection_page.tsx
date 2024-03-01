@@ -60,7 +60,7 @@ function MoodCollectionPage() {
   const mood6: Mood = {
     color: '#ffffff', // Set a default color
     image: '', // Set a default image URL or leave it empty
-    id: 5, // Set a default ID
+    id: 6, // Set a default ID
   }
 
   const favoriteMoods: Mood[] = [mood1, mood2, mood3, mood4, mood5, mood6] //get_favorite_moods()?!?
