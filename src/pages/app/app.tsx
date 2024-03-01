@@ -1,37 +1,34 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 
-import reactLogo from '@/assets/react.svg'
-
-import viteLogo from '/vite.svg'
+import { DaySummary } from '../day-summary.tsx'
+import { UpdateMood } from '../update-mood.tsx'
+import { openDb } from '../../utils/db.ts'
 
 import './app.css'
 
 function App() {
-  const [count, setCount] = useState(0)
-
+  const [db, setDb] = useState<IDBDatabase | null>(null)
+  useEffect(() => {
+    openDb()
+      .then((db) => {
+        // create a global reference to the database
+        // this will allow us to access the database from anywhere in the app
+        // without having to pass the database object around
+        setDb(db)
+        console.log('launch: database opened successfully')
+      })
+      .catch((error) => {
+        console.error('error: failed to open database:', error)
+      })
+  }, [])
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <Router>
+      <Routes>
+        <Route path="/DaySummary" element={<DaySummary db={db} />} />
+        <Route path="/UpdateMood" element={<UpdateMood />} />
+      </Routes>
+    </Router>
   )
 }
 
