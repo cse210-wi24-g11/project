@@ -1,7 +1,7 @@
-import { type PropsWithChildren } from "react"
-import { defaultTheme } from "@adobe/react-spectrum"
-import { Provider } from "@react-spectrum/provider"
-import { useNavigate } from "react-router-dom"
+import { type PropsWithChildren } from 'react'
+import { defaultTheme } from '@adobe/react-spectrum'
+import { Provider } from '@react-spectrum/provider'
+import { useNavigate } from 'react-router-dom'
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type ThemeProviderProps = PropsWithChildren<{}>
