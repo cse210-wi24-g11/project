@@ -49,7 +49,7 @@ export function putData(db: IDBDatabase, data: object, STORE_NAME: string) {
 /* insert data instances to the corresponding object store */
 export function putMood(
   db: IDBDatabase,
-  data: { id: string; mood: string; imagePath: string },
+  data: { id: string; mood: string; image: Blob },
 ) {
   return putData(db, data, 'mood')
 }
