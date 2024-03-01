@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { defaultTheme, Provider } from '@adobe/react-spectrum'
 
-import App from '@/pages/app/app.tsx'
+import App from './app.tsx'
 
 import './index.css'
 
