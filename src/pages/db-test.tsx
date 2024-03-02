@@ -1,7 +1,5 @@
 import { useEffect } from 'react'
 
-/* import { putMood } from '@/utils/db.ts' */
-
 import { useDb } from '@/context/db.tsx'
 
 export function DbTest() {
