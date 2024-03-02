@@ -10,7 +10,7 @@ export function DbTest() {
       console.log('success: db connection is established')
       db.transaction('mood', 'readwrite')
         .objectStore('mood')
-        .put({ id: '1', mood: 'happy', image: new Blob() })
+        .put({ id: '1', color: 'blue', image: new Blob() })
     } else {
       console.log('error: db is still null')
     }
