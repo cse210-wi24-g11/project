@@ -23,7 +23,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <Routes>
             <Route path="/DaySummary" element={<DaySummary />} />
             <Route path="/UpdateMood" element={<UpdateMood />} />
-            <Route path="/DbTest" element={<DbTest />}/>
+            <Route path="/DbTest" element={<DbTest />} />
           </Routes>
         </Router>
       </DbProvider>
