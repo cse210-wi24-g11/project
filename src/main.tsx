@@ -6,6 +6,7 @@ import { defaultTheme, Provider } from '@adobe/react-spectrum'
 import { DbProvider } from './context/db.tsx'
 import { DaySummary } from './pages/day-summary.tsx'
 import { UpdateMood } from './pages/update-mood.tsx'
+import { DbTest } from './pages/db-test.tsx'
 
 import './index.css'
 
@@ -22,6 +23,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <Routes>
             <Route path="/DaySummary" element={<DaySummary />} />
             <Route path="/UpdateMood" element={<UpdateMood />} />
+            <Route path="/DbTest" element={<DbTest />}/>
           </Routes>
         </Router>
       </DbProvider>
