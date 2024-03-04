@@ -35,6 +35,8 @@ const IndexeddbContext = createContext<Undefinable<DbCtx>>(undefined)
  * 
  * @example
  * ```tsx
+ * const { getDb, ready } = useDb()
+ * 
  * /// getting the db to do stuff
  * useEffect(() => {
  *   // wrap logic in `async` so we can use async/await syntax
