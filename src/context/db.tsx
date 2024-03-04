@@ -40,6 +40,7 @@ export function DbProvider({ children }: DbProviderProps) {
         // without having to pass the database object around
         setDb(db)
         console.log('launch: database opened successfully')
+        // console.log(db)
       })
       .catch((error) => {
         console.error('Failed to open database:', error)
