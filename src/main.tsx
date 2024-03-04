@@ -7,6 +7,7 @@ import { ThemeProvider } from './context/theme.tsx'
 import { DaySummary } from './pages/day-summary.tsx'
 import { UpdateMood } from './pages/update-mood.tsx'
 import { DbTest } from './pages/db-test.tsx'
+import { ResetIndexedDb } from './components/reset-db/reset-db.tsx'
 
 import './index.css'
 
@@ -23,5 +24,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         </DbProvider>
       </ThemeProvider>
     </Router>
+    <ResetIndexedDb />
   </React.StrictMode>,
 )
