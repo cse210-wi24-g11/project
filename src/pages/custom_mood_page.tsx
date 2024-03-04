@@ -19,10 +19,21 @@ const getImageBlob = async (imageUrl: string ) => {
     return null;
   }
 };
-interface CustomPickerProps {
-  selectedValue: string;
-  onValueChange: (itemValue: string) => void;
-}
+// Define a function to generate a random UUID
+const randomUUID = (): string => {
+  const data = new Uint8Array(16);
+  window.crypto.getRandomValues(data);
+
+  // Set the version bits
+  data[6] = (data[6] & 0x0F) | 0x40;
+  data[8] = (data[8] & 0x3F) | 0x80;
+
+  const hexString = Array.from(data)
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('');
+
+  return `${hexString.substr(0, 8)}-${hexString.substr(8, 4)}-${hexString.substr(12, 4)}-${hexString.substr(16, 4)}-${hexString.substr(20)}`;
+};
 
 function CustomMoodPage() {
   const [selectedColor, setSelectedColor] = useState<string | undefined>(
@@ -54,34 +65,59 @@ function CustomMoodPage() {
           // Now you can use the 'blob' object as needed, e.g., in your IndexedDB code
           console.log('Blob:', blob);
           if (db) {
+            //add mood to data base
+            const generatedUUID: string = randomUUID();
             console.log('success: db connection is established')
              db.transaction('mood', 'readwrite')
               .objectStore('mood')
-              .put({ id: '12345', color: selectedColor, image: new Blob() })
+              .put({ id: generatedUUID, color: selectedColor, image: blob })
 
             
-            const favoriteIDs: number[] = [];
-            const generalIDs: number[] = [];
-            const archivedIDs:number[] = [];
-            //get favorites, append and then push? 
+            //append to favorite category 
             if(category == 'favorite'){
-                favoriteIDs.push(12345)
-                db.transaction('moodCollection', 'readwrite')
-                .objectStore('moodCollection')
-                .put({ id: 'general', generalMoods: generalIDs })
+               const favoritesRequest = db.transaction('moodCollection', 'readwrite')
+                .objectStore('moodCollection').get('favorite')
 
+                favoritesRequest.onsuccess = function (event) {
+                  const request = event.target as IDBRequest;
+                  const favoriteIDdata = request.result;
+                
+                  if (favoriteIDdata) {
+                    // Access the vector of numbers
+                    const storedFavoriteIDs = favoriteIDdata.moods;
+                    storedFavoriteIDs.push(generatedUUID)
+                    db.transaction('moodCollection', 'readwrite')
+                    .objectStore('moodCollection')
+                    .put({ category: 'favorite', moods: storedFavoriteIDs})
+                  } else {
+                    console.log('No data found for the key "favorite"');
+                  }
+                };
             }
             //get general, append and then push? 
             else{
-              generalIDs.push(12345)
-              db.transaction('moodCollection', 'readwrite')
-             .objectStore('moodCollection')
-             .put({ id: 'general', generalMoods: generalIDs })
-            
+              const favoritesRequest = db.transaction('moodCollection', 'readwrite')
+                .objectStore('moodCollection').get('general')
+
+                favoritesRequest.onsuccess = function (event) {
+                  const request = event.target as IDBRequest;
+                  const generalIDdata = request.result;
+                
+                  if (generalIDdata) {
+                    // Access the vector of numbers
+                    const storedGeneralIDs = generalIDdata.moods;
+                    storedGeneralIDs.push(generatedUUID)
+                    db.transaction('moodCollection', 'readwrite')
+                    .objectStore('moodCollection')
+                    .put({ category: 'general', moods: generalIDdata})
+                  } else {
+                    console.log('No data found for the key "general"');
+                  }
+                };
             }
-           ToastQueue.positive('Custom Mood Added!')
-             
-          } else {
+            ToastQueue.positive('Custom Mood Added!')
+          } 
+          else {
             console.log('error: db is still null')
           }
         } else {
