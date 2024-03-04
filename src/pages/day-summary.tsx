@@ -46,9 +46,9 @@ const DaySummary = (props: DaySummaryPageProps) => {
   }, [today]);
 
   return (
-    <div>
+    <>
       <SummaryBar/>
-      <div className="w-full bg-white top-8">
+      <div className="w-full bg-white">
         <div>
           <DatePicker
             label="Select a date"
@@ -77,7 +77,7 @@ const DaySummary = (props: DaySummaryPageProps) => {
         </ul>
       </div>
       <MainNavBar/>
-    </div>
+    </>
   );
 }
 

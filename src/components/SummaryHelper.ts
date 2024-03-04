@@ -24,7 +24,14 @@ export function getDateAbbr(date: Date): string {
 }
 
 export function getTimeAbbr(date: Date): string {
-  return date.getHours().toString() + "::" + date.getMinutes().toString();
+  let s = date.getHours().toString() + "::";
+  const m = date.getMinutes();
+  if (m < 10) {
+    s += "0" + m.toString();
+  } else {
+    s += m.toString();
+  }
+  return s;
 }
 
 export function getDatesInMonth(startDay: Date): Array<Date> {

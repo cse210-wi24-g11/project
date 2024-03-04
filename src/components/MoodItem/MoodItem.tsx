@@ -18,14 +18,14 @@ const MoodListItem = (props: MoodListItemProps) => {
   }
 
   return (
-    <div className="w-80 h-40 border rounded-xl flex flex-row " onClick={() => onClick(recordId)}>
+    <div className="w-80 h-30 border rounded-xl flex flex-row " onClick={() => onClick(recordId)}>
       <img className="rounded-l-xl" src='https://i.imgur.com/yXOvdOSs.jpg'/>
       <div className="grid-flow-col">
-        <div className="rounded-xl mt-4 ml-4 flex flex-row">
-          <p className="text-2xl font-bold mr-4">{getTimeAbbr(date)}</p>
-          <div style={{backgroundColor: colorTagName(color), width: '30px', height: '30px', borderRadius: '15px'}}/>
+        <div className="rounded-xl mt-2 ml-4 flex content-center items-center">
+          <div style={{backgroundColor: colorTagName(color), width: '14px', height: '14px', borderRadius: '7px'}}/>
+          <p className="text-base font-bold ml-2">{getTimeAbbr(date)}</p>
         </div>
-        <p className="text-left text-base mt-2 ml-4">{title}</p>
+        <p className="text-left text-base mt-1 ml-4">{title}</p>
       </div>
     </div>
   )

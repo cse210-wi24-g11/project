@@ -8,6 +8,7 @@ import DaySummary from './pages/day-summary.tsx'
 import WeekSummary from "@/pages/week-summary.tsx";
 import MonthSummary from "@/pages/month-summary.tsx";
 import { UpdateMood } from './pages/update-mood.tsx'
+import { DbTest } from './pages/db-test.tsx'
 
 import './index.css'
 
@@ -21,6 +22,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             <Route path="/DaySummary" element={<DaySummary />} />
             <Route path="/WeekSummary" element={<WeekSummary />} />
             <Route path="/MonthSummary" element={<MonthSummary />} />
+            <Route path="/DbTest" element={<DbTest />} />
           </Routes>
         </DbProvider>
       </ThemeProvider>
