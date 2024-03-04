@@ -15,7 +15,7 @@ export function SummaryBar() {
 
   return (
     <div className="w-full bg-white">
-      <div className="fixed left-0 top-10 w-full px-2 flex-row bg-white border-b-2">
+      <div className="fixed left-0 top-10 w-full flex-row border-b-2 bg-white px-2">
         <button
           className={buttonSelectStyle('Day')}
           onClick={() => setSelectedButton('Day')}
