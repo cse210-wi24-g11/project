@@ -9,6 +9,7 @@ import { UpdateMood } from './pages/update-mood.tsx'
 import { DbTest } from './pages/db-test.tsx'
 
 import './index.css'
+import { ResetIndexedDb } from './components/reset-db/reset-db.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -23,5 +24,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         </DbProvider>
       </ThemeProvider>
     </Router>
+    <ResetIndexedDb />
   </React.StrictMode>,
 )
