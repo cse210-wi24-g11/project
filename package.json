@@ -17,6 +17,8 @@
   },
   "dependencies": {
     "@adobe/react-spectrum": "^3.34.1",
+    "@react-spectrum/toast": "^3.0.0-beta.10",
+    "@types/react-color": "^3.0.12",
     "react": "^18.2.0",
     "react-color": "^2.19.3",
     "react-dom": "^18.2.0",
