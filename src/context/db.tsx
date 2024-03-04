@@ -24,19 +24,19 @@ const IndexeddbContext = createContext<Undefinable<DbCtx>>(undefined)
  * - `getDb` is a Promise that resolves to the database.
  * - `ready` is a boolean indicating whether the database is open and ready for use.
  * - `db` is the actual database, or `null` if it isn't opened yet
- * 
+ *
  * generally the idea here is to await `getDb()`.
- * 
+ *
  * `ready` can be used if you want to conditionally do something based on whether or not the db is open.
- * 
+ *
  * `db` should generally be avoided, as `getDb` is better to ensure the database is actually available (and if it isn't, just use `ready`),
  * but is here for legacy reasons for now.
  * it will be removed later.
- * 
+ *
  * @example
  * ```tsx
  * const { getDb, ready } = useDb()
- * 
+ *
  * /// getting the db to do stuff
  * useEffect(() => {
  *   // wrap logic in `async` so we can use async/await syntax
@@ -44,11 +44,11 @@ const IndexeddbContext = createContext<Undefinable<DbCtx>>(undefined)
  *     const db = await getDb()
  *     do_stuff_with(db)
  *   }
- * 
+ *
  *   // we need the `void` here to make eslint happy
  *   void effect()
  * }, [getDb])
- * 
+ *
  * /// conditionally doing things based on whether db is ready
  * <button disabled={!ready} />
  * ```
@@ -70,7 +70,7 @@ type DbProviderProps = PropsWithChildren<{}>
 
 export function DbProvider({ children }: DbProviderProps) {
   const [db, setDb] = useState<Db>(null)
-  
+
   const [ready, setReady] = useState(false)
 
   async function getDb() {
@@ -98,6 +98,8 @@ export function DbProvider({ children }: DbProviderProps) {
   }, [])
 
   return (
-    <IndexeddbContext.Provider value={{ getDb, ready }}>{children}</IndexeddbContext.Provider>
+    <IndexeddbContext.Provider value={{ getDb, ready }}>
+      {children}
+    </IndexeddbContext.Provider>
   )
 }
