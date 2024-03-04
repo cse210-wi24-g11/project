@@ -2,11 +2,16 @@ import { NavLink } from 'react-router-dom'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { SummaryBar } from '@/components/navigation/summary-bar.tsx'
+import { SummaryNavbarItem } from '@/components/navigation/summary-bar.tsx'
 
-export function DaySummary() {
+type DaySummaryBarProps = {
+  summaryNavBarItem: SummaryNavbarItem
+}
+
+export function DaySummary({ summaryNavBarItem }: DaySummaryBarProps) {
   return (
     <>
-      <SummaryBar />
+      <SummaryBar summaryNavBarItem={summaryNavBarItem} />
       <div className="flex flex-col items-center">
         <div>
           <p className="text-black">Your day so far</p>

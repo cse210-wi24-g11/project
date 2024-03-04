@@ -5,6 +5,7 @@ export default {
     extend: {
       margin: {
         '-2px': '-2px',
+        '-4px': '-4px',
       },
     },
   },
