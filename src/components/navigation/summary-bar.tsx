@@ -7,7 +7,7 @@ type SummaryBarProps = {
 }
 
 export function SummaryBar({ summaryNavBarItem }: SummaryBarProps) {
-  const buttonGeneralStyle = 'mx-8 text-lg pb-1 bg-white rounded-none mb-[-2px]'
+  const buttonGeneralStyle = 'mx-8 text-lg pb-1 px-2 bg-white rounded-none mb-[-2px]'
   const buttonSelectStyle = (button: SummaryNavbarItem) => {
     if (button === summaryNavBarItem) {
       return `${buttonGeneralStyle} blue-500 text-blue-500 border-b-4 border-b-blue-500`
