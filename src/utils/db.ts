@@ -8,15 +8,16 @@ const DB_NAME = 'user_db'
  */
 export const openDb = () => {
   return new Promise<IDBDatabase>((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, 1)
+    const request = indexedDB.open(DB_NAME, 2)
 
+    
     request.onupgradeneeded = function () {
       const db = request.result
       /* create object stores (can be deemed as tables) for the different data instances */
       db.createObjectStore('mood', { keyPath: 'id' })
-      db.createObjectStore('moodCollection', { keyPath: null })
+      db.createObjectStore('moodCollection', { keyPath: 'id' })
       db.createObjectStore('entry', { keyPath: 'id' })
-      db.createObjectStore('settings', { keyPath: null })
+      db.createObjectStore('settings', { keyPath: 'id' })
     }
 
     request.onsuccess = function () {
