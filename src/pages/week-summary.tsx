@@ -9,7 +9,7 @@ interface WeekSummaryProps {
 
 }
 
-const WeekSummaryPage = (props: WeekSummaryProps) => {
+const WeekSummary = (props: WeekSummaryProps) => {
   const [startDay, setStartDay] = useState(new Date());
   const [records, setRecords] = useState<Array<SummaryDayMoodRecord>>([]);
 
@@ -37,4 +37,4 @@ const WeekSummaryPage = (props: WeekSummaryProps) => {
   )
 }
 
-export default WeekSummaryPage;
+export default WeekSummary;

@@ -23,6 +23,10 @@ export function getDateAbbr(date: Date): string {
   return abbr[date.getMonth()] + " " + date.getDate();
 }
 
+export function getTimeAbbr(date: Date): string {
+  return date.getHours().toString() + "::" + date.getMinutes().toString();
+}
+
 export function getDatesInMonth(startDay: Date): Array<Date> {
   const date = new Date(startDay.getFullYear(), startDay.getMonth(), 1);
   const days = Array<Date>();

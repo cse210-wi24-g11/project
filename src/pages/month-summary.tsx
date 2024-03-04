@@ -11,7 +11,7 @@ import DayEntryList from "@/components/DayEntryList/DayEntryList.tsx";
 import MonthSummaryGraph from "@/components/MonthSummaryGraph/MonthSummaryGraph.tsx";
 
 // class MonthSummary extends React.Component {
-const MonthSummaryPage = () => {
+const MonthSummary = () => {
   const [startDay, setStartDay] = useState(new Date());
   const [records, setRecords] = useState<Array<SummaryDayMoodRecord>>([]);
 
@@ -49,9 +49,4 @@ const MonthSummaryPage = () => {
   )
 }
 
-
-class SummaryList extends React.Component {
-
-}
-
-export default MonthSummaryPage;
+export default MonthSummary;

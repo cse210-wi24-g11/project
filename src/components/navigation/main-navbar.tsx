@@ -18,7 +18,7 @@ export function MainNavBar() {
 
   return (
     <div className="w-full bg-white">
-      <div className="fixed bottom-0 left-0 flex w-full bg-white">
+      <div className="fixed bottom-0 left-0 flex w-full border bg-white">
         <button
           className={buttonStyle('calendar')}
           onClick={() => setSelectedButton('calendar')}
