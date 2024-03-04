@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from 'react'
 
 const DB_NAME = 'user_db'
 
@@ -31,14 +31,19 @@ export function ResetIndexedDb() {
     }
   }, [])
 
-  if (!import.meta.env.DEV) { return null }
+  if (!import.meta.env.DEV) {
+    return null
+  }
 
   function onClick() {
     indexedDB.deleteDatabase(DB_NAME)
   }
 
   return (
-    <button onClick={onClick} className={`fixed top-4 right-4 z-50 ${!visible && 'hidden'}`}>
+    <button
+      onClick={onClick}
+      className={`fixed right-4 top-4 z-50 ${!visible && 'hidden'}`}
+    >
       reset db
     </button>
   )
