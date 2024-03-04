@@ -4,31 +4,32 @@ type SummaryNavbarItem = 'Day' | 'Week' | 'Month'
 
 export function SummaryBar() {
   const [selectedButton, setSelectedButton] = useState<SummaryNavbarItem>('Day')
-  const buttonStyle = (button: SummaryNavbarItem) => {
+  const buttonGeneralStyle = 'w-1/3 bg-white rounded-none mb-[-2px]'
+  const buttonSelectStyle = (button: SummaryNavbarItem) => {
     if (button === selectedButton) {
-      return 'rounded-3xl border w-1/3 bg-blue-500 text-white hover:border-blue-500'
+      return `${buttonGeneralStyle} blue-500 text-blue-500 border-b-4 border-b-blue-500`
     } else {
-      return 'rounded-3xl border w-1/3 bg-white hover:bg-gray-200 text-slate-500 hover:border-gray-200'
+      return `${buttonGeneralStyle} slate-500 text-slate-500`
     }
   }
 
   return (
     <div className="w-full bg-white">
-      <div className="fixed left-0 top-10 w-full flex-row rounded-3xl border bg-white">
+      <div className="fixed left-0 top-10 w-full flex-row border-b-2 bg-white px-2">
         <button
-          className={buttonStyle('Day')}
+          className={buttonSelectStyle('Day')}
           onClick={() => setSelectedButton('Day')}
         >
           Day
         </button>
         <button
-          className={buttonStyle('Week')}
+          className={buttonSelectStyle('Week')}
           onClick={() => setSelectedButton('Week')}
         >
           Week
         </button>
         <button
-          className={buttonStyle('Month')}
+          className={buttonSelectStyle('Month')}
           onClick={() => setSelectedButton('Month')}
         >
           Month
