@@ -5,11 +5,15 @@ import WeekSummaryGraph from "@/components/WeekSummaryGraph/WeekSummaryGraph.tsx
 import WeekPicker from "@/components/WeekPicker/WeekPicker.tsx";
 import DayEntryList from "@/components/DayEntryList/DayEntryList.tsx";
 
-interface WeekSummaryProps {
+import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
+import { SummaryBar } from '@/components/navigation/summary-bar.tsx'
+import { SummaryNavbarItem } from '@/components/navigation/summary-bar.tsx'
 
+type WeekSummaryProps = {
+  summaryNavBarItem: SummaryNavbarItem
 }
 
-const WeekSummary = (props: WeekSummaryProps) => {
+const WeekSummary = ({ summaryNavBarItem }: WeekSummaryProps) => {
   const [startDay, setStartDay] = useState(new Date());
   const [records, setRecords] = useState<Array<SummaryDayMoodRecord>>([]);
 
@@ -24,16 +28,20 @@ const WeekSummary = (props: WeekSummaryProps) => {
   }
 
   return (
-    <div>
-      <WeekSummaryGraph records={records}/>
-      <WeekPicker
-        startDay={startDay}
-        onChangeWeek={(startDay: Date) => {
-          setStartDay(startDay);
-        }}
-      />
-      <DayEntryList records={records} onClickRecord={onClickRecord}/>
-    </div>
+    <>
+      <SummaryBar summaryNavBarItem={summaryNavBarItem} />
+      <div>
+        <WeekSummaryGraph records={records}/>
+        <WeekPicker
+          startDay={startDay}
+          onChangeWeek={(startDay: Date) => {
+            setStartDay(startDay);
+          }}
+        />
+        <DayEntryList records={records} onClickRecord={onClickRecord}/>
+      </div>
+      <MainNavBar />
+    </>
   )
 }
 
