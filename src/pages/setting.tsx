@@ -7,65 +7,67 @@ import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { useDb } from '@/context/db.tsx'
 
 interface Settings {
-  defaultView?: string;
-  remindMe?: string;
-  reminderTimes?: string;
+  defaultView?: string
+  remindMe?: string
+  reminderTimes?: string
 }
 
 export function Settings() {
-  
-  const [defaultView, setDefaultView] = useState<string | undefined>(undefined);
-  const [remindMe, setRemindMe] = useState<string | undefined>(undefined);
-  const [reminderTimes, setReminderTimes] = useState<string | undefined>(undefined);
-  const { getDb, ready } = useDb();
+  const [defaultView, setDefaultView] = useState<string | undefined>(undefined)
+  const [remindMe, setRemindMe] = useState<string | undefined>(undefined)
+  const [reminderTimes, setReminderTimes] = useState<string | undefined>(
+    undefined,
+  )
+  const { getDb, ready } = useDb()
   useEffect(() => {
     const fetchOrInitializeSettings = async () => {
       if (ready) {
         try {
-          const db = await getDb();
-          const transaction = db.transaction(['settings'], 'readwrite');
-          const store = transaction.objectStore('settings');
-          const request = store.get('settings');
+          const db = await getDb()
+          const transaction = db.transaction(['settings'], 'readwrite')
+          const store = transaction.objectStore('settings')
+          const request = store.get('settings')
 
           request.onsuccess = () => {
             if (request.result) {
-              const data = (request.result || {}) as Partial<Settings>;
-              setDefaultView(data.defaultView || 'Month');
-              setRemindMe(data.remindMe || 'None');
-              setReminderTimes(data.reminderTimes || 'None');
+              const data = (request.result || {}) as Partial<Settings>
+              setDefaultView(data.defaultView || 'Month')
+              setRemindMe(data.remindMe || 'None')
+              setReminderTimes(data.reminderTimes || 'None')
             } else {
               const defaultSettings = {
                 id: 'settings',
                 defaultView: 'Month',
                 remindMe: 'None',
                 reminderTimes: 'None',
-              };
-              store.put(defaultSettings);
-              console.log('Initialized default settings');
-              setDefaultView(defaultSettings.defaultView);
-              setRemindMe(defaultSettings.remindMe);
-              setReminderTimes(defaultSettings.reminderTimes);
+              }
+              store.put(defaultSettings)
+              console.log('Initialized default settings')
+              setDefaultView(defaultSettings.defaultView)
+              setRemindMe(defaultSettings.remindMe)
+              setReminderTimes(defaultSettings.reminderTimes)
             }
-          };
+          }
 
           request.onerror = (e) => {
             const error = (e.target as IDBRequest).error
             console.error('Error fetching:', error?.message)
-          };
+          }
         } catch (error) {
-          console.error('Failed to fetch or initialize settings', error);
+          console.error('Failed to fetch or initialize settings', error)
         }
       }
-    };
+    }
 
-    fetchOrInitializeSettings().catch(error =>{
-            console.error('Failed to initialize settings:', error);})
-  }, [ready,getDb]);
+    fetchOrInitializeSettings().catch((error) => {
+      console.error('Failed to initialize settings:', error)
+    })
+  }, [ready, getDb])
 
   const handleDefaultViewChange = async (selectedKey: React.Key) => {
     const newDefaultView = selectedKey.toString()
     setDefaultView(newDefaultView)
-    const db = await getDb();
+    const db = await getDb()
     if (db) {
       updateSettingsInDb(db, { defaultView: newDefaultView })
     }
@@ -74,7 +76,7 @@ export function Settings() {
   const handleRemindMeChange = async (selectedKey: React.Key) => {
     const newRemindMe = selectedKey.toString()
     setRemindMe(newRemindMe)
-    const db = await getDb();
+    const db = await getDb()
     if (db) {
       updateSettingsInDb(db, { remindMe: newRemindMe })
     }
@@ -83,25 +85,22 @@ export function Settings() {
   const handleAtTimesChange = async (selectedKey: React.Key) => {
     const newReminderTimes = selectedKey.toString()
     setReminderTimes(newReminderTimes)
-    const db = await getDb();
+    const db = await getDb()
     if (db) {
       updateSettingsInDb(db, { reminderTimes: newReminderTimes })
     }
   }
 
-  const updateSettingsInDb = (
-    db: IDBDatabase,
-    settings: Partial<Settings>,
-  ) => {
+  const updateSettingsInDb = (db: IDBDatabase, settings: Partial<Settings>) => {
     const transaction = db.transaction(['settings'], 'readwrite')
     const store = transaction.objectStore('settings')
     const request = store.get('settings')
 
     request.onsuccess = () => {
       // avoid undefined/any
-      const data = (request.result || {}) as Partial<Settings>;
-      const updatedData: Settings = { ...data, ...settings };
-      store.put(updatedData, 'settings');
+      const data = (request.result || {}) as Partial<Settings>
+      const updatedData: Settings = { ...data, ...settings }
+      store.put(updatedData, 'settings')
     }
 
     request.onerror = (e: Event) => {
