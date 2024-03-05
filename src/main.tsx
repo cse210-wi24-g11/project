@@ -8,6 +8,7 @@ import { DaySummary } from './pages/day-summary.tsx'
 import { WeekSummary } from './pages/week-summary.tsx'
 import { MonthSummary } from './pages/month-summary.tsx'
 import { UpdateMood } from './pages/update-mood.tsx'
+import { Settings } from './pages/setting.tsx'
 import { DbTest } from './pages/db-test.tsx'
 import { ResetIndexedDb } from './components/reset-db/reset-db.tsx'
 
@@ -32,6 +33,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
               path="/MonthSummary"
               element={<MonthSummary summaryNavBarItem={'Month'} />}
             />
+            <Route path="/Settings" element={<Settings />}/>
             <Route path="/DbTest" element={<DbTest />} />
           </Routes>
         </DbProvider>
