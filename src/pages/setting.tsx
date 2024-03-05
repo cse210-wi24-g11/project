@@ -1,15 +1,49 @@
 import React, { useState } from 'react'
-import { NavLink } from 'react-router-dom'
-import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
-import { Picker, Item } from '@adobe/react-spectrum'
-import { useDb } from '@/context/db.tsx'
 import { useEffect } from 'react'
+import { Picker, Item } from '@adobe/react-spectrum'
+// import { NavLink } from 'react-router-dom'
+
+import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
+import { useDb } from '@/context/db.tsx'
+
+interface Settings {
+  defaultView?: string;
+  remindMe?: string;
+  reminderTimes?: string;
+}
+
 export function Settings() {
   
   const [defaultView, setDefaultView] = useState<string>('Month')
   const [remindMe, setRemindMe] = useState<string>('Daily')
   const [reminderTimes, setReminderTimes] = useState<string>('9:00 AM')
   const { getDb, ready } = useDb();
+  useEffect(() => {
+    const fetchSettings = async () => {
+      if (ready) {
+        try {
+          const db = await getDb();
+          const transaction = db.transaction(['settings'], 'readonly');
+          const store = transaction.objectStore('settings');
+          const request = store.get('settings');
+          request.onsuccess = () => {
+            if (request.result) {
+              setDefaultView(request.result.defaultView || 'Month');
+              setRemindMe(request.result.remindMe || 'Daily');
+              setReminderTimes(request.result.reminderTimes || '9:00 AM');
+            }
+          };
+          request.onerror = (e) => {
+            console.error('Error fetching settings from the database', e.target.error);
+          };
+        } catch (error) {
+          console.error('Failed to fetch settings', error);
+        }
+      }
+    };
+
+    fetchSettings();
+  }, [ready]);
   const handleDefaultViewChange = async (selectedKey: React.Key) => {
     const newDefaultView = selectedKey.toString()
     setDefaultView(newDefaultView)
@@ -36,24 +70,20 @@ export function Settings() {
       updateSettingsInDb(db, { reminderTimes: newReminderTimes })
     }
   }
-  
-  const updateSettingsInDb = async (
+
+  const updateSettingsInDb = (
     db: IDBDatabase,
-    settings: {
-      defaultView?: string
-      remindMe?: string
-      reminderTimes?: string
-    },
+    settings: Partial<Settings>,
   ) => {
     const transaction = db.transaction(['settings'], 'readwrite')
     const store = transaction.objectStore('settings')
     const request = store.get('settings')
 
     request.onsuccess = () => {
-      // avoid undefined
-      const data = request.result || {}
-      const updatedData = { ...data, ...settings }
-      store.put(updatedData, 'settings')
+      // avoid undefined/any
+      const data = (request.result || {}) as Partial<Settings>;
+      const updatedData: Settings = { ...data, ...settings };
+      store.put(updatedData, 'settings');
     }
 
     request.onerror = (e: Event) => {
@@ -61,35 +91,38 @@ export function Settings() {
       console.error('Error accessing settings:', error?.message)
     }
   }
-  useEffect(() => {
-    if (ready) {
-      const checkAndInitializeSettings = async (db: IDBDatabase) => {
-        const transaction = db.transaction(['settings'], 'readwrite');
-        const store = transaction.objectStore('settings');
-        const request = store.get('settings');
+  // // check and create default value
+  // useEffect(() => {
+  //   if (ready) {
+  //     const checkAndInitializeSettings = (db: IDBDatabase) => {
+  //       const transaction = db.transaction(['settings'], 'readwrite');
+  //       const store = transaction.objectStore('settings');
+  //       const request = store.get('settings');
 
-        request.onsuccess = () => {
-          if (!request.result) {
-            store.put(
-              {
-                id: 'settings',
-                defaultView: defaultView,
-                remindMe: remindMe,
-                reminderTimes: reminderTimes,
-              },
-              'settings',
-            );
-            console.log('Initialized default settings');
-          }
-        }
-        request.onerror = (e: Event) => {
-          const error = (e.target as IDBRequest).error;
-          console.error('Error accessing settings:', error?.message);
-        }
-      }
-      getDb().then(db => checkAndInitializeSettings(db));
-    }
-  }, [ready, getDb, defaultView, remindMe, reminderTimes]);
+  //       request.onsuccess = () => {
+  //         if (!request.result) {
+  //           store.put(
+  //             {
+  //               id: 'settings',
+  //               defaultView: "Month",
+  //               remindMe: "None",
+  //               reminderTimes: "None",
+  //             },
+  //             'settings',
+  //           );
+  //           console.log('Initialized default settings');
+  //         }
+  //       }
+  //       request.onerror = (e: Event) => {
+  //         const error = (e.target as IDBRequest).error;
+  //         console.error('Error accessing settings:', error?.message);
+  //       };
+  //     };
+  //     getDb().then(db => checkAndInitializeSettings(db)).catch(error =>{
+  //       console.error('Failed to initialize settings:', error);
+  //     });
+  //   }
+  // }, [ready, getDb, defaultView, remindMe, reminderTimes]);
 
   return (
     <div className="flex flex-col items-center bg-white">
