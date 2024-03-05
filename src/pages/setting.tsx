@@ -5,35 +5,38 @@ import { Picker, Item } from '@adobe/react-spectrum'
 import { useDb } from '@/context/db.tsx'
 import { useEffect } from 'react'
 export function Settings() {
-  const db = useDb()
+  
   const [defaultView, setDefaultView] = useState<string>('Month')
   const [remindMe, setRemindMe] = useState<string>('Daily')
   const [reminderTimes, setReminderTimes] = useState<string>('9:00 AM')
-
-  const handleDefaultViewChange = (selectedKey: React.Key) => {
+  const { getDb, ready } = useDb();
+  const handleDefaultViewChange = async (selectedKey: React.Key) => {
     const newDefaultView = selectedKey.toString()
     setDefaultView(newDefaultView)
+    const db = await getDb();
     if (db) {
       updateSettingsInDb(db, { defaultView: newDefaultView })
     }
   }
 
-  const handleRemindMeChange = (selectedKey: React.Key) => {
+  const handleRemindMeChange = async (selectedKey: React.Key) => {
     const newRemindMe = selectedKey.toString()
     setRemindMe(newRemindMe)
+    const db = await getDb();
     if (db) {
       updateSettingsInDb(db, { remindMe: newRemindMe })
     }
   }
 
-  const handleAtTimesChange = (selectedKey: React.Key) => {
+  const handleAtTimesChange = async (selectedKey: React.Key) => {
     const newReminderTimes = selectedKey.toString()
     setReminderTimes(newReminderTimes)
+    const db = await getDb();
     if (db) {
       updateSettingsInDb(db, { reminderTimes: newReminderTimes })
     }
   }
-
+  
   const updateSettingsInDb = async (
     db: IDBDatabase,
     settings: {
@@ -58,42 +61,35 @@ export function Settings() {
       console.error('Error accessing settings:', error?.message)
     }
   }
-
-  const defaultSettings = {
-    defaultView: 'Month',
-    remindMe: 'Daily',
-    reminderTimes: '9:00 AM',
-  }
-
   useEffect(() => {
-    const checkAndInitializeSettings = async (db: IDBDatabase) => {
-      const transaction = db.transaction(['settings'], 'readwrite')
-      const store = transaction.objectStore('settings')
-      const request = store.get('settings')
+    if (ready) {
+      const checkAndInitializeSettings = async (db: IDBDatabase) => {
+        const transaction = db.transaction(['settings'], 'readwrite');
+        const store = transaction.objectStore('settings');
+        const request = store.get('settings');
 
-      request.onsuccess = () => {
-        if (!request.result) {
-          store.put(
-            {
-              id: 'settings',
-              defaultView: defaultSettings.defaultView,
-              remindMe: defaultSettings.remindMe,
-              reminderTimes: defaultSettings.reminderTimes,
-            },
-            'settings',
-          )
-          console.log('Initialized default settings')
+        request.onsuccess = () => {
+          if (!request.result) {
+            store.put(
+              {
+                id: 'settings',
+                defaultView: defaultView,
+                remindMe: remindMe,
+                reminderTimes: reminderTimes,
+              },
+              'settings',
+            );
+            console.log('Initialized default settings');
+          }
+        }
+        request.onerror = (e: Event) => {
+          const error = (e.target as IDBRequest).error;
+          console.error('Error accessing settings:', error?.message);
         }
       }
-      request.onerror = (e: Event) => {
-        const error = (e.target as IDBRequest).error
-        console.error('Error accessing settings:', error?.message)
-      }
+      getDb().then(db => checkAndInitializeSettings(db));
     }
-    if (db) {
-      checkAndInitializeSettings(db)
-    }
-  }, [db])
+  }, [ready, getDb, defaultView, remindMe, reminderTimes]);
 
   return (
     <div className="flex flex-col items-center bg-white">
