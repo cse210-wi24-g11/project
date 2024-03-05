@@ -33,7 +33,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
               path="/MonthSummary"
               element={<MonthSummary summaryNavBarItem={'Month'} />}
             />
-            <Route path="/Settings" element={<Settings />}/>
+            <Route path="/Settings" element={<Settings />} />
             <Route path="/DbTest" element={<DbTest />} />
           </Routes>
         </DbProvider>
