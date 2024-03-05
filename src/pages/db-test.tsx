@@ -10,7 +10,7 @@ export function DbTest() {
       const db = await getDb()
       db.transaction('moodCollection', 'readwrite')
         .objectStore('moodCollection')
-        .add({ favorites: ['1'], general: [], archived: [] }, 'test')
+        .add({ favorites: [], general: [], archived: [] }, 'test')
     }
     void run()
   }, [getDb])
