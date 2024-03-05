@@ -12,7 +12,7 @@ export const openDb = () => {
 
     request.onupgradeneeded = function () {
       const db = request.result
-      /* create object stores (can be deemed as tables) for the different data instances */
+      /* create object stores (can be deemed as tables) for different data instances */
       db.createObjectStore('mood', { keyPath: 'id' })
       db.createObjectStore('moodCollection', { keyPath: null })
       db.createObjectStore('entry', { keyPath: 'id' })
