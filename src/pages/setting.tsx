@@ -14,36 +14,54 @@ interface Settings {
 
 export function Settings() {
   
-  const [defaultView, setDefaultView] = useState<string>('Month')
-  const [remindMe, setRemindMe] = useState<string>('Daily')
-  const [reminderTimes, setReminderTimes] = useState<string>('9:00 AM')
+  const [defaultView, setDefaultView] = useState<string | undefined>(undefined);
+  const [remindMe, setRemindMe] = useState<string | undefined>(undefined);
+  const [reminderTimes, setReminderTimes] = useState<string | undefined>(undefined);
   const { getDb, ready } = useDb();
   useEffect(() => {
-    const fetchSettings = async () => {
+    const fetchOrInitializeSettings = async () => {
       if (ready) {
         try {
           const db = await getDb();
-          const transaction = db.transaction(['settings'], 'readonly');
+          const transaction = db.transaction(['settings'], 'readwrite');
           const store = transaction.objectStore('settings');
           const request = store.get('settings');
+
           request.onsuccess = () => {
             if (request.result) {
-              setDefaultView(request.result.defaultView || 'Month');
-              setRemindMe(request.result.remindMe || 'Daily');
-              setReminderTimes(request.result.reminderTimes || '9:00 AM');
+              const data = (request.result || {}) as Partial<Settings>;
+              setDefaultView(data.defaultView || 'Month');
+              setRemindMe(data.remindMe || 'None');
+              setReminderTimes(data.reminderTimes || 'None');
+            } else {
+              const defaultSettings = {
+                id: 'settings',
+                defaultView: 'Month',
+                remindMe: 'None',
+                reminderTimes: 'None',
+              };
+              store.put(defaultSettings);
+              console.log('Initialized default settings');
+              setDefaultView(defaultSettings.defaultView);
+              setRemindMe(defaultSettings.remindMe);
+              setReminderTimes(defaultSettings.reminderTimes);
             }
           };
+
           request.onerror = (e) => {
-            console.error('Error fetching settings from the database', e.target.error);
+            const error = (e.target as IDBRequest).error
+            console.error('Error fetching:', error?.message)
           };
         } catch (error) {
-          console.error('Failed to fetch settings', error);
+          console.error('Failed to fetch or initialize settings', error);
         }
       }
     };
 
-    fetchSettings();
-  }, [ready]);
+    fetchOrInitializeSettings().catch(error =>{
+            console.error('Failed to initialize settings:', error);})
+  }, [ready,getDb]);
+
   const handleDefaultViewChange = async (selectedKey: React.Key) => {
     const newDefaultView = selectedKey.toString()
     setDefaultView(newDefaultView)
@@ -91,39 +109,6 @@ export function Settings() {
       console.error('Error accessing settings:', error?.message)
     }
   }
-  // // check and create default value
-  // useEffect(() => {
-  //   if (ready) {
-  //     const checkAndInitializeSettings = (db: IDBDatabase) => {
-  //       const transaction = db.transaction(['settings'], 'readwrite');
-  //       const store = transaction.objectStore('settings');
-  //       const request = store.get('settings');
-
-  //       request.onsuccess = () => {
-  //         if (!request.result) {
-  //           store.put(
-  //             {
-  //               id: 'settings',
-  //               defaultView: "Month",
-  //               remindMe: "None",
-  //               reminderTimes: "None",
-  //             },
-  //             'settings',
-  //           );
-  //           console.log('Initialized default settings');
-  //         }
-  //       }
-  //       request.onerror = (e: Event) => {
-  //         const error = (e.target as IDBRequest).error;
-  //         console.error('Error accessing settings:', error?.message);
-  //       };
-  //     };
-  //     getDb().then(db => checkAndInitializeSettings(db)).catch(error =>{
-  //       console.error('Failed to initialize settings:', error);
-  //     });
-  //   }
-  // }, [ready, getDb, defaultView, remindMe, reminderTimes]);
-
   return (
     <div className="flex flex-col items-center bg-white">
       <section className="w-full bg-white p-4 pl-2 pr-6 shadow-md">
