@@ -24,8 +24,8 @@ export type DbRecord<T extends DbStore> = {
   }
   settings: {
     defaultView: 'day' | 'week' | 'month'
-    remindMe?: string
-    reminderTimes?: string
+    remindMe?: 'daily' | 'weekdays' | 'weekends' | 'none'
+    reminderTimes?: '9am' | '3pm' | '6pm' | 'none'
   }
 }[T]
 
