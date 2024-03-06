@@ -36,10 +36,10 @@ const reminderTimesOptions: PickerOptions<Required<SettingsShape>['reminderTimes
 ]
 
 export function Settings() {
-  const [defaultView, setDefaultView] = useState<SettingsShape['defaultView'] | undefined>(undefined)
-  const [remindMe, setRemindMe] = useState<SettingsShape['remindMe'] | undefined>(undefined)
-  const [reminderTimes, setReminderTimes] = useState<SettingsShape['reminderTimes'] | undefined>(
-    undefined,
+  const [defaultView, setDefaultView] = useState<SettingsShape['defaultView'] | null>(null)
+  const [remindMe, setRemindMe] = useState<SettingsShape['remindMe'] | null>(null)
+  const [reminderTimes, setReminderTimes] = useState<SettingsShape['reminderTimes'] | null>(
+    null
   )
   const { getDb } = useDb()
   useEffect(() => {
