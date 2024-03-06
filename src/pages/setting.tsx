@@ -15,6 +15,10 @@ type PickerOptions<KeyType extends React.Key> = Array<{
   label: string
 }>
 
+const DEFAULT_VIEW_LABEL_ID = 'settings-default-view-label'
+const REMIND_ME_LABEL_ID = 'settings-remind-me-label'
+const REMINDER_TIMES_LABEL_ID = 'settings-reminder-times-label'
+
 const defaultViewOptions: PickerOptions<Required<SettingsShape>['defaultView']> = [
   { key: 'month', label: 'Month' },
   { key: 'week', label: 'Week' },
@@ -104,9 +108,9 @@ export function Settings() {
         <h2 className="mb-4 text-left text-base font-bold">
           Calendar Settings
         </h2>
-        <h3 className="mb-3 text-left text-xs font-semibold">Default View</h3>
+        <h3 id={DEFAULT_VIEW_LABEL_ID} className="mb-3 text-left text-xs font-semibold">Default View</h3>
         <Picker
-          // label="Default View"
+          aria-labelledby={DEFAULT_VIEW_LABEL_ID}
           selectedKey={defaultView}
           onSelectionChange={handleDefaultViewChange}
           items={defaultViewOptions}
@@ -119,18 +123,18 @@ export function Settings() {
         <h2 className="mb-4 text-left text-base font-bold">
           Notification Settings
         </h2>
-        <h3 className="mb-3 text-left text-xs font-semibold">Remind Me</h3>
+        <h3 id={REMIND_ME_LABEL_ID} className="mb-3 text-left text-xs font-semibold">Remind Me</h3>
         <Picker
-          //label="Remind Me"
+          aria-labelledby={REMIND_ME_LABEL_ID}
           selectedKey={remindMe}
           onSelectionChange={handleRemindMeChange}
           items={remindMeOptions}
         >
           {(item) => <Item key={item.key}>{item.label}</Item>}
         </Picker>
-        <h3 className=" mb-2 mt-3 text-left text-xs font-semibold">At times</h3>
+        <h3 id={REMINDER_TIMES_LABEL_ID} className=" mb-2 mt-3 text-left text-xs font-semibold">At times</h3>
         <Picker
-          //label="Remind Me"
+          aria-labelledby={REMINDER_TIMES_LABEL_ID}
           onSelectionChange={handleAtTimesChange}
           selectedKey={reminderTimes}
           items={reminderTimesOptions}
