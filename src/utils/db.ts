@@ -24,7 +24,7 @@ export function openDb() {
       /* add default data to the mood store */
       const colors = ['blue', 'green', 'yellow', 'orange', 'red']
       for (let i = 1; i <= 5; i++) {
-        moodStore.add({ id: i, color: colors[i - 1], image: new Blob() })
+        moodStore.add({ id: `${i}`, color: colors[i - 1], image: new Blob() })
       }
 
       /* initialize mood collection with empty arrays */
