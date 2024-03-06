@@ -13,6 +13,7 @@ import { CustomMood } from './pages/custom-mood.tsx'
 import { DbTest } from './pages/db-test.tsx'
 import { ResetIndexedDb } from './components/reset-db/reset-db.tsx'
 
+import { EditMood } from './pages/edit-mood.tsx'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -34,6 +35,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
               path="/MonthSummary"
               element={<MonthSummary summaryNavBarItem={'Month'} />}
             />
+            <Route path="/EditMood/:moodID" element={<EditMood />} />
             <Route path="/CustomMood" element={<CustomMood />} />
             <Route path="/Settings" element={<Settings />} />
             <Route path="/DbTest" element={<DbTest />} />
