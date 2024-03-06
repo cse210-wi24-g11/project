@@ -17,6 +17,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
       theme={defaultTheme}
       // use react-router client-side navigation: see https://react-spectrum.adobe.com/react-spectrum/routing.html
       router={{ navigate }}
+      UNSAFE_className="w-full h-full flex flex-col gap-4"
     >
       {children}
     </Provider>
