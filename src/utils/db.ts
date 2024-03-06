@@ -108,7 +108,7 @@ export async function putEntry(
   await Promise.all([
     // TODO: what key to use for this, if any? is it not necessary because keypath is the id?
     put(entryStore, entry),
-    put(dateCollectionStore, entry.id, getEntryDateKey(entry.timestamp))
+    put(dateCollectionStore, entry.id, getEntryDateKey(entry.timestamp)),
   ])
 }
 
@@ -154,5 +154,5 @@ export async function getSettings(
 }
 
 function getEntryDateKey(date: Date): string {
-  return `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`;
+  return `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`
 }
