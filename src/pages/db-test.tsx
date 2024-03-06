@@ -8,11 +8,10 @@ export function DbTest() {
   useEffect(() => {
     async function run() {
       const db = await getDb()
-      db.transaction('mood', 'readwrite')
-        .objectStore('mood')
-        .put({ id: '1', color: 'blue', image: new Blob() })
+      db.transaction('moodCollection', 'readwrite')
+        .objectStore('moodCollection')
+        .add({ favorites: ['1'], general: [], archived: [] }, 'test')
     }
-
     void run()
   }, [getDb])
 
