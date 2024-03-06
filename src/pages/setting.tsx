@@ -3,69 +3,59 @@ import { useEffect } from 'react'
 import { Picker, Item } from '@adobe/react-spectrum'
 // import { NavLink } from 'react-router-dom'
 
+import { DbRecord, getSettings } from '@/utils/db.ts'
+
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { useDb } from '@/context/db.tsx'
 
-interface Settings {
-  defaultView?: string
-  remindMe?: string
-  reminderTimes?: string
-}
+type SettingsShape = DbRecord<'settings'>
+
+type PickerOptions<KeyType extends React.Key> = Array<{
+  key: KeyType,
+  label: string
+}>
+
+const defaultViewOptions: PickerOptions<Required<SettingsShape>['defaultView']> = [
+  { key: 'month', label: 'Month' },
+  { key: 'week', label: 'Week' },
+  { key: 'day', label: 'Day' },
+]
+
+const remindMeOptions: PickerOptions<Required<SettingsShape>['remindMe']> = [
+  { key: 'daily', label: 'Daily' },
+  { key: 'weekdays', label: 'Weekdays' },
+  { key: 'weekends', label: 'Weekends' },
+  { key: 'none', label: 'None' },
+]
+
+const reminderTimesOptions: PickerOptions<Required<SettingsShape>['reminderTimes']> = [
+  { key: '9am', label: '9:00 AM' },
+  { key: '3pm', label: '3:00 PM' },
+  { key: '6pm', label: '6:00 PM' },
+  { key: 'none', label: 'None' },
+]
 
 export function Settings() {
-  const [defaultView, setDefaultView] = useState<string | undefined>(undefined)
-  const [remindMe, setRemindMe] = useState<string | undefined>(undefined)
-  const [reminderTimes, setReminderTimes] = useState<string | undefined>(
+  const [defaultView, setDefaultView] = useState<SettingsShape['defaultView'] | undefined>(undefined)
+  const [remindMe, setRemindMe] = useState<SettingsShape['remindMe'] | undefined>(undefined)
+  const [reminderTimes, setReminderTimes] = useState<SettingsShape['reminderTimes'] | undefined>(
     undefined,
   )
-  const { getDb, ready } = useDb()
+  const { getDb } = useDb()
   useEffect(() => {
-    const fetchOrInitializeSettings = async () => {
-      if (ready) {
-        try {
-          const db = await getDb()
-          const transaction = db.transaction(['settings'], 'readwrite')
-          const store = transaction.objectStore('settings')
-          const request = store.get('settings')
-
-          request.onsuccess = () => {
-            if (request.result) {
-              const data = (request.result || {}) as Partial<Settings>
-              setDefaultView(data.defaultView || 'Month')
-              setRemindMe(data.remindMe || 'None')
-              setReminderTimes(data.reminderTimes || 'None')
-            } else {
-              const defaultSettings = {
-                id: 'settings',
-                defaultView: 'Month',
-                remindMe: 'None',
-                reminderTimes: 'None',
-              }
-              store.put(defaultSettings)
-              console.log('Initialized default settings')
-              setDefaultView(defaultSettings.defaultView)
-              setRemindMe(defaultSettings.remindMe)
-              setReminderTimes(defaultSettings.reminderTimes)
-            }
-          }
-
-          request.onerror = (e) => {
-            const error = (e.target as IDBRequest).error
-            console.error('Error fetching:', error?.message)
-          }
-        } catch (error) {
-          console.error('Failed to fetch or initialize settings', error)
-        }
-      }
+    async function run() {
+      const db = await getDb()
+      const settings = await getSettings(db)
+      setDefaultView(settings.defaultView)
+      setRemindMe(settings.remindMe)
+      setReminderTimes(settings.reminderTimes)
     }
 
-    fetchOrInitializeSettings().catch((error) => {
-      console.error('Failed to initialize settings:', error)
-    })
-  }, [ready, getDb])
+    void run()
+  }, [getDb])
 
   const handleDefaultViewChange = async (selectedKey: React.Key) => {
-    const newDefaultView = selectedKey.toString()
+    const newDefaultView = selectedKey.toString() as SettingsShape['defaultView']
     setDefaultView(newDefaultView)
     const db = await getDb()
     if (db) {
@@ -74,7 +64,7 @@ export function Settings() {
   }
 
   const handleRemindMeChange = async (selectedKey: React.Key) => {
-    const newRemindMe = selectedKey.toString()
+    const newRemindMe = selectedKey.toString() as SettingsShape['remindMe']
     setRemindMe(newRemindMe)
     const db = await getDb()
     if (db) {
@@ -83,7 +73,7 @@ export function Settings() {
   }
 
   const handleAtTimesChange = async (selectedKey: React.Key) => {
-    const newReminderTimes = selectedKey.toString()
+    const newReminderTimes = selectedKey.toString() as SettingsShape['reminderTimes']
     setReminderTimes(newReminderTimes)
     const db = await getDb()
     if (db) {
@@ -91,15 +81,15 @@ export function Settings() {
     }
   }
 
-  const updateSettingsInDb = (db: IDBDatabase, settings: Partial<Settings>) => {
+  const updateSettingsInDb = (db: IDBDatabase, settings: Partial<SettingsShape>) => {
     const transaction = db.transaction(['settings'], 'readwrite')
     const store = transaction.objectStore('settings')
     const request = store.get('settings')
 
     request.onsuccess = () => {
       // avoid undefined/any
-      const data = (request.result || {}) as Partial<Settings>
-      const updatedData: Settings = { ...data, ...settings }
+      const data = (request.result || {}) as SettingsShape
+      const updatedData: SettingsShape = { ...data, ...settings }
       store.put(updatedData, 'settings')
     }
 
@@ -119,11 +109,7 @@ export function Settings() {
           // label="Default View"
           selectedKey={defaultView}
           onSelectionChange={handleDefaultViewChange}
-          items={[
-            { key: 'Month', label: 'Month' },
-            { key: 'Week', label: 'Week' },
-            { key: 'Day', label: 'Day' },
-          ]}
+          items={defaultViewOptions}
         >
           {(item) => <Item key={item.key}>{item.label}</Item>}
         </Picker>
@@ -138,12 +124,7 @@ export function Settings() {
           //label="Remind Me"
           selectedKey={remindMe}
           onSelectionChange={handleRemindMeChange}
-          items={[
-            { key: 'Daily', label: 'Daily' },
-            { key: 'Weekdays', label: 'Weekdays' },
-            { key: 'Weekends', label: 'Weekends' },
-            { key: 'None', label: 'None' },
-          ]}
+          items={remindMeOptions}
         >
           {(item) => <Item key={item.key}>{item.label}</Item>}
         </Picker>
@@ -152,12 +133,7 @@ export function Settings() {
           //label="Remind Me"
           onSelectionChange={handleAtTimesChange}
           selectedKey={reminderTimes}
-          items={[
-            { key: '9:00 AM', label: '9:00 AM' },
-            { key: '3:00 PM', label: '3:00 PM' },
-            { key: '6:00 PM', label: '6:00 PM' },
-            { key: 'None', label: 'None' },
-          ]}
+          items={reminderTimesOptions}
         >
           {(item) => <Item key={item.key}>{item.label}</Item>}
         </Picker>

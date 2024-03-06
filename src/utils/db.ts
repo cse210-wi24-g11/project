@@ -132,8 +132,8 @@ export async function getFavoriteMoods(
 const DEFAULT_SETTINGS: DbRecord<'settings'> = {
   // id: 'settings',
   defaultView: 'month',
-  remindMe: 'None',
-  reminderTimes: 'None',
+  remindMe: 'none',
+  reminderTimes: 'none',
 }
 
 /**
