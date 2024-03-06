@@ -19,6 +19,7 @@ export const openDb = () => {
       })
       db.createObjectStore('entry', { keyPath: 'id' })
       db.createObjectStore('settings', { keyPath: null })
+      db.createObjectStore('dateCollection', { keyPath: null })
 
       /* add default data to the mood store */
       const colors = ['blue', 'green', 'yellow', 'orange', 'red']
