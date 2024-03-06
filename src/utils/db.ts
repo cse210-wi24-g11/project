@@ -8,15 +8,26 @@ const DB_NAME = 'user_db'
  */
 export const openDb = () => {
   return new Promise<IDBDatabase>((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, 1)
+    const request = indexedDB.open(DB_NAME, 3)
 
     request.onupgradeneeded = function () {
       const db = request.result
       /* create object stores (can be deemed as tables) for the different data instances */
-      db.createObjectStore('mood', { keyPath: 'id' })
-      db.createObjectStore('moodCollection', { keyPath: 'category' })
+      const moodStore = db.createObjectStore('mood', { keyPath: 'id' })
+      const moodCollectionStore = db.createObjectStore('moodCollection', {
+        keyPath: 'category',
+      })
       db.createObjectStore('entry', { keyPath: 'id' })
       db.createObjectStore('settings', { keyPath: null })
+
+      const colors = ['blue', 'green', 'yellow', 'orange', 'red']
+      const defaultMoodIDs = [1, 2, 3, 4, 5]
+      for (let i = 1; i <= 5; i++) {
+        moodStore.add({ id: i, color: colors[i - 1], image: new Blob() })
+      }
+      moodCollectionStore.add({ category: 'favorite', moods: [] })
+      moodCollectionStore.add({ category: 'general', moods: defaultMoodIDs })
+      moodCollectionStore.add({ category: 'archived', moods: [] })
     }
 
     request.onsuccess = function () {
