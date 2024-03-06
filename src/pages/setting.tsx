@@ -71,18 +71,14 @@ export function Settings() {
       selectedKey.toString() as SettingsShape['defaultView']
     setDefaultView(newDefaultView)
     const db = await getDb()
-    if (db) {
-      updateSettingsInDb(db, { defaultView: newDefaultView })
-    }
+    updateSettingsInDb(db, { defaultView: newDefaultView })
   }
 
   const handleRemindMeChange = async (selectedKey: React.Key) => {
     const newRemindMe = selectedKey.toString() as SettingsShape['remindMe']
     setRemindMe(newRemindMe)
     const db = await getDb()
-    if (db) {
-      updateSettingsInDb(db, { remindMe: newRemindMe })
-    }
+    updateSettingsInDb(db, { remindMe: newRemindMe })
   }
 
   const handleAtTimesChange = async (selectedKey: React.Key) => {
@@ -90,9 +86,7 @@ export function Settings() {
       selectedKey.toString() as SettingsShape['reminderTimes']
     setReminderTimes(newReminderTimes)
     const db = await getDb()
-    if (db) {
-      updateSettingsInDb(db, { reminderTimes: newReminderTimes })
-    }
+    updateSettingsInDb(db, { reminderTimes: newReminderTimes })
   }
 
   const updateSettingsInDb = (
