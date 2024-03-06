@@ -1,6 +1,8 @@
 // db.ts
 const DB_NAME = 'user_db'
 
+const MOOD_COLLECTION_KEY = 'allMoods'
+
 /*
  ** open the indexedDB database
  ** returns a promise that resolves to the database object
@@ -30,7 +32,7 @@ export function openDb() {
       /* initialize mood collection with empty arrays */
       moodCollectionStore.add(
         { favorites: [], general: [], archived: [] },
-        'allMoods',
+        MOOD_COLLECTION_KEY,
       )
     }
 
