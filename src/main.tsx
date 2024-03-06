@@ -17,7 +17,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <ThemeProvider>
         <DbProvider>
           <Routes>
-          <Route path="/CustomMood" element={<CustomMoodPage />} />
+            <Route path="/CustomMood" element={<CustomMoodPage />} />
             <Route path="/DaySummary" element={<DaySummary />} />
             <Route path="/UpdateMood" element={<UpdateMood />} />
             <Route path="/DbTest" element={<DbTest />} />
