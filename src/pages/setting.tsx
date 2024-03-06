@@ -11,7 +11,7 @@ import { useDb } from '@/context/db.tsx'
 type SettingsShape = DbRecord<'settings'>
 
 type PickerOptions<KeyType extends React.Key> = Array<{
-  key: KeyType,
+  key: KeyType
   label: string
 }>
 
@@ -19,7 +19,9 @@ const DEFAULT_VIEW_LABEL_ID = 'settings-default-view-label'
 const REMIND_ME_LABEL_ID = 'settings-remind-me-label'
 const REMINDER_TIMES_LABEL_ID = 'settings-reminder-times-label'
 
-const defaultViewOptions: PickerOptions<Required<SettingsShape>['defaultView']> = [
+const defaultViewOptions: PickerOptions<
+  Required<SettingsShape>['defaultView']
+> = [
   { key: 'month', label: 'Month' },
   { key: 'week', label: 'Week' },
   { key: 'day', label: 'Day' },
@@ -32,7 +34,9 @@ const remindMeOptions: PickerOptions<Required<SettingsShape>['remindMe']> = [
   { key: 'none', label: 'None' },
 ]
 
-const reminderTimesOptions: PickerOptions<Required<SettingsShape>['reminderTimes']> = [
+const reminderTimesOptions: PickerOptions<
+  Required<SettingsShape>['reminderTimes']
+> = [
   { key: '9am', label: '9:00 AM' },
   { key: '3pm', label: '3:00 PM' },
   { key: '6pm', label: '6:00 PM' },
@@ -40,11 +44,15 @@ const reminderTimesOptions: PickerOptions<Required<SettingsShape>['reminderTimes
 ]
 
 export function Settings() {
-  const [defaultView, setDefaultView] = useState<SettingsShape['defaultView'] | null>(null)
-  const [remindMe, setRemindMe] = useState<SettingsShape['remindMe'] | null>(null)
-  const [reminderTimes, setReminderTimes] = useState<SettingsShape['reminderTimes'] | null>(
-    null
+  const [defaultView, setDefaultView] = useState<
+    SettingsShape['defaultView'] | null
+  >(null)
+  const [remindMe, setRemindMe] = useState<SettingsShape['remindMe'] | null>(
+    null,
   )
+  const [reminderTimes, setReminderTimes] = useState<
+    SettingsShape['reminderTimes'] | null
+  >(null)
   const { getDb } = useDb()
   useEffect(() => {
     async function run() {
@@ -59,7 +67,8 @@ export function Settings() {
   }, [getDb])
 
   const handleDefaultViewChange = async (selectedKey: React.Key) => {
-    const newDefaultView = selectedKey.toString() as SettingsShape['defaultView']
+    const newDefaultView =
+      selectedKey.toString() as SettingsShape['defaultView']
     setDefaultView(newDefaultView)
     const db = await getDb()
     if (db) {
@@ -77,7 +86,8 @@ export function Settings() {
   }
 
   const handleAtTimesChange = async (selectedKey: React.Key) => {
-    const newReminderTimes = selectedKey.toString() as SettingsShape['reminderTimes']
+    const newReminderTimes =
+      selectedKey.toString() as SettingsShape['reminderTimes']
     setReminderTimes(newReminderTimes)
     const db = await getDb()
     if (db) {
@@ -85,7 +95,10 @@ export function Settings() {
     }
   }
 
-  const updateSettingsInDb = (db: IDBDatabase, settings: Partial<SettingsShape>) => {
+  const updateSettingsInDb = (
+    db: IDBDatabase,
+    settings: Partial<SettingsShape>,
+  ) => {
     const transaction = db.transaction(['settings'], 'readwrite')
     const store = transaction.objectStore('settings')
     const request = store.get('settings')
@@ -108,7 +121,12 @@ export function Settings() {
         <h2 className="mb-4 text-left text-base font-bold">
           Calendar Settings
         </h2>
-        <h3 id={DEFAULT_VIEW_LABEL_ID} className="mb-3 text-left text-xs font-semibold">Default View</h3>
+        <h3
+          id={DEFAULT_VIEW_LABEL_ID}
+          className="mb-3 text-left text-xs font-semibold"
+        >
+          Default View
+        </h3>
         <Picker
           aria-labelledby={DEFAULT_VIEW_LABEL_ID}
           selectedKey={defaultView}
@@ -123,7 +141,12 @@ export function Settings() {
         <h2 className="mb-4 text-left text-base font-bold">
           Notification Settings
         </h2>
-        <h3 id={REMIND_ME_LABEL_ID} className="mb-3 text-left text-xs font-semibold">Remind Me</h3>
+        <h3
+          id={REMIND_ME_LABEL_ID}
+          className="mb-3 text-left text-xs font-semibold"
+        >
+          Remind Me
+        </h3>
         <Picker
           aria-labelledby={REMIND_ME_LABEL_ID}
           selectedKey={remindMe}
@@ -132,7 +155,12 @@ export function Settings() {
         >
           {(item) => <Item key={item.key}>{item.label}</Item>}
         </Picker>
-        <h3 id={REMINDER_TIMES_LABEL_ID} className=" mb-2 mt-3 text-left text-xs font-semibold">At times</h3>
+        <h3
+          id={REMINDER_TIMES_LABEL_ID}
+          className=" mb-2 mt-3 text-left text-xs font-semibold"
+        >
+          At times
+        </h3>
         <Picker
           aria-labelledby={REMINDER_TIMES_LABEL_ID}
           onSelectionChange={handleAtTimesChange}
