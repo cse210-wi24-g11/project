@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Button } from '@react-spectrum/button'
 import { TextField } from '@react-spectrum/textfield'
 import Send from '@spectrum-icons/workflow/Send'
@@ -10,6 +10,7 @@ import {
   DAY_SUMMARY_ROUTE,
   MOOD_COLLECTION_ROUTE,
 } from '@/routes.ts'
+import { useLocationState } from '@/hooks/use-location-state.ts'
 import { DbRecord, getFavoriteMoods, putEntry } from '@/utils/db.ts'
 
 import { useDb } from '@/context/db.tsx'
@@ -25,7 +26,7 @@ type State = {
 }
 
 export function AddMood() {
-  const state = useLocationState()
+  const state = useLocationState(validateState)
   const navigate = useNavigate()
   const { getDb } = useDb()
 
@@ -139,18 +140,6 @@ export function AddMood() {
       <MainNavBar />
     </>
   )
-}
-
-function useLocationState(): State | null {
-  const location = useLocation()
-  // @ts-expect-error for whatever reason the type signature has the key `_state`, but it's supposed to be `state`
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const state = location.state
-  const resolvedState = useMemo(
-    () => (validateState(state) ? state : null),
-    [state],
-  )
-  return resolvedState
 }
 
 function validateState(state: unknown): state is State {
