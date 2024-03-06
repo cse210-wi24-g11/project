@@ -1,5 +1,6 @@
 import * as d3 from "d3";
 import {RGBColor} from "d3";
+import {useDb} from "@/context/db.tsx";
 
 export interface SummaryDayMoodRecord {
   id: number;
@@ -70,7 +71,12 @@ export function getRecordsInRange(dates: Date[]): SummaryDayMoodRecord[] {
   });
 }
 
+export function getEntryDateKey(date: Date): string {
+  return `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`;
+}
+
 export function getMoodOfDate(date: Date): SummaryMoodRecord[] {
+  // TODO: remove!
   return Array.from({ length: 10 }, (_, index) => ({
     id: index + 100 * date.getDay(),
     day: date,

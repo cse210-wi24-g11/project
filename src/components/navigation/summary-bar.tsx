@@ -19,7 +19,7 @@ export function SummaryBar({ summaryNavBarItem }: SummaryBarProps) {
 
   return (
     <div className="w-full bg-white">
-      <div className="fixed left-0 top-10 flex w-full border-b-2 bg-white pb-1">
+      <div className="fixed left-0 top-0 flex w-full border-b-2 bg-white pb-1">
         <Link className={buttonSelectStyle('Day')} to="/DaySummary">
           Day
         </Link>
