@@ -1,6 +1,33 @@
 // db.ts
 const DB_NAME = 'user_db'
 
+export type DbStore = 'mood' | 'moodCollection' | 'entry' | 'settings'
+
+type MoodId = string
+
+export type DbRecord<T extends DbStore> = {
+  mood: {
+    id: MoodId
+    color: string
+    imagePath: string
+  }
+  moodCollection: {
+    favorites: MoodId[]
+    general: MoodId[]
+    archived: MoodId[]
+  }
+  entry: {
+    id: string
+    moodId: MoodId
+    description: string
+    timestamp: Date
+  }
+  settings: {
+    notificationTime: string
+    defaultViewId: 'day' | 'week' | 'month'
+  }
+}[T]
+
 const MOOD_COLLECTION_KEY = 'allMoods'
 
 /*
