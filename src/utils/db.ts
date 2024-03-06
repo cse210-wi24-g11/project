@@ -72,3 +72,52 @@ export function openDb() {
     }
   })
 }
+
+function put<T, U extends IDBValidKey | undefined>(
+  store: IDBObjectStore,
+  value: T,
+  key?: U,
+): Promise<U> {
+  return toPromise(store.put(value, key))
+}
+
+function toPromise<T>(req: IDBRequest): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    req.onsuccess = () => {
+      resolve(req.result as T)
+    }
+    req.onerror = () => {
+      reject()
+    }
+  })
+}
+
+/**
+ * add a mood entry to the database
+ */
+export async function putEntry(
+  db: IDBDatabase,
+  entry: DbRecord<'entry'>,
+): Promise<void> {
+  const transaction = db.transaction('entry', 'readwrite')
+  const store = transaction.objectStore('entry')
+  // TODO: what key to use for this, if any?
+  await put(store, entry)
+}
+
+export async function getFavoriteMoods(
+  db: IDBDatabase,
+): Promise<DbRecord<'mood'>[]> {
+  const transaction = db.transaction(['mood', 'moodCollection'], 'readonly')
+  const moodStore = transaction.objectStore('mood')
+  const moodCollectionStore = transaction.objectStore('moodCollection')
+  const moodCollection = await toPromise<DbRecord<'moodCollection'>>(
+    moodCollectionStore.get(MOOD_COLLECTION_KEY),
+  )
+  const favoriteMoodIds = moodCollection.favorites
+
+  const favoriteMoods = await toPromise<DbRecord<'mood'>[]>(
+    moodStore.get(favoriteMoodIds),
+  )
+  return favoriteMoods
+}
