@@ -101,10 +101,15 @@ export async function putEntry(
   db: IDBDatabase,
   entry: DbRecord<'entry'>,
 ): Promise<void> {
-  const transaction = db.transaction('entry', 'readwrite')
-  const store = transaction.objectStore('entry')
-  // TODO: what key to use for this, if any?
-  await put(store, entry)
+  const transaction = db.transaction(['entry', 'dateCollection'], 'readwrite')
+  const entryStore = transaction.objectStore('entry')
+  const dateCollectionStore = transaction.objectStore('dateCollection')
+
+  await Promise.all([
+    // TODO: what key to use for this, if any? is it not necessary because keypath is the id?
+    put(entryStore, entry),
+    put(dateCollectionStore, entry.id, getEntryDateKey(entry.timestamp))
+  ])
 }
 
 export async function getFavoriteMoods(
@@ -146,4 +151,8 @@ export async function getSettings(
     return DEFAULT_SETTINGS
   }
   return settings
+}
+
+function getEntryDateKey(date: Date): string {
+  return `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`;
 }
