@@ -6,7 +6,7 @@ const DB_NAME = 'user_db'
  ** returns a promise that resolves to the database object
  ** or rejects with an error message
  */
-export const openDb = () => {
+export function openDb() {
   return new Promise<IDBDatabase>((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, 1)
 
