@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 
 import { DbProvider } from './context/db.tsx'
-import { ThemeProvider } from './context/theme.tsx'
+import { SpectrumProvider } from './context/spectrum.tsx'
 import { AddMood } from './pages/add-mood.tsx'
 import { DaySummary } from './pages/day-summary.tsx'
 import { WeekSummary } from './pages/week-summary.tsx'
@@ -26,7 +26,7 @@ import './index.css'
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Router>
-      <ThemeProvider>
+      <SpectrumProvider>
         <DbProvider>
           <Routes>
             <Route path={ADD_MOOD_ROUTE} element={<AddMood />} />
@@ -47,7 +47,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             <Route path="/DbTest" element={<DbTest />} />
           </Routes>
         </DbProvider>
-      </ThemeProvider>
+      </SpectrumProvider>
     </Router>
     <ResetIndexedDb />
   </React.StrictMode>,

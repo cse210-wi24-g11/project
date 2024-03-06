@@ -4,9 +4,9 @@ import { Provider } from '@react-spectrum/provider'
 import { useNavigate } from 'react-router-dom'
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-type ThemeProviderProps = PropsWithChildren<{}>
+type SpectrumProviderProps = PropsWithChildren<{}>
 
-export function ThemeProvider({ children }: ThemeProviderProps) {
+export function SpectrumProvider({ children }: SpectrumProviderProps) {
   const navigate = useNavigate()
 
   return (
