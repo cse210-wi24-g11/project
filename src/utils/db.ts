@@ -23,12 +23,14 @@ export type DbRecord<T extends DbStore> = {
     timestamp: Date
   }
   settings: {
-    notificationTime: string
-    defaultViewId: 'day' | 'week' | 'month'
+    defaultView: 'day' | 'week' | 'month'
+    remindMe?: string
+    reminderTimes?: string
   }
 }[T]
 
 const MOOD_COLLECTION_KEY = 'allMoods'
+const SETTINGS_KEY = 'settings'
 
 /*
  ** open the indexedDB database
@@ -115,9 +117,33 @@ export async function getFavoriteMoods(
     moodCollectionStore.get(MOOD_COLLECTION_KEY),
   )
   const favoriteMoodIds = moodCollection.favorites
-
+  console.log({ favoriteMoodIds })
   const favoriteMoods = await toPromise<DbRecord<'mood'>[]>(
     moodStore.get(favoriteMoodIds),
   )
   return favoriteMoods
+}
+
+const DEFAULT_SETTINGS: DbRecord<'settings'> = {
+  // id: 'settings',
+  defaultView: 'month',
+  remindMe: 'None',
+  reminderTimes: 'None',
+}
+
+/**
+ * gets the settings, populating the database with the default settings if they do not exist
+ */
+export async function getSettings(
+  db: IDBDatabase,
+): Promise<DbRecord<'settings'>> {
+  const transaction = db.transaction(['settings'], 'readwrite')
+  const store = transaction.objectStore('settings')
+  const request = store.get(SETTINGS_KEY)
+  const settings = await toPromise<DbRecord<'settings'> | undefined>(request)
+  if (!settings) {
+    await put(store, DEFAULT_SETTINGS, SETTINGS_KEY)
+    return DEFAULT_SETTINGS
+  }
+  return settings
 }

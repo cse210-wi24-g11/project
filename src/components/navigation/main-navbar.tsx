@@ -5,17 +5,17 @@ import Add from '@spectrum-icons/workflow/AddCircle'
 import Settings from '@spectrum-icons/workflow/Settings'
 
 import {
+  type Route,
   ADD_MOOD_ROUTE,
-  DAY_SUMMARY_ROUTE,
-  Route,
   SETTINGS_ROUTE,
+  SUMMARY_BASE_ROUTE,
 } from '@/routes.ts'
 import { cls } from '@/utils/cls.ts'
 
 export function MainNavBar() {
   return (
     <nav className="fixed bottom-0 left-0 flex w-full bg-white">
-      <NavbarItem to={DAY_SUMMARY_ROUTE} label="summary" icon={Calendar} />
+      <NavbarItem to={SUMMARY_BASE_ROUTE} label="summary" icon={Calendar} />
       <NavbarItem to={ADD_MOOD_ROUTE} label="add mood" icon={Add} />
       <NavbarItem to={SETTINGS_ROUTE} label="settings" icon={Settings} />
     </nav>
