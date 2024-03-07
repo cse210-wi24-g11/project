@@ -36,6 +36,8 @@ const randomUUID = (): string => {
 }
 
 function CustomMoodPage() {
+  const { getDb } = useDb()
+
   const [selectedColor, setSelectedColor] = useState<string | undefined>(
     '#000000',
   ) // default white
@@ -47,68 +49,85 @@ function CustomMoodPage() {
     setUploadedImage(imageData)
     submitDisabled = false
   }
-
   const handleColorChange = (color: string) => {
     setSelectedColor(color)
   }
 
   const [category, setCategory] = useState<Key>('general')
 
-  const db = useDb()
   async function handleSubmitMood() {
+    const db = await getDb()
+
     // Ensure that ToastQueue is properly typed and positive is accessed on the correct object/type
     //if (!submitDisabled){
     const blob = await getImageBlob(uploadedImage)
     if (blob) {
       // Now you can use the 'blob' object as needed, e.g., in your IndexedDB code
       console.log('Blob:', blob)
-      if (db) {
-        //add mood to data base
-        const generatedUUID: string = randomUUID()
-        console.log('success: db connection is established')
-        db.transaction('mood', 'readwrite')
-          .objectStore('mood')
-          .put({ id: generatedUUID, color: selectedColor, image: blob })
 
-        //append to favorite category
-        if (category == 'favorite') {
-          const favoritesRequest = db
-            .transaction('moodCollection', 'readwrite')
-            .objectStore('moodCollection')
-            .get('favorite')
+      //add mood to data base
+      const generatedUUID: string = randomUUID()
+      db.transaction('mood', 'readwrite')
+        .objectStore('mood')
+        .add({ id: generatedUUID, color: selectedColor, image: blob })
 
-          favoritesRequest.onsuccess = function (event) {
-            const request = event.target as IDBRequest
-            const favoriteIDdata = request.result
-            const storedFavoriteIDs = favoriteIDdata.moods
-            storedFavoriteIDs.push(generatedUUID)
-            db.transaction('moodCollection', 'readwrite')
-              .objectStore('moodCollection')
-              .put({ category: 'favorite', moods: storedFavoriteIDs })
+      //append to favorite category
+      if (category == 'favorite') {
+        const favoritesRequest = db
+          .transaction('moodCollection', 'readwrite')
+          .objectStore('moodCollection')
+          .get('favorite')
+
+        // console.log(favoritesRequest)
+
+        favoritesRequest.onsuccess = function (event) {
+          const request = event.target as IDBRequest
+          let favoriteIDdata: { moods: string[] }
+
+          if (request.result) {
+            // If the favorite record exists, use it
+            favoriteIDdata = request.result as { moods: string[] }
+          } else {
+            // If the favorite record doesn't exist, create a new one
+            favoriteIDdata = { moods: [] }
           }
-        }
-        //append to general category
-        else {
-          const generalRequest = db
-            .transaction('moodCollection', 'readwrite')
-            .objectStore('moodCollection')
-            .get('general')
 
-          generalRequest.onsuccess = function (event) {
-            const request = event.target as IDBRequest
-            const generalIDdata = request.result
-            const storedGeneralIDs = generalIDdata.moods
-            storedGeneralIDs.push(generatedUUID)
-            db.transaction('moodCollection', 'readwrite')
-              .objectStore('moodCollection')
-              .put({ category: 'general', moods: storedGeneralIDs })
-          }
+          const storedFavoriteIDs = favoriteIDdata.moods
+          storedFavoriteIDs.push(generatedUUID)
+          db.transaction('moodCollection', 'readwrite')
+            .objectStore('moodCollection')
+            .put({ moods: storedFavoriteIDs }, 'favorite')
         }
-        ToastQueue.positive('Custom Mood Added!')
-      } else {
-        console.log('error: db is still null')
       }
+      //append to general category
+      else {
+        const generalRequest = db
+          .transaction('moodCollection', 'readwrite')
+          .objectStore('moodCollection')
+          .get('general')
+
+        generalRequest.onsuccess = function (event) {
+          const request = event.target as IDBRequest
+          let generalIDdata: { moods: string[] }
+
+          if (request.result) {
+            // If the favorite record exists, use it
+            generalIDdata = request.result as { moods: string[] }
+          } else {
+            // If the favorite record doesn't exist, create a new one
+            generalIDdata = { moods: [] }
+          }
+
+          const storedGeneralIDs = generalIDdata.moods
+          storedGeneralIDs.push(generatedUUID)
+          db.transaction('moodCollection', 'readwrite')
+            .objectStore('moodCollection')
+            .put({ moods: storedGeneralIDs }, 'general')
+        }
+      }
+      ToastQueue.positive('Custom Mood Added!')
     } else {
+      // TODO: render a floating window to notify the user to upload an image
       console.log('Failed to fetch image as Blob.')
     }
     //}
