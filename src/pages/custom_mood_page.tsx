@@ -1,12 +1,11 @@
-import { useState, useEffect, SetStateAction } from 'react'
+import { useState } from 'react'
 import { Button, Picker, Item, Key } from '@adobe/react-spectrum'
 import { ToastContainer, ToastQueue } from '@react-spectrum/toast'
 
+import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import ColorPicker from '@/components/ColorPicker.tsx' // Adjust the import path based on the actual location
 import ImageUploadComponent from '@/components/UploadImage.tsx'
 import DisplayImageComponent from '@/components/DisplayImage.tsx'
-import { MainNavBar } from '@/components/navigation/main-navbar'
-
 import { useDb } from '@/context/db.tsx'
 
 // Function to fetch image as Blob from a given URL

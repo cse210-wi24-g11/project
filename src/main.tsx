@@ -7,7 +7,6 @@ import { ThemeProvider } from './context/theme.tsx'
 import { DaySummary } from './pages/day-summary.tsx'
 import { UpdateMood } from './pages/update-mood.tsx'
 import { DbTest } from './pages/db-test.tsx'
-
 import './index.css'
 import CustomMoodPage from './pages/custom_mood_page.tsx'
 
