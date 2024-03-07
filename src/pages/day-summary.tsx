@@ -1,98 +1,161 @@
-import {useLocation, useNavigate} from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom'
 
-import {MainNavBar} from '@/components/navigation/main-navbar.tsx';
-import {SummaryBar} from '@/components/navigation/summary-bar.tsx';
-import {useEffect, useState} from "react";
-import {getDateAbbr, getEntryDateKey, getMoodOfDate, SummaryMoodRecord} from "@/components/SummaryHelper.ts";
-import MoodListItem from "@/components/MoodItem/MoodItem.tsx";
-import {DatePicker} from "@adobe/react-spectrum";
-import {CalendarDate, getLocalTimeZone} from "@internationalized/date";
-import {SummaryNavbarItem} from '@/components/navigation/summary-bar.tsx';
-import {useDb} from "@/context/db.tsx";
+import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
+import { SummaryBar } from '@/components/navigation/summary-bar.tsx'
+import { useEffect, useState } from 'react'
+import {
+  getDateAbbr,
+  getEntryDateKey,
+  getMoodOfDate,
+  SummaryMoodRecord,
+  TempEntry,
+} from '@/components/SummaryHelper.ts'
+import MoodListItem from '@/components/MoodItem/MoodItem.tsx'
+import { DatePicker, ListBox, Item, Flex } from '@adobe/react-spectrum'
+import { CalendarDate, getLocalTimeZone } from '@internationalized/date'
+import { SummaryNavbarItem } from '@/components/navigation/summary-bar.tsx'
+import { useDb } from '@/context/db.tsx'
+import * as d3 from 'd3'
+import { RGBColor } from 'd3'
+import { Provider } from '@react-spectrum/provider'
 
 // import DaySummaryPage from "@/pages/DaySummaryPage.tsx";
 
 interface DaySummaryPageProps {
-  day?: Date;
+  day?: Date
   summaryNavBarItem: SummaryNavbarItem
 }
 
 const date2CalendarDate = (date: Date) => {
-  return new CalendarDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
+  return new CalendarDate(
+    date.getFullYear(),
+    date.getMonth() + 1,
+    date.getDate(),
+  )
 }
 
 const DaySummary = (props: DaySummaryPageProps) => {
-  const {getDb} = useDb();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const locState = location.state as { from }
-  const {day, summaryNavBarItem} = props;
-  const [today, setToday] = useState<Date>(day ?? new Date());
+  const { getDb } = useDb()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { day, summaryNavBarItem } = props
+  const [today, setToday] = useState<Date>(day ?? new Date())
   const [dpDate, setDpDate] = useState(date2CalendarDate(day ?? new Date()))
-  const [listItems, setListItems] = useState<SummaryMoodRecord[]>([]);
+  const [listItems, setListItems] = useState<SummaryMoodRecord[]>([])
 
   useEffect(() => {
-    const cd = date2CalendarDate(today);
-    setDpDate(cd);
+    const cd = date2CalendarDate(today)
+    setDpDate(cd)
+    void setEntryList()
+    // setListItems(getMoodOfDate(today));
+  }, [today])
 
-    async function run() {
-      const db = await getDb();
+  async function setEntryList() {
+    const db = await getDb()
 
-      // read all entry id of given date.
-      const idReq = db.transaction('date_collections', 'readonly')
-        .objectStore('dateCollection')
-        .get(getEntryDateKey(today));
+    // read all entry id of given date.
+    const dayKey = getEntryDateKey(today)
+    const idReq = db
+      .transaction('dateCollection', 'readonly')
+      .objectStore('dateCollection')
+      .get(dayKey)
 
-      idReq.onerror = () => {
-        console.log('read entries of date', getDateAbbr(today), 'fail');
+    idReq.onsuccess = () => {
+      // read all entries with given ids.
+      const entries = idReq.result // TODO: check id type.
+      console.log(`db find ${dayKey}:`, entries)
+      if (entries === undefined) {
+        setListItems([])
+        return
       }
-      idReq.onsuccess = () => {
-        // read all entries with given ids.
-        const entries = idReq.result; // TODO: check id type.
-        console.log('db:', entries);
-        // setListItems(entries);
-      }
+
+      Promise.all(
+        entries.map((entry: TempEntry) => {
+          // TODO: change type
+          return new Promise((resolve) => {
+            const moodReq = db
+              .transaction('mood')
+              .objectStore('mood')
+              .get(entry.moodId)
+            moodReq.onsuccess = () => {
+              const color: string = moodReq.result.color
+              console.log('moodId:', entry.moodId, 'result:', moodReq.result)
+              const temp: SummaryMoodRecord = {
+                id: entry.id,
+                day: entry.timestamp,
+                title: entry.description,
+                color: d3.rgb(color), // TODO: add image
+              }
+              resolve(temp)
+            }
+          })
+        }),
+      ).then((resArr: SummaryMoodRecord[]) => {
+        console.log('all db read', resArr)
+        setListItems(resArr)
+      })
     }
+  }
 
-    void run();
-    setListItems(getMoodOfDate(today));
-  }, [today]);
-
-  return (
-    <div className="flex flex-col">
-      <SummaryBar summaryNavBarItem={summaryNavBarItem}/>
-      <div className="flex flex-col items-center">
-        <div>
-          <DatePicker
-            label="Select a date"
-            value={dpDate}
-            onChange={(d: CalendarDate) => {
-              setToday(d.toDate(getLocalTimeZone()))
-            }}
-          />
-        </div>
-        <ul className="w-full bg-white left-0 top-8">
+  const buildList = () => {
+    // if (listItems.length == 0) {
+    //   return (
+    //     <div className="fixed w-full h-full bg-gray-50 left-0">
+    //       <p className="mt-20 text-gray-400 text-4xl">No Data</p>
+    //     </div>
+    //   )
+    // }
+    return (
+      <div className="ml-8 mr-8">
+        {/*// <div style={{height: "800px", overflowY: "auto"}}>*/}
+        {/*<div className="w-full md:w-11/12 ml-auto">*/}
+        <ul className="left-8 right-8 mt-0 scroll-auto bg-white">
+          {/*<ul className="left-0 mt-0 w-full bg-white scroll-auto">*/}
           {listItems.map((item, index) => (
-            <li className="my-4" key={item.id}>
+            <li className="left-0 right-0 my-4" key={item.id}>
               <MoodListItem
-                imageUrl={"TODO"} // TODO: fix
+                imageUrl={'TODO'} // TODO: fix
                 title={item.title}
                 date={item.day}
                 color={item.color}
                 recordId={item.id.toString()} // TODO: type of id?
                 onClick={(recordId: string) => {
                   // TODO: type of id?
-                  console.log(`Go to entry edit page ${recordId}`);
-                  navigate("/UpdateEntry", {state: {id: recordId}}) // TODO: give id
+                  console.log(`Go to entry edit page ${recordId}`)
+                  navigate('/UpdateMood', { state: { id: recordId } }) // TODO: give id
                 }}
               />
             </li>
           ))}
         </ul>
       </div>
-      <MainNavBar/>
+    )
+  }
+
+  return (
+    <div>
+      <SummaryBar summaryNavBarItem={summaryNavBarItem} />
+      <div className="fixed left-0 top-10 flex h-20 w-full flex-row bg-white">
+        <div className="mb-2 ml-8 mt-2">
+          <Provider locale="en">
+            <DatePicker
+              label="Select a date"
+              value={dpDate}
+              onChange={(d: CalendarDate) => {
+                setToday(d.toDate(getLocalTimeZone()))
+              }}
+            />
+          </Provider>
+        </div>
+      </div>
+      <div className="w-full bg-white">
+        <div className="fixed bottom-20 left-0 right-0 top-28 overflow-y-auto">
+          {buildList()}
+        </div>
+      </div>
+      <MainNavBar />
     </div>
-  );
+  )
 }
 
-export default DaySummary;
+export default DaySummary
