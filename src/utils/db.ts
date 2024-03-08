@@ -15,7 +15,7 @@ export const openDb = () => {
       /* create object stores (can be deemed as tables) for different data instances */
       const moodStore = db.createObjectStore('mood', { keyPath: 'id' })
       db.createObjectStore('moodCollection', {
-        keyPath: 'category',
+        keyPath: null,
       })
       db.createObjectStore('entry', { keyPath: 'id' })
       db.createObjectStore('settings', { keyPath: null })
