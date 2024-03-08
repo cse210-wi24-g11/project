@@ -105,10 +105,16 @@ export async function putEntry(
   const entryStore = transaction.objectStore('entry')
   const dateCollectionStore = transaction.objectStore('dateCollection')
 
+  const entryDateKey = getEntryDateKey(entry.timestamp)
+  
+  // update the entries on the same date as this entry we're putting
+  const entriesOnSameDate = (await toPromise<DbRecord<'entry'>[] | undefined>(dateCollectionStore.get(entryDateKey))) ?? []
+  entriesOnSameDate.push(entry)
+
   await Promise.all([
     // TODO: what key to use for this, if any? is it not necessary because keypath is the id?
     put(entryStore, entry),
-    put(dateCollectionStore, entry.id, getEntryDateKey(entry.timestamp)),
+    put(dateCollectionStore, entriesOnSameDate, entryDateKey),
   ])
 }
 
