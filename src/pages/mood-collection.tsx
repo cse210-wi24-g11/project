@@ -2,9 +2,7 @@ import { Button, Text } from '@adobe/react-spectrum'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import {
-  CUSTOM_MOOD_ROUTE,
-} from '@/routes.ts'
+import { CUSTOM_MOOD_ROUTE } from '@/routes.ts'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { useDb } from '@/context/db.tsx'
@@ -53,7 +51,7 @@ function MoodCollectionPage() {
           .get(type)
         requestType.onsuccess = (event) => {
           const targetCollection = event.target as IDBRequest
-          const typeIDData = targetCollection.result as {moods: string[]}
+          const typeIDData = targetCollection.result as { moods: string[] }
           const moodIDs = typeIDData.moods
           for (const moodID of moodIDs) {
             const requestMood = db
@@ -62,10 +60,10 @@ function MoodCollectionPage() {
               .get(moodID)
             requestMood.onsuccess = (event) => {
               const targetMood = event.target as IDBRequest
-              const moodObj = targetMood.result as {mood: Mood}
+              const moodObj = targetMood.result as { mood: Mood }
               const mood = moodObj.mood
-              if(type === 'favorite') {
-                setFavorites([...favoriteMoods, mood]) 
+              if (type === 'favorite') {
+                setFavorites([...favoriteMoods, mood])
               } else if (type === 'general') {
                 setGeneral([...generalMoods, mood])
               } else {
