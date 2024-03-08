@@ -41,7 +41,7 @@ export function openDb() {
   return new Promise<IDBDatabase>((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, 1)
 
-    request.onupgradeneeded = function () {
+    request.onupgradeneeded = async function () {
       const db = request.result
       /* create object stores (can be deemed as tables) for different data instances */
       const moodStore = db.createObjectStore('mood', { keyPath: 'id' })
@@ -53,12 +53,53 @@ export function openDb() {
       db.createObjectStore('dateCollection', { keyPath: null })
 
       /* add default data to the mood store */
-      const colors = ['blue', 'green', 'yellow', 'orange', 'red']
+      const colors = ['#f2cc59', '#fc805e', '#df5c50', '#b499e4', '#85aedd']
+      const imagePaths = ['/src/assets/default-moods/happy.PNG',
+      '/src/assets/default-moods/overwhelmed.PNG',
+      '/src/assets/default-moods/angry.PNG',
+      '/src/assets/default-moods/meh.png','/src/assets/sad.PNG'];
+      //Julia: tried this and didn't work either 
+      /*
+      async function createBlobFromPath(filePath: string): Promise<Blob | undefined> {
+        try {
+          const response = await fetch(filePath);
+          const arrayBuffer = await response.arrayBuffer();
+          
+          // Ensure content type is not null
+          const contentType = response.headers.get('content-type') || undefined;
+      
+          const blob = new Blob([arrayBuffer], { type: contentType });
+          return blob;
+        } catch (error) {
+          console.error('Error creating Blob from path:', error);
+          return undefined;
+        }
+      }
       for (let i = 1; i <= 5; i++) {
-        moodStore.add({ id: `${i}`, color: colors[i - 1], image: new Blob() })
+        moodStore.add({ id: i, color: colors[i - 1], image: createBlobFromPath(imagePaths[i-1])})
+      }*/
+
+     
+      for (let i = 1; i <= 5; i++) {
+        // create new Blob object with given path
+        const imagePath = imagePaths[i-1] // Replace with the path to your image
+        await fetch(imagePath)
+          .then((response) => response.blob())
+          .then((blob) => {
+            moodStore.add({
+              id: i,
+              color: colors[i - 1],
+              image: blob,
+            })
+          })
+          .catch((error) => {
+            console.error('Error:', error)
+          })
       }
 
+
       /* initialize mood collection with empty arrays */
+      
       moodCollectionStore.add(
         { favorites: [], general: [], archived: [] },
         MOOD_COLLECTION_KEY,
