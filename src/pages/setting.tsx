@@ -171,7 +171,7 @@ export function Settings() {
         </Picker>
       </section>
 
-      <div className="bg-white p-4 shadow-md w-full">
+      <div className="w-full bg-white p-4 shadow-md">
         <h2 className="mb-4 text-left font-semibold">Mood collection</h2>
         <Button
           variant='primary'
