@@ -1,4 +1,4 @@
-import { getTimeAbbr } from '@/components/SummaryHelper.ts'
+import { getDateAbbr, getTimeAbbr } from '@/components/SummaryHelper.ts'
 import { RGBColor } from 'd3'
 
 interface MoodListItemProps {
@@ -33,7 +33,12 @@ const MoodListItem = (props: MoodListItemProps) => {
               borderRadius: '7px',
             }}
           />
-          <p className="ml-2 text-base font-bold">{getTimeAbbr(date)}</p>
+          <p className="ml-2 font-mono text-base font-bold">
+            {getDateAbbr(date)}
+          </p>
+          <p className="ml-2 font-mono text-base font-medium">
+            {getTimeAbbr(date)}
+          </p>
         </div>
         <p className="ml-4 mr-4 mt-1 line-clamp-2 text-left text-base">
           {title}

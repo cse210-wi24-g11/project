@@ -7,7 +7,7 @@ import {
   getDateAbbr,
   getDatesInMonth,
 } from '@/components/SummaryHelper.ts'
-import DayEntryList from '@/components/DayEntryList/DayEntryList.tsx'
+import MoodEntryList from '@/components/MoodEntryList/MoodEntryList.tsx'
 import MonthSummaryGraph from '@/components/MonthSummaryGraph/MonthSummaryGraph.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { SummaryBar } from '@/components/navigation/summary-bar.tsx'
@@ -23,7 +23,6 @@ const MonthSummary = ({ summaryNavBarItem }: MonthSummaryProps) => {
   const [records, setRecords] = useState<Array<SummaryDayMoodRecord>>([])
 
   const goToDaySummaryPage = (day: Date) => {
-    // TODO: fix
     console.log('Go to day summary page', day)
   }
 
@@ -48,7 +47,7 @@ const MonthSummary = ({ summaryNavBarItem }: MonthSummaryProps) => {
             setStartDay(startDay)
           }}
         />
-        <DayEntryList
+        <MoodEntryList
           records={records}
           onClickRecord={(r: SummaryDayMoodRecord) => goToDaySummaryPage(r.day)}
         />

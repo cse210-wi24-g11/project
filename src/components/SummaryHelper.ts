@@ -82,6 +82,14 @@ export function getDatesInWeek(startDay: Date): Array<Date> {
   return days
 }
 
+export function get1stDayInWeek(date: Date): Date {
+  const resultDate = new Date(date);
+  const dayOfWeek = resultDate.getDay();
+  resultDate.setDate(resultDate.getDate() - dayOfWeek);
+  resultDate.setHours(0, 0, 0, 0);
+  return resultDate;
+}
+
 // TODO: fix
 export function getRecordsInRange(dates: Date[]): SummaryDayMoodRecord[] {
   return dates.map((d, i) => {
@@ -138,5 +146,51 @@ export function getMoodDesc(records: SummaryDayMoodRecord[]): string {
     return 'Being ordinary is just a part of life.'
   } else {
     return "Don't worry, things will get better soon!"
+  }
+}
+
+export function setEntryList(db: IDBDatabase, date: Date, setList: (entries: SummaryMoodRecord[]) => void) {
+  // read all entry id of given date.
+  const dayKey = getEntryDateKey(date)
+  const idReq = db
+    .transaction('dateCollection', 'readonly')
+    .objectStore('dateCollection')
+    .get(dayKey)
+
+  idReq.onsuccess = () => {
+    // read all entries with given ids.
+    const entries = idReq.result // TODO: check id type.
+    // console.log(`db find ${dayKey}:`, entries)
+    if (entries === undefined) {
+      setList([])
+      return
+    }
+
+    Promise.all(
+      entries.map((entry: TempEntry) => {
+        // TODO: change type
+        return new Promise((resolve) => {
+          const moodReq = db
+            .transaction('mood')
+            .objectStore('mood')
+            .get(entry.moodId)
+          moodReq.onsuccess = () => {
+            const color: string = moodReq.result.color
+            // console.log('moodId:', entry.moodId, 'result:', moodReq.result)
+            const temp: SummaryMoodRecord = {
+              id: entry.id,
+              day: entry.timestamp,
+              title: entry.description,
+              color: d3.rgb(color), // TODO: add image
+            }
+            resolve(temp)
+          }
+        })
+      }),
+    ).then((resArr: SummaryMoodRecord[]) => {
+      console.log('all entries of date', dayKey, ':', resArr)
+      // setListItems(resArr)
+      setList(resArr)
+    })
   }
 }
