@@ -1,38 +1,34 @@
-import { useState } from 'react'
+import { Link } from 'react-router-dom'
 
-type SummaryNavbarItem = 'Day' | 'Week' | 'Month'
+export type SummaryNavbarItem = 'Day' | 'Week' | 'Month'
 
-export function SummaryBar() {
-  const [selectedButton, setSelectedButton] = useState<SummaryNavbarItem>('Day')
-  const buttonStyle = (button: SummaryNavbarItem) => {
-    if (button === selectedButton) {
-      return 'rounded-3xl border w-1/3 bg-blue-500 text-white hover:border-blue-500'
+type SummaryBarProps = {
+  summaryNavBarItem: SummaryNavbarItem
+}
+
+export function SummaryBar({ summaryNavBarItem }: SummaryBarProps) {
+  const buttonGeneralStyle =
+    'text-lg py-1 px-2 rounded-none mb-[-4px] flex-grow'
+  const buttonSelectStyle = (button: SummaryNavbarItem) => {
+    if (button === summaryNavBarItem) {
+      return `${buttonGeneralStyle} bg-blue-100 text-blue-500 border-b-4 border-b-blue-500`
     } else {
-      return 'rounded-3xl border w-1/3 bg-white hover:bg-gray-200 text-slate-500 hover:border-gray-200'
+      return `${buttonGeneralStyle} bg-white slate-500 text-slate-500`
     }
   }
 
   return (
     <div className="w-full bg-white">
-      <div className="fixed left-0 top-10 w-full flex-row rounded-3xl border bg-white">
-        <button
-          className={buttonStyle('Day')}
-          onClick={() => setSelectedButton('Day')}
-        >
+      <div className="fixed left-0 top-10 flex w-full border-b-2 bg-white pb-1">
+        <Link className={buttonSelectStyle('Day')} to="/DaySummary">
           Day
-        </button>
-        <button
-          className={buttonStyle('Week')}
-          onClick={() => setSelectedButton('Week')}
-        >
+        </Link>
+        <Link className={buttonSelectStyle('Week')} to="/WeekSummary">
           Week
-        </button>
-        <button
-          className={buttonStyle('Month')}
-          onClick={() => setSelectedButton('Month')}
-        >
+        </Link>
+        <Link className={buttonSelectStyle('Month')} to="/MonthSummary">
           Month
-        </button>
+        </Link>
       </div>
     </div>
   )

@@ -1,5 +1,5 @@
 import { Button, Text } from '@adobe/react-spectrum'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { useDb } from '@/context/db.tsx'
 //import { useDrag, useDrop } from 'react-dnd'
@@ -68,36 +68,48 @@ function MoodCollectionPage() {
   //const generalMoods: Mood[] = [mood1, mood2, mood3, mood4, mood5] //get_general_moods()?!?
   //const archivedMoods: Mood[] = [mood1, mood2, mood3, mood4, mood5] //get_archived_moods()?!?
   //const navigate = useNavigate();
-  const db = useDb()
-  const collectionTypes: string[] = ['favorite', 'general', 'archived'];
-  let favoriteMoods: Mood[] = [];
-  let generalMoods: Mood[] = [];
-  let archivedMoods: Mood[] = [];
+  const {getDb} = useDb()
+  const collectionTypes: string[] = ['favorite', 'general', 'archived']
+  // TODO: make these use useState
+  let favoriteMoods: Mood[] = []
+  let generalMoods: Mood[] = []
+  let archivedMoods: Mood[] = []
 
-  if(db) {
-    for(const type of collectionTypes){
-      const requestType = db.transaction('moodCollection', 'readonly').objectStore('moodCollection').get(type);
-      requestType.onsuccess = (event) => {
-        const targetCollection = event.target as IDBRequest;
-        const typeIDData = targetCollection.result.moods;
-        for(const moodID of typeIDData){
-          const requestMood = db.transaction('mood', 'readonly').objectStore('mood').get(moodID);
-          requestMood.onsuccess = (event) => {
-            const targetMood = event.target as IDBRequest;
-            const mood = targetMood.result.mood;
-            if(type === 'favorite'){
-              favoriteMoods.push(mood);
-            } else if(type === 'general'){
-              generalMoods.push(mood);
-            } else {
-              archivedMoods.push(mood);
+  useEffect(() => {
+    async function run() {
+      const db = await getDb()
+      for (const type of collectionTypes) {
+        const requestType = db
+          .transaction('moodCollection', 'readonly')
+          .objectStore('moodCollection')
+          .get(type)
+        requestType.onsuccess = (event) => {
+          const targetCollection = event.target as IDBRequest
+          const typeIDData = targetCollection.result.moods
+          for (const moodID of typeIDData) {
+            const requestMood = db
+              .transaction('mood', 'readonly')
+              .objectStore('mood')
+              .get(moodID)
+            requestMood.onsuccess = (event) => {
+              const targetMood = event.target as IDBRequest
+              const mood = targetMood.result.mood
+              // TODO: replace these with setState, make sure they're reassigned
+              if (type === 'favorite') {
+                favoriteMoods.push(mood) // -> setFavoriteMoods(moods => [...moods, mood])
+              } else if (type === 'general') {
+                generalMoods.push(mood)
+              } else {
+                archivedMoods.push(mood)
+              }
             }
           }
         }
       }
-
     }
-  }
+
+    run()
+  }, [/* todo: add deps */])
 
   const handleClick = () => {
     //open custom mood page
@@ -112,9 +124,9 @@ function MoodCollectionPage() {
         <h1>Favorites</h1>
         <MoodSection moods={favoriteMoods} />
         <h1>General</h1>
-        <MoodSection moods={favoriteMoods} />
-        <h1>Archived</h1>
-        <MoodSection moods={favoriteMoods} />
+        <MoodSection moods={generalMoods} />
+        {/* <h1>Archived</h1>
+        <MoodSection moods={archivedMoods} /> */}
       </div>
       <MainNavBar />
     </>
