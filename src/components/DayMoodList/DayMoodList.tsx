@@ -1,13 +1,16 @@
-import React from 'react';
-import { SummaryDayMoodRecord, getDateAbbr } from "@/components/SummaryHelper.ts";
+import React from 'react'
+import {
+  SummaryDayMoodRecord,
+  getDateAbbr,
+} from '@/components/SummaryHelper.ts'
 
 interface DayMoodListProps {
   records: Array<SummaryDayMoodRecord>
 }
 
 const DayMoodList = (props: DayMoodListProps) => {
-  const { records } = props;
-  const entries = records.map(r =>
+  const { records } = props
+  const entries = records.map((r) => (
     <li key={r.id}>
       {/*<img />*/}
       <p>
@@ -15,7 +18,7 @@ const DayMoodList = (props: DayMoodListProps) => {
         <b>{r.title}</b>
       </p>
     </li>
-  )
+  ))
   return (
     <div>
       <ul>{entries}</ul>
@@ -23,4 +26,4 @@ const DayMoodList = (props: DayMoodListProps) => {
   )
 }
 
-export default DayMoodList;
+export default DayMoodList

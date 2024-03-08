@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { ICalendar } from '@/components'
+import ICalendar from '@/components/ICalendar/ICalendar.tsx'
 import {
   SummaryDayMoodRecord,
   getRecordsInRange,
@@ -47,10 +47,10 @@ const MonthSummary = ({ summaryNavBarItem }: MonthSummaryProps) => {
             setStartDay(startDay)
           }}
         />
-        <MoodEntryList
-          records={records}
-          onClickRecord={(r: SummaryDayMoodRecord) => goToDaySummaryPage(r.day)}
-        />
+        {/*<MoodEntryList*/}
+        {/*  records={records}*/}
+        {/*  onClickRecord={(r: SummaryDayMoodRecord) => goToDaySummaryPage(r.day)}*/}
+        {/*/>*/}
       </div>
       <MainNavBar />
     </>

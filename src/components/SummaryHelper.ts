@@ -83,11 +83,11 @@ export function getDatesInWeek(startDay: Date): Array<Date> {
 }
 
 export function get1stDayInWeek(date: Date): Date {
-  const resultDate = new Date(date);
-  const dayOfWeek = resultDate.getDay();
-  resultDate.setDate(resultDate.getDate() - dayOfWeek);
-  resultDate.setHours(0, 0, 0, 0);
-  return resultDate;
+  const resultDate = new Date(date)
+  const dayOfWeek = resultDate.getDay()
+  resultDate.setDate(resultDate.getDate() - dayOfWeek)
+  resultDate.setHours(0, 0, 0, 0)
+  return resultDate
 }
 
 // TODO: fix
@@ -149,7 +149,11 @@ export function getMoodDesc(records: SummaryDayMoodRecord[]): string {
   }
 }
 
-export function setEntryList(db: IDBDatabase, date: Date, setList: (entries: SummaryMoodRecord[]) => void) {
+export function setEntryList(
+  db: IDBDatabase,
+  date: Date,
+  setList: (entries: SummaryMoodRecord[]) => void,
+) {
   // read all entry id of given date.
   const dayKey = getEntryDateKey(date)
   const idReq = db

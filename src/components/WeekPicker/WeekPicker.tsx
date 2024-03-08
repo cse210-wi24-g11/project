@@ -1,17 +1,13 @@
-import React from 'react';
+import React from 'react'
 
 interface WeekPickerProps {
-  startDay: Date;
-  onChangeWeek: (startDay: Date) => void;
+  startDay: Date
+  onChangeWeek: (startDay: Date) => void
 }
 
 const WeekPicker = (props: WeekPickerProps) => {
-  const { onChangeWeek } = props;
-  return (
-    <div>
-
-    </div>
-  )
+  const { onChangeWeek } = props
+  return <div></div>
 }
 
-export default WeekPicker;
+export default WeekPicker

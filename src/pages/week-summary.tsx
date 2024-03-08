@@ -4,7 +4,9 @@ import {
   SummaryMoodRecord,
   getDatesInMonth,
   getRecordsInRange,
-  getDateAbbr, getDatesInWeek, get1stDayInWeek,
+  getDateAbbr,
+  getDatesInWeek,
+  get1stDayInWeek,
 } from '@/components/SummaryHelper.ts'
 import WeekSummaryGraph from '@/components/WeekSummaryGraph/WeekSummaryGraph.tsx'
 import WeekPicker from '@/components/WeekPicker/WeekPicker.tsx'
@@ -13,10 +15,32 @@ import MoodEntryList from '@/components/MoodEntryList/MoodEntryList.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { SummaryBar } from '@/components/navigation/summary-bar.tsx'
 import { SummaryNavbarItem } from '@/components/navigation/summary-bar.tsx'
+import {
+  ActionButton,
+  Content,
+  DialogTrigger,
+  Dialog,
+  Heading,
+} from '@adobe/react-spectrum'
 
 type WeekSummaryProps = {
   summaryNavBarItem: SummaryNavbarItem
 }
+
+// const BottomDialog = () => {
+//   return (
+//     <DialogTrigger type="modal">
+//       <ActionButton>Select Week</ActionButton>
+//       {(close) => (
+//         <Dialog>
+//           <Heading>Bottom Dialog</Heading>
+//           <Content>This a dialog from bottom.</Content>
+//           <ActionButton onPress={close}></ActionButton>
+//         </Dialog>
+//       )}
+//     </DialogTrigger>
+//   )
+// }
 
 const WeekSummary = ({ summaryNavBarItem }: WeekSummaryProps) => {
   const [startDay, setStartDay] = useState(get1stDayInWeek(new Date()))

@@ -149,6 +149,7 @@ const DaySummary = (props: DaySummaryPageProps) => {
         <div className="mb-2 ml-8 mt-2">
           <Provider locale="en">
             <DatePicker
+              aria-label="Date Picker"
               value={dpDate}
               onChange={(d: CalendarDate) => {
                 setToday(d.toDate(getLocalTimeZone()))
