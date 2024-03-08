@@ -174,9 +174,10 @@ export function Settings() {
       <div className="w-full bg-white p-4 shadow-md">
         <h2 className="mb-4 text-left font-semibold">Mood collection</h2>
         <Button
-          variant='primary'
-          aria-label='customize mood collection'
-          onPress = {addCustomMood}>
+          variant="primary"
+          aria-label="customize mood collection"
+          onPress={addCustomMood}
+        >
           Customize mood collection
         </Button>
       </div>
