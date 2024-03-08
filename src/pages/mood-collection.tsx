@@ -1,5 +1,10 @@
 import { Button, Text } from '@adobe/react-spectrum'
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+
+import {
+  CUSTOM_MOOD_ROUTE,
+} from '@/routes.ts'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { useDb } from '@/context/db.tsx'
@@ -35,6 +40,7 @@ function MoodCollectionPage() {
   const [favoriteMoods, setFavorites] = useState<Mood[]>([])
   const [generalMoods, setGeneral] = useState<Mood[]>([])
   const [archivedMoods, setArchived] = useState<Mood[]>([])
+  const navigate = useNavigate()
 
   useEffect(() => {
     async function run() {
@@ -74,14 +80,13 @@ function MoodCollectionPage() {
     void run()
   }, [archivedMoods, favoriteMoods, generalMoods, getDb])
 
-  const handleClick = () => {
-    //open custom mood page
-    // navigate(`/CustomMoodPage`);
+  const addCustomMood = () => {
+    navigate(CUSTOM_MOOD_ROUTE)
   }
   return (
     <>
       <div>
-        <Button variant="primary" onPress={handleClick}>
+        <Button variant="primary" onPress={addCustomMood}>
           <Text>Add New Mood</Text>
         </Button>
         <h1>Favorites</h1>
