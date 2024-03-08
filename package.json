@@ -20,7 +20,6 @@
     "@react-spectrum/toast": "^3.0.0-beta.10",
     "react": "^18.2.0",
     "react-color": "^2.19.3",
-    "react-color": "^2.19.3",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.1",
     "react-svg": "^16.1.33"

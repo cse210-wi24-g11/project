@@ -9,13 +9,12 @@ import { WeekSummary } from './pages/week-summary.tsx'
 import { MonthSummary } from './pages/month-summary.tsx'
 import { UpdateMood } from './pages/update-mood.tsx'
 import { Settings } from './pages/setting.tsx'
-import { CustomMood } from './pages/custom-mood.tsx'
 import { DbTest } from './pages/db-test.tsx'
 import { ResetIndexedDb } from './components/reset-db/reset-db.tsx'
 
 import { EditMood } from './pages/edit-mood.tsx'
 import './index.css'
-import CustomMood from './pages/custom-mood.tsx'
+import {CustomMood} from './pages/custom-mood.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
