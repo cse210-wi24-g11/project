@@ -7,8 +7,9 @@ import { ThemeProvider } from './context/theme.tsx'
 import { DaySummary } from './pages/day-summary.tsx'
 import { UpdateMood } from './pages/update-mood.tsx'
 import { DbTest } from './pages/db-test.tsx'
-import './index.css'
 import CustomMood from './pages/custom-mood.tsx'
+
+import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
