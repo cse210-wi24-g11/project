@@ -1,5 +1,5 @@
 export type Route =
-  | typeof ADD_MOOD_ROUTE
+  | typeof ADD_ENTRY_ROUTE
   | typeof UPDATE_MOOD_ROUTE
   | typeof MOOD_COLLECTION_ROUTE
   | typeof SETTINGS_ROUTE
@@ -8,7 +8,7 @@ export type Route =
   | typeof WEEK_SUMMARY_ROUTE
   | typeof MONTH_SUMMARY_ROUTE
 
-export const ADD_MOOD_ROUTE = '/'
+export const ADD_ENTRY_ROUTE = '/'
 
 export const UPDATE_MOOD_ROUTE = '/update-mood'
 

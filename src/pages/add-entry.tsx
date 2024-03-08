@@ -6,7 +6,7 @@ import Send from '@spectrum-icons/workflow/Send'
 import More from '@spectrum-icons/workflow/More'
 
 import {
-  ADD_MOOD_ROUTE,
+  ADD_ENTRY_ROUTE,
   DAY_SUMMARY_ROUTE,
   MOOD_COLLECTION_ROUTE,
 } from '@/routes.ts'
@@ -25,7 +25,7 @@ type State = {
   selectedMood: DbRecord<'mood'>
 }
 
-export function AddMood() {
+export function AddEntry() {
   const state = useLocationState(validateState)
   const navigate = useNavigate()
   const { getDb } = useDb()
@@ -51,7 +51,7 @@ export function AddMood() {
   function pickFromMoodCollection() {
     navigate(MOOD_COLLECTION_ROUTE, {
       state: {
-        returnTo: ADD_MOOD_ROUTE,
+        returnTo: ADD_ENTRY_ROUTE,
       },
     })
   }
