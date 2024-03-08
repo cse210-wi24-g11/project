@@ -35,7 +35,7 @@ const randomUUID = (): string => {
   return `${hexString.substr(0, 8)}-${hexString.substr(8, 4)}-${hexString.substr(12, 4)}-${hexString.substr(16, 4)}-${hexString.substr(20)}`
 }
 
-function CustomMoodPage() {
+function CustomMood() {
   const { getDb } = useDb()
 
   const [selectedColor, setSelectedColor] = useState<string | undefined>(
@@ -47,7 +47,6 @@ function CustomMoodPage() {
 
   const handleImageUpload = (imageData: string) => {
     setUploadedImage(imageData)
-    submitDisabled = false
   }
   const handleColorChange = (color: string) => {
     setSelectedColor(color)
@@ -125,18 +124,12 @@ function CustomMoodPage() {
             .put({ moods: storedGeneralIDs }, 'general')
         }
       }
-      ToastQueue.positive('Custom Mood Added!')
+      ToastQueue.positive('Custom Mood Added!', { timeout: 5000 })
     } else {
       // TODO: render a floating window to notify the user to upload an image
       console.log('Failed to fetch image as Blob.')
     }
-    //}
-    // Save the mood data to local storage general mood collection or database
-    // Banner with success of uploaded mood, refresh page
-    // selectedColor..., uploadedImage...
   }
-
-  var submitDisabled = true // test this
 
   return (
     <div>
@@ -169,4 +162,4 @@ function CustomMoodPage() {
   )
 }
 
-export default CustomMoodPage
+export default CustomMood

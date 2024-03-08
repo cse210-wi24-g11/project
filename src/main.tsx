@@ -8,7 +8,7 @@ import { DaySummary } from './pages/day-summary.tsx'
 import { UpdateMood } from './pages/update-mood.tsx'
 import { DbTest } from './pages/db-test.tsx'
 import './index.css'
-import CustomMoodPage from './pages/custom_mood_page.tsx'
+import CustomMood from './pages/custom-mood.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -16,7 +16,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <ThemeProvider>
         <DbProvider>
           <Routes>
-            <Route path="/CustomMood" element={<CustomMoodPage />} />
+            <Route path="/CustomMood" element={<CustomMood />} />
             <Route path="/DaySummary" element={<DaySummary />} />
             <Route path="/UpdateMood" element={<UpdateMood />} />
             <Route path="/DbTest" element={<DbTest />} />
