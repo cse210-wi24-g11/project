@@ -15,6 +15,7 @@ import { ResetIndexedDb } from './components/reset-db/reset-db.tsx'
 
 import { EditMood } from './pages/edit-mood.tsx'
 import './index.css'
+import CustomMood from './pages/custom-mood.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
