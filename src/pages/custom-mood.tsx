@@ -153,7 +153,7 @@ export function CustomMood() {
         <Item key="general">General</Item>
       </Picker>
       <div>
-        <Button onPress={handleSubmitMood} variant="primary">
+        <Button onPress={() => void handleSubmitMood()} variant="primary">
           Submit Mood
         </Button>
       </div>
