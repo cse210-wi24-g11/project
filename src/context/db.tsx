@@ -1,6 +1,7 @@
 import {
   PropsWithChildren,
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -73,14 +74,14 @@ export function DbProvider({ children }: DbProviderProps) {
 
   const [ready, setReady] = useState(false)
 
-  async function getDb() {
+  const getDb = useCallback(async () => {
     if (db === null) {
       const db = await openDb()
       setDb(db)
       return db
     }
     return db
-  }
+  }, [db])
 
   useEffect(() => {
     openDb()

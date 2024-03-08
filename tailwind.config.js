@@ -7,6 +7,9 @@ export default {
         '-2px': '-2px',
         '-4px': '-4px',
       },
+      spacing: {
+        'single-line-height': 'var(--spectrum-alias-single-line-height)',
+      },
     },
   },
   plugins: [

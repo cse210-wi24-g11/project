@@ -1,35 +1,47 @@
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
+
+import {
+  DAY_SUMMARY_ROUTE,
+  MONTH_SUMMARY_ROUTE,
+  WEEK_SUMMARY_ROUTE,
+} from '@/routes.ts'
+import { cls } from '@/utils/cls.ts'
 
 export type SummaryNavbarItem = 'Day' | 'Week' | 'Month'
 
-type SummaryBarProps = {
-  summaryNavBarItem: SummaryNavbarItem
-}
-
-export function SummaryBar({ summaryNavBarItem }: SummaryBarProps) {
-  const buttonGeneralStyle =
-    'text-lg py-1 px-2 rounded-none mb-[-4px] flex-grow'
-  const buttonSelectStyle = (button: SummaryNavbarItem) => {
-    if (button === summaryNavBarItem) {
-      return `${buttonGeneralStyle} bg-blue-100 text-blue-500 border-b-4 border-b-blue-500`
-    } else {
-      return `${buttonGeneralStyle} bg-white slate-500 text-slate-500`
-    }
-  }
-
+export function SummaryBar() {
   return (
     <div className="w-full bg-white">
-      <div className="fixed left-0 top-0 flex w-full border-b-2 bg-white pb-1">
-        <Link className={buttonSelectStyle('Day')} to="/DaySummary">
+      <div className="fixed left-0 flex w-full border-b-2 bg-white pb-1">
+        <NavLink
+          to={DAY_SUMMARY_ROUTE}
+          className={({ isActive }) => navbarItemStyle(isActive)}
+        >
           Day
-        </Link>
-        <Link className={buttonSelectStyle('Week')} to="/WeekSummary">
+        </NavLink>
+        <NavLink
+          to={WEEK_SUMMARY_ROUTE}
+          className={({ isActive }) => navbarItemStyle(isActive)}
+        >
           Week
-        </Link>
-        <Link className={buttonSelectStyle('Month')} to="/MonthSummary">
+        </NavLink>
+        <NavLink
+          to={MONTH_SUMMARY_ROUTE}
+          className={({ isActive }) => navbarItemStyle(isActive)}
+        >
           Month
-        </Link>
+        </NavLink>
       </div>
     </div>
   )
+}
+
+function navbarItemStyle(active: boolean) {
+  const base = 'text-lg py-1 px-2 rounded-none mb-[-4px] flex-grow'
+
+  const conditional = active
+    ? 'bg-blue-100 text-blue-500 border-b-4 border-b-blue-500'
+    : 'bg-white slate-500 text-slate-500'
+
+  return cls(base, conditional)
 }

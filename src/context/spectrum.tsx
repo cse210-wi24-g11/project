@@ -4,9 +4,9 @@ import { Provider } from '@react-spectrum/provider'
 import { useNavigate } from 'react-router-dom'
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-type ThemeProviderProps = PropsWithChildren<{}>
+type SpectrumProviderProps = PropsWithChildren<{}>
 
-export function ThemeProvider({ children }: ThemeProviderProps) {
+export function SpectrumProvider({ children }: SpectrumProviderProps) {
   const navigate = useNavigate()
 
   return (
@@ -17,6 +17,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
       theme={defaultTheme}
       // use react-router client-side navigation: see https://react-spectrum.adobe.com/react-spectrum/routing.html
       router={{ navigate }}
+      UNSAFE_className="w-full h-full flex flex-col gap-4"
     >
       {children}
     </Provider>

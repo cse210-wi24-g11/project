@@ -1,6 +1,7 @@
 import * as d3 from 'd3'
 import { RGBColor } from 'd3'
 import { useDb } from '@/context/db.tsx'
+import {DbRecord, getEntryDateKey} from "@/utils/db.ts";
 
 export interface SummaryDayMoodRecord {
   id: number
@@ -15,14 +16,6 @@ export interface SummaryMoodRecord {
   day: Date
   title: string
   color: RGBColor
-}
-
-// TODO: remove
-export interface TempEntry {
-  id: string
-  moodId: string
-  description: string
-  timestamp: Date
 }
 
 export interface TempMood {
@@ -106,10 +99,6 @@ export function getRecordsInRange(dates: Date[]): SummaryDayMoodRecord[] {
   })
 }
 
-export function getEntryDateKey(date: Date): string {
-  return `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`
-}
-
 export function getMoodOfDate(date: Date): SummaryMoodRecord[] {
   // TODO: remove!
   return Array.from({ length: 10 }, (_, index) => ({
@@ -171,7 +160,7 @@ export function setEntryList(
     }
 
     Promise.all(
-      entries.map((entry: TempEntry) => {
+      entries.map((entry: DbRecord<'entry'>) => {
         // TODO: change type
         return new Promise((resolve) => {
           const moodReq = db

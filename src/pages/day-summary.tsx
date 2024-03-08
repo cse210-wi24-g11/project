@@ -6,10 +6,8 @@ import { useEffect, useState } from 'react'
 import {
   setEntryList,
   getDateAbbr,
-  getEntryDateKey,
   getMoodOfDate,
   SummaryMoodRecord,
-  TempEntry,
 } from '@/components/SummaryHelper.ts'
 import MoodListItem from '@/components/MoodItem/MoodItem.tsx'
 import { DatePicker, ListBox, Item, Flex } from '@adobe/react-spectrum'
