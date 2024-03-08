@@ -106,9 +106,12 @@ export async function putEntry(
   const dateCollectionStore = transaction.objectStore('dateCollection')
 
   const entryDateKey = getEntryDateKey(entry.timestamp)
-  
+
   // update the entries on the same date as this entry we're putting
-  const entriesOnSameDate = (await toPromise<DbRecord<'entry'>[] | undefined>(dateCollectionStore.get(entryDateKey))) ?? []
+  const entriesOnSameDate =
+    (await toPromise<DbRecord<'entry'>[] | undefined>(
+      dateCollectionStore.get(entryDateKey),
+    )) ?? []
   entriesOnSameDate.push(entry)
 
   await Promise.all([
