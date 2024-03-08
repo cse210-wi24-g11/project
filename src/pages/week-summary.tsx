@@ -27,21 +27,6 @@ type WeekSummaryProps = {
   summaryNavBarItem: SummaryNavbarItem
 }
 
-// const BottomDialog = () => {
-//   return (
-//     <DialogTrigger type="modal">
-//       <ActionButton>Select Week</ActionButton>
-//       {(close) => (
-//         <Dialog>
-//           <Heading>Bottom Dialog</Heading>
-//           <Content>This a dialog from bottom.</Content>
-//           <ActionButton onPress={close}></ActionButton>
-//         </Dialog>
-//       )}
-//     </DialogTrigger>
-//   )
-// }
-
 const WeekSummary = ({ summaryNavBarItem }: WeekSummaryProps) => {
   const [startDay, setStartDay] = useState(get1stDayInWeek(new Date()))
   const [records, setRecords] = useState<SummaryMoodRecord[]>([])

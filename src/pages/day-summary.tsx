@@ -19,6 +19,7 @@ import * as d3 from 'd3'
 import { RGBColor } from 'd3'
 import { Provider } from '@react-spectrum/provider'
 import MoodEntryList from '@/components/MoodEntryList/MoodEntryList.tsx'
+import {UPDATE_MOOD_ROUTE} from "@/routes.ts";
 
 // import DaySummaryPage from "@/pages/DaySummaryPage.tsx";
 
@@ -130,7 +131,7 @@ const DaySummary = (props: DaySummaryPageProps) => {
                 onClick={(recordId: string) => {
                   // TODO: type of id?
                   console.log(`Go to entry edit page ${recordId}`)
-                  navigate('/UpdateMood', { state: { id: recordId } }) // TODO: give id
+                  navigate(UPDATE_MOOD_ROUTE, { state: { id: recordId } }) // TODO: give id
                 }}
               />
             </li>
