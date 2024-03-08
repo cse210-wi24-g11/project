@@ -1,26 +1,21 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, MutableRefObject, useRef } from 'react'
 import { Button, Picker, Item, Key } from '@adobe/react-spectrum'
 import { ToastContainer, ToastQueue } from '@react-spectrum/toast'
 import { useParams } from 'react-router-dom'
 
 import DisplayImageComponent from '@/components/custom-mood/display-image.tsx'
-import ColorPicker from '@/components/custom-mood/color-picker.tsx' // Adjust the import path based on the actual location
 import { useDb } from '@/context/db.tsx'
 
 export function EditMood() {
   const { moodID } = useParams()
   const { getDb } = useDb()
-  let moodBlob: Blob
-
+  const moodBlob: MutableRefObject<Blob | null> = useRef<Blob | null>(null)
   const [selectedColor, setSelectedColor] = useState<string | undefined>(
     '#000000',
   )
   const [uploadedImage, setUploadedImage] = useState<string>(
-    'src/assets/No-Image-Placeholder.png', //TODO: choose placeholder image
+    'src/assets/No-Image-Placeholder.png',
   )
-  const handleColorChange = (color: string) => {
-    setSelectedColor(color)
-  }
 
   const [category, setCategory] = useState<Key>('general')
 
@@ -48,16 +43,14 @@ export function EditMood() {
           },
         )
         //get mood data to initalize components
-        //moodRequest.onsuccess = function (event) {
-        //const request = event.target as IDBRequest
-        //const moodData = request.result as { color: string; image: Blob }
 
         if (moodData) {
           const blobUrl = URL.createObjectURL(moodData.image)
           console.log(blobUrl)
+          moodBlob.current = moodData.image
+          setCategory(moodData.color)
           setSelectedColor(moodData.color)
           setUploadedImage(blobUrl) // Set the image source to the Blob URL
-          // URL.revokeObjectURL(blobUrl)
 
           //get category information and set picker
           try {
@@ -146,7 +139,7 @@ export function EditMood() {
       console.log('success: db connection is established')
       db.transaction('mood', 'readwrite')
         .objectStore('mood')
-        .put({ id: moodID, color: selectedColor, image: moodBlob })
+        .put({ id: moodID, color: selectedColor, image: moodBlob.current })
 
       //update categories (TODO: not working )
 
@@ -178,7 +171,7 @@ export function EditMood() {
           }
           db.transaction('moodCollection', 'readwrite')
             .objectStore('moodCollection')
-            .put({ category: 'general', moods: generalMoods })
+            .put({ moods: generalMoods }, 'general')
         }
       } catch (error) {
         console.error('Error fetching "general" mood information:', error)
@@ -211,7 +204,7 @@ export function EditMood() {
           }
           db.transaction('moodCollection', 'readwrite')
             .objectStore('moodCollection')
-            .put({ category: 'favorite', moods: favoriteMoods })
+            .put({ moods: favoriteMoods }, 'favorite')
         }
       } catch (error) {
         console.error('Error fetching "favorite" mood information:', error)
@@ -242,20 +235,19 @@ export function EditMood() {
           }
           db.transaction('moodCollection', 'readwrite')
             .objectStore('moodCollection')
-            .put({ category: 'archived', moods: archivedMoods })
+            .put({ moods: archivedMoods }, 'archived')
         }
       } catch (error) {
         console.error('Error fetching "archived" mood information:', error)
       }
 
-      ToastQueue.positive(' Mood Updated!!', { timeout: 5000 })
+      ToastQueue.positive(' Mood Collection Updated!!', { timeout: 5000 })
     } else {
       console.log('error: db is still null')
     }
   }
   // Render your component with moodData
-  //Add a delete button that will remove id from mood collection category arrays but not mood store
-  // warn user that the action can not be reversed
+  // NOTE: warn user that the choosing archived means mood can not be retrieved
   return (
     <div>
       <ToastContainer />
@@ -265,7 +257,6 @@ export function EditMood() {
       >
         <DisplayImageComponent uploadedImage={uploadedImage} />
       </div>
-      <ColorPicker color={selectedColor} onChange={handleColorChange} />
       <Picker
         selectedKey={category}
         onSelectionChange={(selected) => setCategory(selected)}
@@ -276,7 +267,7 @@ export function EditMood() {
       </Picker>
       <div>
         <Button onPress={handleButtonPress} variant="primary">
-          Edit Mood
+          Change Category
         </Button>
       </div>
     </div>
