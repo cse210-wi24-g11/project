@@ -1,5 +1,6 @@
-import { MainNavBar } from '@/components/navigation/main-navbar'
 import { NavLink } from 'react-router-dom'
+
+import { MainNavBar } from '@/components/navigation/main-navbar'
 
 export function UpdateMood() {
   return (
