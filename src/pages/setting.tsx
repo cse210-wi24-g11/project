@@ -3,8 +3,8 @@ import { useEffect } from 'react'
 import { Picker, Item } from '@adobe/react-spectrum'
 import { Button } from '@react-spectrum/button'
 import { useNavigate } from 'react-router-dom'
-import { CUSTOM_MOOD_ROUTE } from '@/routes.ts'
 
+import { CUSTOM_MOOD_ROUTE } from '@/routes.ts'
 import { DbRecord, getSettings } from '@/utils/db.ts'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
