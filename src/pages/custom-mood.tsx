@@ -35,7 +35,7 @@ const randomUUID = (): string => {
   return `${hexString.substr(0, 8)}-${hexString.substr(8, 4)}-${hexString.substr(12, 4)}-${hexString.substr(16, 4)}-${hexString.substr(20)}`
 }
 
-function CustomMood() {
+export function CustomMood() {
   const { getDb } = useDb()
 
   const [selectedColor, setSelectedColor] = useState<string | undefined>(
@@ -161,5 +161,3 @@ function CustomMood() {
     </div>
   )
 }
-
-export default CustomMood
