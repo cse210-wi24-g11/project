@@ -81,7 +81,7 @@ export function AddEntry() {
   return (
     <>
       <main className="max-w-120 flex w-full grow flex-col items-center gap-4 pt-4">
-        Add mood
+        Add entry
         <div className="flex w-full grow flex-col items-center justify-center gap-4">
           {/* day overview (TODO) */}
 
