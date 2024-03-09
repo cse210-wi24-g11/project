@@ -1,14 +1,11 @@
-import React, { useRef, ChangeEvent } from 'react'
+import { useRef, ChangeEvent } from 'react'
 import { Button, Text } from '@adobe/react-spectrum'
 
 interface ImageUploadProps {
   onImageUpload: (imageData: string) => void
   uploadedImage: string | null
 }
-
-const ImageUploadComponent: React.FC<ImageUploadProps> = ({
-  onImageUpload,
-}) => {
+export function ImageUploadComponent({ onImageUpload }: ImageUploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const handleImageUpload = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -39,4 +36,3 @@ const ImageUploadComponent: React.FC<ImageUploadProps> = ({
     </Button>
   )
 }
-export default ImageUploadComponent

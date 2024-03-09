@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react'
+import imagePlaceholderUrl from '@/assets/image-path.png'
 
 //display image
 interface DisplayImageProps {
   uploadedImage: string | null
 }
-
-const DisplayImageComponent: React.FC<DisplayImageProps> = ({
-  uploadedImage,
-}) => {
+export function DisplayImageComponent({ uploadedImage }: DisplayImageProps) {
   const [imageData, setImageData] = useState<string | null>(uploadedImage)
   useEffect(() => {
     // Update the image data whenever uploadedImage changes
@@ -20,12 +18,10 @@ const DisplayImageComponent: React.FC<DisplayImageProps> = ({
         <img src={imageData} className="h-56 w-56 rounded-lg object-cover" />
       ) : (
         <img
-          src="src/assets/No-Image-Placeholder.png" //TODO: choose placeholder image
+          src={imagePlaceholderUrl} //TODO: choose placeholder image
           className="h-56 w-56 rounded-lg object-cover"
         />
       )}
     </div>
   )
 }
-
-export default DisplayImageComponent

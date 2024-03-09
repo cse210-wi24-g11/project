@@ -3,10 +3,11 @@ import { Button, Picker, Item, Key } from '@adobe/react-spectrum'
 import { ToastContainer, ToastQueue } from '@react-spectrum/toast'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
-import ColorPicker from '@/components/ColorPicker.tsx' // Adjust the import path based on the actual location
-import ImageUploadComponent from '@/components/UploadImage.tsx'
-import DisplayImageComponent from '@/components/DisplayImage.tsx'
+import {ColorPicker} from '@/components/custom-mood/color-picker.tsx' // Adjust the import path based on the actual location
+import {ImageUploadComponent} from '@/components/custom-mood/upload-image.tsx'
+import {DisplayImageComponent} from '@/components/custom-mood/display-image.tsx'
 import { useDb } from '@/context/db.tsx'
+import imagePlaceholderUrl from '@/assets/image-path.png'
 
 // Function to fetch image as Blob from a given URL
 const getImageBlob = async (imageUrl: string) => {
@@ -19,21 +20,7 @@ const getImageBlob = async (imageUrl: string) => {
     return null
   }
 }
-// Define a function to generate a random UUID
-const randomUUID = (): string => {
-  const data = new Uint8Array(16)
-  window.crypto.getRandomValues(data)
 
-  // Set the version bits
-  data[6] = (data[6] & 0x0f) | 0x40
-  data[8] = (data[8] & 0x3f) | 0x80
-
-  const hexString = Array.from(data)
-    .map((byte) => byte.toString(16).padStart(2, '0'))
-    .join('')
-
-  return `${hexString.substr(0, 8)}-${hexString.substr(8, 4)}-${hexString.substr(12, 4)}-${hexString.substr(16, 4)}-${hexString.substr(20)}`
-}
 
 export function CustomMood() {
   const { getDb } = useDb()
@@ -42,7 +29,7 @@ export function CustomMood() {
     '#000000',
   ) // default white
   const [uploadedImage, setUploadedImage] = useState<string>(
-    'src/assets/No-Image-Placeholder.png',
+    imagePlaceholderUrl ,
   )
 
   const handleImageUpload = (imageData: string) => {
@@ -65,7 +52,7 @@ export function CustomMood() {
       console.log('Blob:', blob)
 
       //add mood to data base
-      const generatedUUID: string = randomUUID()
+      const generatedUUID: string = window.crypto.randomUUID()
       db.transaction('mood', 'readwrite')
         .objectStore('mood')
         .add({ id: generatedUUID, color: selectedColor, image: blob })
@@ -81,21 +68,21 @@ export function CustomMood() {
 
         favoritesRequest.onsuccess = function (event) {
           const request = event.target as IDBRequest
-          let favoriteIDdata: { moods: string[] }
+          let favoriteIdData: { moods: string[] }
 
           if (request.result) {
             // If the favorite record exists, use it
-            favoriteIDdata = request.result as { moods: string[] }
+            favoriteIdData = request.result as { moods: string[] }
           } else {
             // If the favorite record doesn't exist, create a new one
-            favoriteIDdata = { moods: [] }
+            favoriteIdData = { moods: [] }
           }
 
-          const storedFavoriteIDs = favoriteIDdata.moods
-          storedFavoriteIDs.push(generatedUUID)
+          const storedFavoriteIds = favoriteIdData.moods
+          storedFavoriteIds.push(generatedUUID)
           db.transaction('moodCollection', 'readwrite')
             .objectStore('moodCollection')
-            .put({ moods: storedFavoriteIDs }, 'favorite')
+            .put({ moods: storedFavoriteIds }, 'favorite')
         }
       }
       //append to general category
@@ -107,17 +94,17 @@ export function CustomMood() {
 
         generalRequest.onsuccess = function (event) {
           const request = event.target as IDBRequest
-          let generalIDdata: { moods: string[] }
+          let generalIdData: { moods: string[] }
 
           if (request.result) {
             // If the favorite record exists, use it
-            generalIDdata = request.result as { moods: string[] }
+            generalIdData = request.result as { moods: string[] }
           } else {
             // If the favorite record doesn't exist, create a new one
-            generalIDdata = { moods: [] }
+            generalIdData = { moods: [] }
           }
 
-          const storedGeneralIDs = generalIDdata.moods
+          const storedGeneralIDs = generalIdData.moods
           storedGeneralIDs.push(generatedUUID)
           db.transaction('moodCollection', 'readwrite')
             .objectStore('moodCollection')
