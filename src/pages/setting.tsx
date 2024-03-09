@@ -48,23 +48,23 @@ export function Settings() {
     reminderTimes: null,
   })
 
-  const handleDefaultViewChange = async (selectedKey: React.Key) => {
+  const handleDefaultViewChange = (selectedKey: React.Key) => {
     const newDefaultView = selectedKey.toString() as SettingsDefaultViewOption
 
-    await updateSettings({ defaultView: newDefaultView })
+    void updateSettings({ defaultView: newDefaultView })
   }
 
-  const handleRemindMeChange = async (selectedKey: React.Key) => {
+  const handleRemindMeChange = (selectedKey: React.Key) => {
     const newRemindMe = selectedKey.toString() as SettingsRemindMeOption
 
-    await updateSettings({ remindMe: newRemindMe })
+    void updateSettings({ remindMe: newRemindMe })
   }
 
-  const handleAtTimesChange = async (selectedKey: React.Key) => {
+  const handleAtTimesChange = (selectedKey: React.Key) => {
     const newReminderTimes =
       selectedKey.toString() as SettingsReminderTimeOption
 
-    await updateSettings({ reminderTimes: newReminderTimes })
+    void updateSettings({ reminderTimes: newReminderTimes })
   }
 
   return (
