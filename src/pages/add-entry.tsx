@@ -36,16 +36,14 @@ export function AddEntry() {
 
   const [favoriteMoods] = useQuery(
     async () => {
-      const favoriteMoodCollectionRecords = await db.moodCollection
+      const moodCollectionFavorites = await db.moodCollection
         .where('category')
         .equals('favorites')
         .toArray()
-      const favoriteMoods = await db.moods.bulkGet(
-        favoriteMoodCollectionRecords.map((record) => record.moodId),
-      )
+      const favoriteMoodsIds = moodCollectionFavorites.map((x) => x.moodId)
+      const favoriteMoods = await db.moods.bulkGet(favoriteMoodsIds)
       const validFavoriteMoods = favoriteMoods.filter(Boolean) as Mood[]
-      // TODO: remove this when default favorite moods are properly set up
-      return validFavoriteMoods.length > 0 ? validFavoriteMoods : []
+      return validFavoriteMoods
     },
     [],
     [] as Mood[],
