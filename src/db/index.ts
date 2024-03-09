@@ -35,14 +35,12 @@ class DexieDb extends Dexie {
         },
       ]
       await tx.table('moods').bulkAdd(MOCK_FAVORITES)
-      await tx
-        .table('moodCollection')
-        .bulkAdd(
-          MOCK_FAVORITES.map(({ id }) => ({
-            moodId: id,
-            category: 'favorites',
-          })),
-        )
+      await tx.table('moodCollection').bulkAdd(
+        MOCK_FAVORITES.map(({ id }) => ({
+          moodId: id,
+          category: 'favorites',
+        })),
+      )
     })
   }
 }
