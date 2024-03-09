@@ -13,12 +13,12 @@ import {
 import { useLocationState } from '@/hooks/use-location-state.ts'
 import { db } from '@/db/index.ts'
 import { useFavoriteMoods } from '@/db/actions.ts'
-import { serializeDateForEntry } from '@/db/utils.ts'
+import { createEntry } from '@/db/utils.ts'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
 
-import type { Entry, Mood } from '@/db/types.ts'
+import type { Mood } from '@/db/types.ts'
 
 type State = {
   selectedMood: Mood
@@ -53,15 +53,7 @@ export function AddEntry() {
 
     setIsSubmitting(true)
 
-    const now = new Date()
-
-    const entry: Entry = {
-      id: window.crypto.randomUUID(),
-      moodId: mood.id,
-      description,
-      date: serializeDateForEntry(now),
-      timestamp: now.getTime(),
-    }
+    const entry = createEntry(mood.id, description)
 
     await db.entries.add(entry)
     setIsSubmitting(false)

@@ -1,3 +1,28 @@
+import type { Entry, MoodId } from './types.ts'
+
+/**
+ * create a virtual entry with the given mood id, description, and date.
+ * 
+ * if the date is left unspecified, defaults to the current time.
+ * 
+ * note: this does NOT create the entry in the database, only an entry object in memory.
+ */
+export function createEntry(moodId: MoodId, description: string, date?: Date): Entry {
+  if (date === undefined) {
+    date = new Date()
+  }
+
+  const entry: Entry = {
+    id: window.crypto.randomUUID(),
+    moodId: moodId,
+    description,
+    date: serializeDateForEntry(date),
+    timestamp: date.getTime(),
+  }
+
+  return entry
+}
+
 export function serializeDateForEntry(date: Date): string {
   return `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`
 }
