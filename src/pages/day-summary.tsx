@@ -32,6 +32,8 @@ export function DaySummary({ summaryNavBarItem }: DaySummaryBarProps) {
         moods.map((mood) => [mood.id, mood]),
       )
       const resolvedEntries = entries
+        // reverse chronological
+        .sort((a, b) => b.timestamp - a.timestamp)
         .map((entry) => resolveEntry(entry, moodIdToMood))
         .filter((x) => x !== null) as ResolvedEntry[]
       return resolvedEntries
