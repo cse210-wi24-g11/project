@@ -11,7 +11,8 @@ import {
   MOOD_COLLECTION_ROUTE,
 } from '@/routes.ts'
 import { useLocationState } from '@/hooks/use-location-state.ts'
-import { db, useQuery } from '@/db/index.ts'
+import { db } from '@/db/index.ts'
+import { useFavoriteMoods } from '@/db/actions.ts'
 import { serializeDateForEntry } from '@/db/utils.ts'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
@@ -34,20 +35,7 @@ export function AddEntry() {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const [favoriteMoods] = useQuery(
-    async () => {
-      const moodCollectionFavorites = await db.moodCollection
-        .where('category')
-        .equals('favorites')
-        .toArray()
-      const favoriteMoodsIds = moodCollectionFavorites.map((x) => x.moodId)
-      const favoriteMoods = await db.moods.bulkGet(favoriteMoodsIds)
-      const validFavoriteMoods = favoriteMoods.filter(Boolean) as Mood[]
-      return validFavoriteMoods
-    },
-    [],
-    [] as Mood[],
-  )
+  const [favoriteMoods] = useFavoriteMoods([] as Mood[])
 
   function pickFromMoodCollection() {
     navigate(MOOD_COLLECTION_ROUTE, {

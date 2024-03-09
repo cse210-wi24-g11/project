@@ -1,15 +1,15 @@
 import Dexie, { Table } from 'dexie'
 import { useLiveQuery } from 'dexie-react-hooks'
 
-import { DB_NAME, SETTINGS_KEY } from './constants.ts'
+import { DB_NAME, MOOD_COLLECTION_KEY, SETTINGS_KEY } from './constants.ts'
 import { DEFAULT_SETTINGS } from './defaults.ts'
 
-import type { Mood, Entry, MoodCollectionItem, Settings } from './types.ts'
+import type { Mood, Entry, Settings, MoodCollection } from './types.ts'
 
 class DexieDb extends Dexie {
   moods!: Table<Mood, Mood['id']>
   entries!: Table<Entry, Entry['id']>
-  moodCollection!: Table<MoodCollectionItem, MoodCollectionItem['moodId']>
+  moodCollection!: Table<MoodCollection, typeof MOOD_COLLECTION_KEY>
   settings!: Table<Settings, typeof SETTINGS_KEY>
 
   constructor() {
@@ -17,7 +17,7 @@ class DexieDb extends Dexie {
     this.version(1).stores({
       moods: 'id', // primary key and indexed props
       entries: 'id, moodId, date',
-      moodCollection: 'moodId, category',
+      moodCollection: '',
       settings: '',
     })
 
@@ -34,13 +34,13 @@ class DexieDb extends Dexie {
           imagePath: '/vite.svg',
         },
       ]
+      const DEFAULT_MOOD_COLLECTION = {
+        favorites: MOCK_FAVORITES.map(mood => mood.id),
+        general: [],
+        archived: [],
+      }
       await tx.table('moods').bulkAdd(MOCK_FAVORITES)
-      await tx.table('moodCollection').bulkAdd(
-        MOCK_FAVORITES.map(({ id }) => ({
-          moodId: id,
-          category: 'favorites',
-        })),
-      )
+      await tx.table('moodCollection').add(DEFAULT_MOOD_COLLECTION, MOOD_COLLECTION_KEY)
     })
   }
 }

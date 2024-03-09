@@ -17,16 +17,17 @@ export type Entry = {
   timestamp: number
 }
 
-export type MoodCollectionItem = {
-  moodId: MoodId
-  category: 'favorites' | 'general' | 'archived'
-}
-
-// type MoodCollection = {
-//   favorites: MoodId[]
-//   general: MoodId[]
-//   archived: MoodId[]
+// export type MoodCollectionItem = {
+//   moodId: MoodId
+//   category: 'favorites' | 'general' | 'archived'
 // }
+
+export type MoodCollectionCategory =
+  | 'favorites'
+  | 'general'
+  | 'archived'
+
+export type MoodCollection = Record<MoodCollectionCategory, MoodId[]>
 
 export type SettingsDefaultViewOption = 'day' | 'week' | 'month'
 export type SettingsRemindMeOption = 'daily' | 'weekdays' | 'weekends' | 'none'
