@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 
+import { db } from '@/db/index.ts'
+
 const DB_NAME = 'user_db'
 
 /**
@@ -37,6 +39,7 @@ export function ResetIndexedDb() {
 
   function onClick() {
     indexedDB.deleteDatabase(DB_NAME)
+    void db.delete()
   }
 
   return (

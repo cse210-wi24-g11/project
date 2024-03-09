@@ -1,14 +1,16 @@
-import React, { useState } from 'react'
-import { useEffect } from 'react'
+import React from 'react'
 import { Picker, Item } from '@adobe/react-spectrum'
 // import { NavLink } from 'react-router-dom'
 
-import { DbRecord, getSettings } from '@/utils/db.ts'
+import { updateSettings, useSettings } from '@/db/actions.ts'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
-import { useDb } from '@/context/db.tsx'
 
-type SettingsShape = DbRecord<'settings'>
+import type {
+  SettingsDefaultViewOption,
+  SettingsRemindMeOption,
+  SettingsReminderTimeOption,
+} from '@/db/types.ts'
 
 type PickerOptions<KeyType extends React.Key> = Array<{
   key: KeyType
@@ -19,24 +21,20 @@ const DEFAULT_VIEW_LABEL_ID = 'settings-default-view-label'
 const REMIND_ME_LABEL_ID = 'settings-remind-me-label'
 const REMINDER_TIMES_LABEL_ID = 'settings-reminder-times-label'
 
-const defaultViewOptions: PickerOptions<
-  Required<SettingsShape>['defaultView']
-> = [
+const defaultViewOptions: PickerOptions<SettingsDefaultViewOption> = [
   { key: 'month', label: 'Month' },
   { key: 'week', label: 'Week' },
   { key: 'day', label: 'Day' },
 ]
 
-const remindMeOptions: PickerOptions<Required<SettingsShape>['remindMe']> = [
+const remindMeOptions: PickerOptions<SettingsRemindMeOption> = [
   { key: 'daily', label: 'Daily' },
   { key: 'weekdays', label: 'Weekdays' },
   { key: 'weekends', label: 'Weekends' },
   { key: 'none', label: 'None' },
 ]
 
-const reminderTimesOptions: PickerOptions<
-  Required<SettingsShape>['reminderTimes']
-> = [
+const reminderTimesOptions: PickerOptions<SettingsReminderTimeOption> = [
   { key: '9am', label: '9:00 AM' },
   { key: '3pm', label: '3:00 PM' },
   { key: '6pm', label: '6:00 PM' },
@@ -44,71 +42,31 @@ const reminderTimesOptions: PickerOptions<
 ]
 
 export function Settings() {
-  const [defaultView, setDefaultView] = useState<
-    SettingsShape['defaultView'] | null
-  >(null)
-  const [remindMe, setRemindMe] = useState<SettingsShape['remindMe'] | null>(
-    null,
-  )
-  const [reminderTimes, setReminderTimes] = useState<
-    SettingsShape['reminderTimes'] | null
-  >(null)
-  const { getDb } = useDb()
-  useEffect(() => {
-    async function run() {
-      const db = await getDb()
-      const settings = await getSettings(db)
-      setDefaultView(settings.defaultView)
-      setRemindMe(settings.remindMe)
-      setReminderTimes(settings.reminderTimes)
-    }
-
-    void run()
-  }, [getDb])
+  const [{ defaultView, remindMe, reminderTimes }] = useSettings({
+    defaultView: null,
+    remindMe: null,
+    reminderTimes: null,
+  })
 
   const handleDefaultViewChange = async (selectedKey: React.Key) => {
-    const newDefaultView =
-      selectedKey.toString() as SettingsShape['defaultView']
-    setDefaultView(newDefaultView)
-    const db = await getDb()
-    updateSettingsInDb(db, { defaultView: newDefaultView })
+    const newDefaultView = selectedKey.toString() as SettingsDefaultViewOption
+
+    await updateSettings({ defaultView: newDefaultView })
   }
 
   const handleRemindMeChange = async (selectedKey: React.Key) => {
-    const newRemindMe = selectedKey.toString() as SettingsShape['remindMe']
-    setRemindMe(newRemindMe)
-    const db = await getDb()
-    updateSettingsInDb(db, { remindMe: newRemindMe })
+    const newRemindMe = selectedKey.toString() as SettingsRemindMeOption
+
+    await updateSettings({ remindMe: newRemindMe })
   }
 
   const handleAtTimesChange = async (selectedKey: React.Key) => {
     const newReminderTimes =
-      selectedKey.toString() as SettingsShape['reminderTimes']
-    setReminderTimes(newReminderTimes)
-    const db = await getDb()
-    updateSettingsInDb(db, { reminderTimes: newReminderTimes })
+      selectedKey.toString() as SettingsReminderTimeOption
+
+    await updateSettings({ reminderTimes: newReminderTimes })
   }
 
-  const updateSettingsInDb = (
-    db: IDBDatabase,
-    settings: Partial<SettingsShape>,
-  ) => {
-    const transaction = db.transaction(['settings'], 'readwrite')
-    const store = transaction.objectStore('settings')
-    const request = store.get('settings')
-
-    request.onsuccess = () => {
-      // avoid undefined/any
-      const data = (request.result || {}) as SettingsShape
-      const updatedData: SettingsShape = { ...data, ...settings }
-      store.put(updatedData, 'settings')
-    }
-
-    request.onerror = (e: Event) => {
-      const error = (e.target as IDBRequest).error
-      console.error('Error accessing settings:', error?.message)
-    }
-  }
   return (
     <div className="flex flex-col items-center bg-white">
       <section className="w-full bg-white p-4 pl-2 pr-6 shadow-md">

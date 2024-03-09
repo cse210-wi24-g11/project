@@ -7,16 +7,13 @@ import {
   Route,
   WEEK_SUMMARY_ROUTE,
 } from '@/routes.ts'
-import { DbRecord, getSettings } from '@/utils/db.ts'
+import { useSettings } from '@/db/actions.ts'
 
-import { useDb } from '@/context/db.tsx'
+import type { Settings } from '@/db/types.ts'
 
 const FALLBACK_DEFAULT_SUMMARY_ROUTE = DAY_SUMMARY_ROUTE
 
-const DEFAULT_VIEW_TO_ROUTE: Record<
-  DbRecord<'settings'>['defaultView'],
-  Route
-> = {
+const DEFAULT_VIEW_TO_ROUTE: Record<Settings['defaultView'], Route> = {
   day: DAY_SUMMARY_ROUTE,
   week: WEEK_SUMMARY_ROUTE,
   month: MONTH_SUMMARY_ROUTE,
@@ -24,23 +21,29 @@ const DEFAULT_VIEW_TO_ROUTE: Record<
 
 export function Summary() {
   const navigate = useNavigate()
-  const { getDb, ready } = useDb()
+
+  const [settings, isLoadingData] = useSettings(null)
 
   useEffect(() => {
-    if (!ready) {
-      navigate(FALLBACK_DEFAULT_SUMMARY_ROUTE)
+    // query has not resolved yet
+    if (isLoadingData) {
       return
     }
 
-    async function run() {
-      const db = await getDb()
-      const settings = await getSettings(db)
+    // settings should always be defined, this is just an extra sanity check, just in case
+    const defaultView = settings?.defaultView
 
-      navigate(DEFAULT_VIEW_TO_ROUTE[settings.defaultView])
+    // default view should always be in the mapping, but just in case
+    if (
+      Object.prototype.hasOwnProperty.call(DEFAULT_VIEW_TO_ROUTE, defaultView)
+    ) {
+      navigate(DEFAULT_VIEW_TO_ROUTE[defaultView])
+      return
     }
 
-    void run()
-  }, [ready, getDb, navigate])
+    // fallback case
+    navigate(FALLBACK_DEFAULT_SUMMARY_ROUTE)
+  }, [settings, isLoadingData, navigate])
 
   return null
 }

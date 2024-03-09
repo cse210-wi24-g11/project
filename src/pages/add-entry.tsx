@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@react-spectrum/button'
 import { TextField } from '@react-spectrum/textfield'
@@ -11,42 +11,45 @@ import {
   MOOD_COLLECTION_ROUTE,
 } from '@/routes.ts'
 import { useLocationState } from '@/hooks/use-location-state.ts'
-import { DbRecord, getFavoriteMoods, putEntry } from '@/utils/db.ts'
+import { db, useQuery } from '@/db/index.ts'
+import { serializeDateForEntry } from '@/db/utils.ts'
 
-import { useDb } from '@/context/db.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
 
-const MOCK_FAVORITES = [
-  { id: 'sdfa;sdf', color: '#ff0000', imagePath: '/vite.svg ' },
-]
+import type { Entry, Mood } from '@/db/types.ts'
 
 type State = {
-  selectedMood: DbRecord<'mood'>
+  selectedMood: Mood
 }
 
 export function AddEntry() {
   const state = useLocationState(validateState)
   const navigate = useNavigate()
-  const { getDb } = useDb()
 
-  const [mood, setMood] = useState<DbRecord<'mood'> | null>(() =>
+  const [mood, setMood] = useState<Mood | null>(() =>
     state === null ? null : state.selectedMood,
   )
   const [description, setDescription] = useState('')
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const [favoriteMoods, setFavoriteMoods] = useState<DbRecord<'mood'>[]>([])
-  useEffect(() => {
-    async function loadFavoriteMoods() {
-      const db = await getDb()
-      const favoriteMoods = await getFavoriteMoods(db)
-
-      setFavoriteMoods(favoriteMoods?.length ? favoriteMoods : MOCK_FAVORITES)
-    }
-    void loadFavoriteMoods()
-  }, [getDb])
+  const [favoriteMoods] = useQuery(
+    async () => {
+      const favoriteMoodCollectionRecords = await db.moodCollection
+        .where('category')
+        .equals('favorites')
+        .toArray()
+      const favoriteMoods = await db.moods.bulkGet(
+        favoriteMoodCollectionRecords.map((record) => record.moodId),
+      )
+      const validFavoriteMoods = favoriteMoods.filter(Boolean) as Mood[]
+      // TODO: remove this when default favorite moods are properly set up
+      return validFavoriteMoods.length > 0 ? validFavoriteMoods : []
+    },
+    [],
+    [] as Mood[],
+  )
 
   function pickFromMoodCollection() {
     navigate(MOOD_COLLECTION_ROUTE, {
@@ -64,15 +67,17 @@ export function AddEntry() {
 
     setIsSubmitting(true)
 
-    const entry: DbRecord<'entry'> = {
+    const now = new Date()
+
+    const entry: Entry = {
       id: window.crypto.randomUUID(),
       moodId: mood.id,
       description,
-      timestamp: new Date(),
+      date: serializeDateForEntry(now),
+      timestamp: now.getTime(),
     }
 
-    const db = await getDb()
-    await putEntry(db, entry)
+    await db.entries.add(entry)
     setIsSubmitting(false)
 
     navigate(DAY_SUMMARY_ROUTE)
