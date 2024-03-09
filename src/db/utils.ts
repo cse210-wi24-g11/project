@@ -1,3 +1,9 @@
+/**
+ * @fileoverview
+ * utility functions for working with data transformations related to the database,
+ * but notably do NOT involve actually interfacing with the database.
+ */
+
 import type { Entry, MoodId } from './types.ts'
 
 /**

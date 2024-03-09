@@ -1,3 +1,8 @@
+/**
+ * @fileoverview
+ * functions for reading from and writing to the database
+ */
+
 import { db, useQuery } from './index.ts'
 import { MOOD_COLLECTION_KEY, SETTINGS_KEY } from './constants.ts'
 
