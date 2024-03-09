@@ -2,8 +2,7 @@ import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 
 import { useQuery } from '@/db/index.ts'
-import { serializeDateForEntry } from '@/db/utils.ts'
-import { resolveEntry, type ResolvedEntry } from '@/utils/resolve-entry.ts'
+import { serializeDateForEntry, reviveEntry, type RevivedEntry } from '@/db/utils.ts'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { SummaryBar } from '@/components/navigation/summary-bar.tsx'
@@ -31,12 +30,12 @@ export function DaySummary({ summaryNavBarItem }: DaySummaryBarProps) {
       const resolvedEntries = entries
         // reverse chronological
         .sort((a, b) => b.timestamp - a.timestamp)
-        .map((entry) => resolveEntry(entry, moodIdToMood))
-        .filter((x) => x !== null) as ResolvedEntry[]
+        .map((entry) => reviveEntry(entry, moodIdToMood))
+        .filter((x) => x !== null) as RevivedEntry[]
       return resolvedEntries
     },
     [today],
-    [] as ResolvedEntry[],
+    [] as RevivedEntry[],
   )
 
   console.log({ todayEntries })

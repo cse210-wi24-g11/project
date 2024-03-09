@@ -4,7 +4,7 @@
  * but notably do NOT involve actually interfacing with the database.
  */
 
-import type { Entry, MoodId } from './types.ts'
+import type { Entry, Mood, MoodId } from './types.ts'
 
 /**
  * create a virtual entry with the given mood id, description, and date.
@@ -54,4 +54,33 @@ export function getTodayRange(
   const startOfNextDay = date.getTime()
 
   return [startOfDay, startOfNextDay]
+}
+
+export type RevivedEntry = Omit<Entry, 'moodId' | 'timestamp'> & {
+  mood: Mood
+  timestamp: Date
+}
+
+/**
+ * "revives" a virtual db Entry into its full form,
+ * with the mood id replaced with the mood it resolves to,
+ * and the timestamp read back into a Date object, rather than the number representation of a date.
+ * 
+ * useful for converting entries read from the database back into "full form".
+ * 
+ * if the entry's mood id is not found in the map of moods, returns `null`.
+ */
+export function reviveEntry(
+  entry: Entry,
+  moodIdToMood: Map<Mood['id'], Mood>,
+): RevivedEntry | null {
+  const { moodId, timestamp, ...rest } = entry
+  if (!moodIdToMood.has(moodId)) {
+    return null
+  }
+  return {
+    ...rest,
+    mood: moodIdToMood.get(moodId)!,
+    timestamp: new Date(timestamp),
+  }
 }
