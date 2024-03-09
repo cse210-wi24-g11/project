@@ -10,7 +10,7 @@ import {
 
 import {
   get1stDayInWeek,
-  getDateAbbr,
+  displayTime,
   getDatesInWeek,
 } from '@/utils/summary.ts'
 
@@ -22,24 +22,14 @@ interface WeekPickerProps {
 }
 
 export function WeekPicker({ startDay, onChangeWeek }: WeekPickerProps) {
-  const [weekStart, setWeekStart] = useState(get1stDayInWeek(startDay))
-
-  function dayToWeekStr(date: Date): string {
-    const days = getDatesInWeek(date)
-    if (days.length == 0) {
-      return ''
-    }
-    const first = days[0]
-    const last = days[days.length - 1]
-    return getDateAbbr(first) + ' ~ ' + getDateAbbr(last)
-  }
+  const [weekStart, setWeekStart] = useState(() => get1stDayInWeek(startDay))
 
   return (
     <DialogTrigger type="tray">
       <ActionButton>
         <div className="flex h-10 flex-row">
           <div className="flex flex-row items-center justify-center border-r border-gray-500">
-            <p className="ml-8 mr-8 line-clamp-1">{dayToWeekStr(weekStart)}</p>
+            <p className="ml-8 mr-8 line-clamp-1">{displayWeekRange(weekStart)}</p>
           </div>
           <div className="flex w-10 flex-row items-center justify-center">
             <Calendar aria-label="date picker icon" size="S" />
@@ -64,4 +54,17 @@ export function WeekPicker({ startDay, onChangeWeek }: WeekPickerProps) {
       )}
     </DialogTrigger>
   )
+}
+
+/**
+ * given a starting date, returns a string representing the 1-week range starting from that date
+ */
+function displayWeekRange(date: Date): string {
+  const days = getDatesInWeek(date)
+  if (days.length == 0) {
+    return ''
+  }
+  const first = days[0]
+  const last = days[days.length - 1]
+  return displayTime(first) + ' ~ ' + displayTime(last)
 }

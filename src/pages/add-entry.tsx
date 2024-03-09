@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@react-spectrum/button'
 import { TextField } from '@react-spectrum/textfield'
@@ -10,46 +10,44 @@ import {
   DAY_SUMMARY_ROUTE,
   MOOD_COLLECTION_ROUTE,
 } from '@/routes.ts'
+import { useAsyncMemo } from '@/hooks/use-async-memo.ts'
 import { useLocationState } from '@/hooks/use-location-state.ts'
-import { DbRecord, getFavoriteMoods, putEntry } from '@/utils/db.ts'
+import { db } from '@/db/index.ts'
+import { useFavoriteMoods } from '@/db/actions.ts'
+import { base64ToUrl, createEntry } from '@/db/utils.ts'
 
-import { useDb } from '@/context/db.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
 
-const MOCK_FAVORITES = [
-  { id: 'sdfa;sdf', color: '#ff0000', imagePath: '/vite.svg ' },
-]
+import type { Mood } from '@/db/types.ts'
 
 type State = {
-  selectedMood: DbRecord<'mood'>
+  selectedMood: Mood
 }
 
 export function AddEntry() {
   const state = useLocationState(validateState)
   const navigate = useNavigate()
-  const { getDb } = useDb()
 
-  const [mood, setMood] = useState<DbRecord<'mood'> | null>(() =>
+  const [mood, setMood] = useState<Mood | null>(() =>
     state === null ? null : state.selectedMood,
   )
+  const moodImageUrl = useAsyncMemo(() => {
+    if (mood === null) { return undefined }
+    return base64ToUrl(mood.image)
+  }, [mood], undefined)
+
   const [description, setDescription] = useState('')
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const [favoriteMoods, setFavoriteMoods] = useState<DbRecord<'mood'>[]>([])
-  useEffect(() => {
-    async function loadFavoriteMoods() {
-      const db = await getDb()
-      const favoriteMoods = await getFavoriteMoods(db)
-      const newFavoriteMoods = favoriteMoods?.length
-        ? favoriteMoods.slice(-5)
-        : MOCK_FAVORITES
-      setFavoriteMoods(newFavoriteMoods)
-    }
-
-    void loadFavoriteMoods()
-  }, [getDb])
+  const [favoriteMoods] = useFavoriteMoods([] as Mood[])
+  const visibleFavoriteMoods = useMemo(() => favoriteMoods.slice(-5), [favoriteMoods])
+  const favoriteMoodsWithImageUrls = useAsyncMemo(
+    () => Promise.all(visibleFavoriteMoods.map(async mood => [mood, await base64ToUrl(mood.image)] as [Mood, string])),
+    [visibleFavoriteMoods],
+    [] as Array<[Mood, string]>,
+  )
 
   function pickFromMoodCollection() {
     navigate(MOOD_COLLECTION_ROUTE, {
@@ -67,15 +65,9 @@ export function AddEntry() {
 
     setIsSubmitting(true)
 
-    const entry: DbRecord<'entry'> = {
-      id: window.crypto.randomUUID(),
-      moodId: mood.id,
-      description,
-      timestamp: new Date(),
-    }
+    const entry = createEntry(mood.id, description)
 
-    const db = await getDb()
-    await putEntry(db, entry)
+    await db.entries.add(entry)
     setIsSubmitting(false)
 
     navigate(DAY_SUMMARY_ROUTE)
@@ -90,12 +82,12 @@ export function AddEntry() {
 
           {/* favorite moods */}
           <div className="flex gap-4">
-            {favoriteMoods.map((m) => (
+            {favoriteMoodsWithImageUrls.map(([m, imageUrl]) => (
               <MoodSwatch
                 key={m.id}
                 size="single-line-height"
                 color={m.color}
-                imgSrc={m.imagePath}
+                imgSrc={imageUrl}
                 onClick={() => {
                   setMood(m)
                 }}
@@ -116,7 +108,7 @@ export function AddEntry() {
             <MoodSwatch
               size="single-line-height"
               color={mood?.color}
-              imgSrc={mood?.imagePath}
+              imgSrc={moodImageUrl}
               onClick={
                 mood
                   ? () => {

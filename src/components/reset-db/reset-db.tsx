@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-const DB_NAME = 'user_db'
+import { db } from '@/db/index.ts'
 
 /**
  * Button that, when clicked, resets the indexeddb database.
@@ -36,7 +36,7 @@ export function ResetIndexedDb() {
   }
 
   function onClick() {
-    indexedDB.deleteDatabase(DB_NAME)
+    void db.delete()
   }
 
   return (

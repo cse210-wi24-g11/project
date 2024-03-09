@@ -10,89 +10,70 @@ import {
   EDIT_ENTRY_ROUTE,
   MOOD_COLLECTION_ROUTE,
 } from '@/routes.ts'
+import { db, useQuery } from '@/db/index.ts'
+import { useFavoriteMoods } from '@/db/actions.ts'
+import { base64ToUrl } from '@/db/utils.ts'
+import { useAsyncMemo } from '@/hooks/use-async-memo.ts'
 import { useLocationState } from '@/hooks/use-location-state.ts'
-import {
-  DbRecord,
-  getEntry,
-  getFavoriteMoods,
-  getMoodById,
-  updateEntry,
-} from '@/utils/db.ts'
 
-import { useDb } from '@/context/db.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
 
-const MOCK_FAVORITES = [
-  { id: 'sdfa;sdf', color: '#ff0000', imagePath: '/vite.svg ' },
-]
+import type { Entry, Mood } from '@/db/types.ts'
 
 export type Params = {
-  entryId: DbRecord<'entry'>['id']
+  entryId: Entry['id']
 }
 
 export type State = {
-  selectedMood: DbRecord<'mood'>
+  selectedMood: Mood
 }
 
 export function EditEntry() {
   const { entryId } = useParams()
   const state = useLocationState(validateState)
   const navigate = useNavigate()
-  const { getDb } = useDb()
+
+  const [entry] = useQuery(async (db) => {
+    const entry = await db.entries.get(entryId!)
+    return entry ?? null
+  }, [entryId], null)
+  const [entryMood] = useQuery(async (db) => {
+    if (entry === null) { return null }
+    const mood = await db.moods.get(entry.moodId)
+    return mood ?? null
+  }, [entry], null)
+  useEffect(() => {
+    if (entry === null || entryMood === null) {
+      // @ts-expect-error -1 is a valid argument, representing going back. see https://reactrouter.com/en/main/hooks/use-navigate
+      navigate(-1, { replace: true })
+      return
+    }
+  }, [entry, entryMood, navigate])
+  const [description, setDescription] = useState('')
+  useEffect(() => {
+    setDescription(entry?.description ?? '')
+  // should only default the description to the entry's original description. but the entry shouldn't change across renders
+  }, [entry])
 
   const selectedMood = useMemo(() => state?.selectedMood ?? null, [state])
 
-  const [mood, setMood] = useState<DbRecord<'mood'> | null>(() =>
+  const [mood, setMood] = useState<Mood | null>(() =>
     state === null ? null : selectedMood,
   )
-  const [description, setDescription] = useState('')
-
-  const [entryMood, setEntryMood] = useState<DbRecord<'mood'> | null>(null)
-  useEffect(() => {
-    async function loadEntry() {
-      const db = await getDb()
-      const entry = await getEntry(db, entryId!)
-
-      if (!entry) {
-        // @ts-expect-error -1 is a valid argument, representing going back. see https://reactrouter.com/en/main/hooks/use-navigate
-        navigate(-1, { replace: true })
-        return
-      }
-
-      const entryMood = await getMoodById(db, entry.moodId)
-
-      if (!entryMood) {
-        // @ts-expect-error -1 is a valid argument, representing going back. see https://reactrouter.com/en/main/hooks/use-navigate
-        navigate(-1, { replace: true })
-        return
-      }
-
-      setEntryMood(entryMood)
-
-      // if there's a selected mood, we prefer that as the initial value
-      // over whatever mood was initially associated with the entry
-      if (!selectedMood) {
-        setMood(entryMood)
-      }
-
-      setDescription(entry.description)
-    }
-    void loadEntry()
-  }, [entryId, getDb, navigate, selectedMood])
+  const moodImageUrl = useAsyncMemo(() => {
+    if (mood === null) { return undefined }
+    return base64ToUrl(mood.image)
+  }, [mood], undefined)
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const [favoriteMoods, setFavoriteMoods] = useState<DbRecord<'mood'>[]>([])
-  useEffect(() => {
-    async function loadFavoriteMoods() {
-      const db = await getDb()
-      const favoriteMoods = await getFavoriteMoods(db)
-
-      setFavoriteMoods(favoriteMoods?.length ? favoriteMoods : MOCK_FAVORITES)
-    }
-    void loadFavoriteMoods()
-  }, [getDb])
+  const [favoriteMoods] = useFavoriteMoods([] as Mood[])
+  const favoriteMoodsWithImageUrls = useAsyncMemo(
+    () => Promise.all(favoriteMoods.map(async mood => [mood, await base64ToUrl(mood.image)] as [Mood, string])),
+    [favoriteMoods],
+    [] as Array<[Mood, string]>,
+  )
 
   function pickFromMoodCollection() {
     navigate(MOOD_COLLECTION_ROUTE, {
@@ -104,14 +85,12 @@ export function EditEntry() {
 
   async function updateMoodEntry() {
     // sanity check
-    if (mood === null) {
+    if (entryId == null || mood === null) {
       return
     }
 
     setIsSubmitting(true)
-
-    const db = await getDb()
-    await updateEntry(db, entryId!, { moodId: mood.id, description })
+    await db.entries.update(entryId, { moodId: mood.id, description })
     setIsSubmitting(false)
 
     navigate(DAY_SUMMARY_ROUTE)
@@ -124,12 +103,12 @@ export function EditEntry() {
         <div className="flex w-full grow flex-col items-center justify-center gap-4">
           {/* favorite moods */}
           <div className="flex gap-4">
-            {favoriteMoods.map((m) => (
+            {favoriteMoodsWithImageUrls.map(([m, imageUrl]) => (
               <MoodSwatch
                 key={m.id}
                 size="single-line-height"
                 color={m.color}
-                imgSrc={m.imagePath}
+                imgSrc={imageUrl}
                 onClick={() => {
                   setMood(m)
                 }}
@@ -150,7 +129,7 @@ export function EditEntry() {
             <MoodSwatch
               size="single-line-height"
               color={mood?.color}
-              imgSrc={mood?.imagePath}
+              imgSrc={moodImageUrl}
               onClick={
                 mood
                   ? () => {
