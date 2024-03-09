@@ -9,7 +9,7 @@ import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { SummaryBar } from '@/components/navigation/summary-bar.tsx'
 import { SummaryNavbarItem } from '@/components/navigation/summary-bar.tsx'
 
-import type { Mood, MoodId } from '@/db/types.ts'
+import type { Mood } from '@/db/types.ts'
 
 type DaySummaryBarProps = {
   summaryNavBarItem: SummaryNavbarItem
@@ -25,12 +25,9 @@ export function DaySummary({ summaryNavBarItem }: DaySummaryBarProps) {
         //.where('timestamp').between(...getTodayRange(today.getTime()))  // alternate
         .toArray()
 
-      const moods = (
-        await db.moods.bulkGet(entries.map((entry) => entry.moodId))
-      ).filter(Boolean) as Mood[]
-      const moodIdToMood = new Map<MoodId, Mood>(
-        moods.map((mood) => [mood.id, mood]),
-      )
+      const entriesMoods = await db.moods.bulkGet(entries.map((e) => e.moodId))
+      const moods = entriesMoods.filter(Boolean) as Mood[]
+      const moodIdToMood = new Map(moods.map((mood) => [mood.id, mood]))
       const resolvedEntries = entries
         // reverse chronological
         .sort((a, b) => b.timestamp - a.timestamp)
