@@ -1,0 +1,39 @@
+export type MoodId = string
+
+export type Mood = {
+  id: MoodId
+  color: string
+  imagePath: string
+}
+
+export type Entry = {
+  id: string
+  moodId: MoodId
+  description: string
+  // serializing the date, e.g. 2024.12.31
+  date: string
+  // storing Date as a number (Date.getTime())
+  // this provides a convenient representation for e.g. querying on numbers
+  timestamp: number
+}
+
+export type MoodCollectionItem = {
+  moodId: MoodId
+  category: 'favorites' | 'general' | 'archived'
+}
+
+// type MoodCollection = {
+//   favorites: MoodId[]
+//   general: MoodId[]
+//   archived: MoodId[]
+// }
+
+export type SettingsDefaultViewOption = 'day' | 'week' | 'month'
+export type SettingsRemindMeOption = 'daily' | 'weekdays' | 'weekends' | 'none'
+export type SettingsReminderTimeOption = '9am' | '3pm' | '6pm' | 'none'
+
+export type Settings = {
+  defaultView: SettingsDefaultViewOption
+  remindMe?: SettingsRemindMeOption
+  reminderTimes?: SettingsReminderTimeOption
+}
