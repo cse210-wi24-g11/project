@@ -1,26 +1,18 @@
-import React, { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Calendar from '@spectrum-icons/workflow/Calendar'
 import {
   ActionButton,
   Content,
-  defaultTheme,
   Dialog,
   DialogTrigger,
   Flex,
-  Heading,
-  Provider,
-  RangeCalendar,
 } from '@adobe/react-spectrum'
 import {
   get1stDayInWeek,
   getDateAbbr,
   getDatesInWeek,
 } from '@/components/SummaryHelper.ts'
-import { classNames } from '@react-spectrum/utils'
-import datepickerStyles from '@react-spectrum/datepicker/src/styles.css'
-import ICalendar, {
-  WeekPickerCalendar,
-} from '@/components/ICalendar/ICalendar.tsx'
+import { WeekPickerCalendar } from '@/components/ICalendar/ICalendar.tsx'
 
 interface WeekPickerProps {
   startDay: Date

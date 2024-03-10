@@ -1,5 +1,5 @@
 // db.ts
-import { getDateAbbr, SummaryMoodRecord } from '@/components/SummaryHelper.ts'
+import { getDateAbbr } from '@/components/SummaryHelper.ts'
 
 const DB_NAME = 'user_db'
 
@@ -191,9 +191,7 @@ export async function getMoodById(
   db: IDBDatabase,
   moodId: string,
 ): Promise<DbRecord<'mood'> | undefined> {
-  const objectStore = db
-    .transaction('mood', 'readonly')
-    .objectStore('mood')
+  const objectStore = db.transaction('mood', 'readonly').objectStore('mood')
   return await toPromise<DbRecord<'mood'>>(objectStore.get(moodId))
 }
 
