@@ -1,8 +1,5 @@
 // db.ts
-import {
-  getDateAbbr,
-  SummaryMoodRecord,
-} from '@/components/SummaryHelper.ts'
+import { getDateAbbr, SummaryMoodRecord } from '@/components/SummaryHelper.ts'
 
 const DB_NAME = 'user_db'
 
@@ -94,12 +91,15 @@ export function openDb() {
       const yesterday = new Date()
       yesterday.setDate(yesterday.getDate() - 1)
       console.log('yesterday:', yesterday)
-      const tmp2: DbRecord<'entry'>[] = Array.from({ length: 10 }, (_, index) => ({
-        id: (index + 100 * yesterday.getDate()).toString(),
-        moodId: '3',
-        description: 'Test for ' + getEntryDateKey(yesterday),
-        timestamp: yesterday,
-      }))
+      const tmp2: DbRecord<'entry'>[] = Array.from(
+        { length: 10 },
+        (_, index) => ({
+          id: (index + 100 * yesterday.getDate()).toString(),
+          moodId: '3',
+          description: 'Test for ' + getEntryDateKey(yesterday),
+          timestamp: yesterday,
+        }),
+      )
       dateCollection.add(tmp2, getEntryDateKey(yesterday))
     }
 
@@ -174,6 +174,27 @@ export async function getFavoriteMoods(
     moodStore.get(favoriteMoodIds),
   )
   return favoriteMoods
+}
+
+export async function getEntriesOfDate(
+  db: IDBDatabase,
+  date: Date,
+): Promise<DbRecord<'entry'>[] | undefined> {
+  const dayKey = getEntryDateKey(date)
+  const objectStore = db
+    .transaction('dateCollection', 'readonly')
+    .objectStore('dateCollection')
+  return await toPromise<DbRecord<'entry'>[]>(objectStore.get(dayKey))
+}
+
+export async function getMoodById(
+  db: IDBDatabase,
+  moodId: string,
+): Promise<DbRecord<'mood'> | undefined> {
+  const objectStore = db
+    .transaction('mood', 'readonly')
+    .objectStore('mood')
+  return await toPromise<DbRecord<'mood'>>(objectStore.get(moodId))
 }
 
 const DEFAULT_SETTINGS: DbRecord<'settings'> = {

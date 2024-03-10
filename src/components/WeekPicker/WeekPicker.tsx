@@ -3,6 +3,7 @@ import Calendar from '@spectrum-icons/workflow/Calendar'
 import {
   ActionButton,
   Content,
+  defaultTheme,
   Dialog,
   DialogTrigger,
   Flex,
@@ -10,39 +11,41 @@ import {
   Provider,
   RangeCalendar,
 } from '@adobe/react-spectrum'
-import { getDateAbbr, getDatesInWeek } from '@/components/SummaryHelper.ts'
+import {
+  get1stDayInWeek,
+  getDateAbbr,
+  getDatesInWeek,
+} from '@/components/SummaryHelper.ts'
+import { classNames } from '@react-spectrum/utils'
+import datepickerStyles from '@react-spectrum/datepicker/src/styles.css'
+import ICalendar, {
+  WeekPickerCalendar,
+} from '@/components/ICalendar/ICalendar.tsx'
 
 interface WeekPickerProps {
   startDay: Date
   onChangeWeek: (startDay: Date) => void
 }
 
-interface DatePickerBoxProps {
-  time: string
-  onClick: () => void
-}
+const WeekPicker = ({ startDay, onChangeWeek }: WeekPickerProps) => {
+  const [weekStart, setWeekStart] = useState(get1stDayInWeek(startDay)) // TODO: remove
 
-const DatePickerBox = ({ time, onClick }: DatePickerBoxProps) => {
-  // TODO: move border to outside div.
-  return (
-    <div className="flex h-10 flex-row rounded-md" onClick={onClick}>
-      <div className="flex flex-row items-center justify-center rounded-l-md border border-gray-500">
-        <p className="ml-8 mr-8 line-clamp-1">{time}</p>
-      </div>
-      <div className="flex w-10 flex-row items-center justify-center rounded-r-md border-b border-r border-t border-gray-500">
-        <Calendar aria-label="date picker icon" size="S" />
-      </div>
-    </div>
-  )
-}
+  const dayToWeekStr = (date: Date) => {
+    const days = getDatesInWeek(date)
+    if (days.length == 0) {
+      return
+    }
+    const first = days[0]
+    const last = days[days.length - 1]
+    return getDateAbbr(first) + ' ~ ' + getDateAbbr(last)
+  }
 
-const BottomDialog = ({ time, onClick }: DatePickerBoxProps) => {
   return (
     <DialogTrigger type="tray">
       <ActionButton>
         <div className="flex h-10 flex-row">
           <div className="flex flex-row items-center justify-center border-r border-gray-500">
-            <p className="ml-8 mr-8 line-clamp-1">{time}</p>
+            <p className="ml-8 mr-8 line-clamp-1">{dayToWeekStr(weekStart)}</p>
           </div>
           <div className="flex w-10 flex-row items-center justify-center">
             <Calendar aria-label="date picker icon" size="S" />
@@ -51,40 +54,21 @@ const BottomDialog = ({ time, onClick }: DatePickerBoxProps) => {
       </ActionButton>
       {(close) => (
         <Dialog>
-          {/*<Heading>Bottom Dialog</Heading>*/}
-          {/*<Content>This a dialog from bottom.</Content>*/}
-          {/*<ActionButton onPress={close}></ActionButton>*/}
           <Content>
-            <Flex>
-              <Provider locale="en">
-                <RangeCalendar />
-              </Provider>
+            <Flex alignItems="center" justifyContent="center">
+              <WeekPickerCalendar
+                weekStartDay={weekStart}
+                onSelectWeek={(startDate: Date) => {
+                  setWeekStart(startDate)
+                  onChangeWeek(startDate)
+                  close()
+                }}
+              />
             </Flex>
           </Content>
         </Dialog>
       )}
     </DialogTrigger>
-  )
-}
-
-const WeekPicker = ({ startDay, onChangeWeek }: WeekPickerProps) => {
-  const [startDate, setStartDate] = useState(startDay)
-  const [weekStr, setWeekStr] = useState('')
-
-  useEffect(() => {
-    const days = getDatesInWeek(startDay)
-    if (days.length == 0) {
-      return
-    }
-    const last = days[days.length - 1]
-    setWeekStr(getDateAbbr(startDate) + ' ~ ' + getDateAbbr(last))
-  }, [startDate])
-
-  return (
-    <div className="fixed left-0 right-0 top-10 border bg-white pb-2 pt-2">
-      {/*<DatePickerBox time="Fed 2" onClick={() => console.log('Box clicked')} />*/}
-      <BottomDialog time={weekStr} onClick={() => console.log('Box clicked')} />
-    </div>
   )
 }
 

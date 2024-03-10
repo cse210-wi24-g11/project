@@ -5,7 +5,7 @@ import {
 } from '@/components/SummaryHelper.ts'
 
 interface DayMoodListProps {
-  records: Array<SummaryDayMoodRecord>
+  records: SummaryDayMoodRecord[]
 }
 
 const DayMoodList = (props: DayMoodListProps) => {

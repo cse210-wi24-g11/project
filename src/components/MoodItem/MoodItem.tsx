@@ -19,7 +19,7 @@ const MoodListItem = (props: MoodListItemProps) => {
 
   return (
     <div
-      className="h-30 left-0 right-0 flex flex-row items-start rounded-md border"
+      className="h-30 left-0 right-0 flex flex-row items-start rounded-md border bg-white"
       onClick={() => onClick(recordId)}
     >
       <img className="rounded-l-md" src="https://i.imgur.com/yXOvdOSs.jpg" />

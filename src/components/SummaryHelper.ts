@@ -1,7 +1,7 @@
 import * as d3 from 'd3'
 import { RGBColor } from 'd3'
 import { useDb } from '@/context/db.tsx'
-import {DbRecord, getEntryDateKey} from "@/utils/db.ts";
+import {DbRecord, getEntriesOfDate, getEntryDateKey} from '@/utils/db.ts'
 
 export interface SummaryDayMoodRecord {
   id: number
@@ -26,21 +26,26 @@ export interface TempMood {
 
 export const MaxMoodValue = 5
 
+const abbr = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+]
+
+export function getMonthAbbr(date: Date): string {
+  return abbr[date.getMonth()] + ' ' + date.getFullYear()
+}
+
 export function getDateAbbr(date: Date): string {
-  const abbr = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ]
   return abbr[date.getMonth()] + ' ' + date.getDate()
 }
 
@@ -81,6 +86,78 @@ export function get1stDayInWeek(date: Date): Date {
   resultDate.setDate(resultDate.getDate() - dayOfWeek)
   resultDate.setHours(0, 0, 0, 0)
   return resultDate
+}
+
+export function inSameMonth(d1: Date, d2: Date): boolean {
+  return d1.getFullYear() == d2.getFullYear() && d1.getMonth() == d2.getMonth()
+}
+
+export function inSameDay(d1: Date, d2: Date): boolean {
+  return inSameMonth(d1, d2) && d1.getDate() == d2.getDate()
+}
+
+export function get1stDayInMonth(date: Date): Date {
+  return new Date(date.getFullYear(), date.getMonth(), 1)
+}
+
+export function get1stDayOfNextMonth(date: Date): Date {
+  const newDate = new Date(date)
+  let month = newDate.getMonth()
+  let year = newDate.getFullYear()
+  month++
+  if (month > 11) {
+    month = 0
+    year++
+  }
+  newDate.setFullYear(year, month, 1)
+  return newDate
+}
+
+export function get1stDayOfPrevMonth(date: Date): Date {
+  const newDate = new Date(date)
+  let month = newDate.getMonth()
+  let year = newDate.getFullYear()
+  month--
+  if (month < 0) {
+    month = 11
+    year--
+  }
+  newDate.setFullYear(year, month, 1)
+  return newDate
+}
+
+export function getPrevMonthDatesInCalendar(date: Date): Date[] {
+  const firstDay = get1stDayInMonth(date)
+  const dayOfWeek = firstDay.getDay()
+  if (dayOfWeek == 0) {
+    return []
+  }
+  const lastDayOfLastMonth = new Date(date.getFullYear(), date.getMonth(), 0)
+  const lastWeekStartDate = new Date(lastDayOfLastMonth)
+  lastWeekStartDate.setDate(
+    lastDayOfLastMonth.getDate() - ((dayOfWeek + 6) % 7),
+  )
+  const lastDays: Date[] = []
+  while (lastWeekStartDate <= lastDayOfLastMonth) {
+    lastDays.push(new Date(lastWeekStartDate))
+    lastWeekStartDate.setDate(lastWeekStartDate.getDate() + 1)
+  }
+  return lastDays
+}
+
+export function getNextMonthDatesInCalendar(date: Date): Date[] {
+  const nextMonth1stDay = get1stDayOfNextMonth(date)
+  const dayOfWeek = nextMonth1stDay.getDay()
+  if (dayOfWeek == 0) {
+    return []
+  }
+  const res: Date[] = []
+  const num = 7 - dayOfWeek
+  for (let i = 0; i < num; i++) {
+    res.push(new Date(nextMonth1stDay))
+    nextMonth1stDay.setDate(nextMonth1stDay.getDate() + 1)
+  }
+  return res
 }
 
 // TODO: fix
@@ -135,55 +212,5 @@ export function getMoodDesc(records: SummaryDayMoodRecord[]): string {
     return 'Being ordinary is just a part of life.'
   } else {
     return "Don't worry, things will get better soon!"
-  }
-}
-
-export function setEntryList(
-  db: IDBDatabase,
-  date: Date,
-  setList: (entries: SummaryMoodRecord[]) => void,
-) {
-  // read all entry id of given date.
-  const dayKey = getEntryDateKey(date)
-  const idReq = db
-    .transaction('dateCollection', 'readonly')
-    .objectStore('dateCollection')
-    .get(dayKey)
-
-  idReq.onsuccess = () => {
-    // read all entries with given ids.
-    const entries = idReq.result // TODO: check id type.
-    // console.log(`db find ${dayKey}:`, entries)
-    if (entries === undefined) {
-      setList([])
-      return
-    }
-
-    Promise.all(
-      entries.map((entry: DbRecord<'entry'>) => {
-        // TODO: change type
-        return new Promise((resolve) => {
-          const moodReq = db
-            .transaction('mood')
-            .objectStore('mood')
-            .get(entry.moodId)
-          moodReq.onsuccess = () => {
-            const color: string = moodReq.result.color
-            // console.log('moodId:', entry.moodId, 'result:', moodReq.result)
-            const temp: SummaryMoodRecord = {
-              id: entry.id,
-              day: entry.timestamp,
-              title: entry.description,
-              color: d3.rgb(color), // TODO: add image
-            }
-            resolve(temp)
-          }
-        })
-      }),
-    ).then((resArr: SummaryMoodRecord[]) => {
-      console.log('all entries of date', dayKey, ':', resArr)
-      // setListItems(resArr)
-      setList(resArr)
-    })
   }
 }
