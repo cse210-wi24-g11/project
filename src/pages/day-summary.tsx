@@ -57,7 +57,7 @@ const DaySummary = ({ day, summaryNavBarItem }: DaySummaryPageProps) => {
         />
       </div>
       <div className="w-full bg-white">
-        <div className="fixed bottom-20 left-8 right-8 top-24 overflow-y-auto">
+        <div className="mx-8 overflow-y-auto">
           {/*{buildList()}*/}
           <MoodEntryList
             records={listItems}
