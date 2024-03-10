@@ -46,7 +46,7 @@ const DaySummary = ({ day, summaryNavBarItem }: DaySummaryPageProps) => {
   }, [today])
 
   return (
-    <div>
+    <div className="flex h-screen flex-col">
       <SummaryBar summaryNavBarItem={summaryNavBarItem} />
       <div className="fixed left-0 right-0 top-10 border bg-white pb-2 pt-2">
         <DayPicker
@@ -56,16 +56,13 @@ const DaySummary = ({ day, summaryNavBarItem }: DaySummaryPageProps) => {
           }}
         />
       </div>
-      <div className="w-full bg-white mt-24">
-        <div className="mx-8 overflow-y-auto">
-          {/*{buildList()}*/}
-          <MoodEntryList
-            records={listItems}
-            onClickRecord={(record: SummaryMoodRecord) => {
-              navigate(UPDATE_MOOD_ROUTE, { state: { id: record.id } })
-            }}
-          />
-        </div>
+      <div className="px-8 mt-24 flex-grow overflow-y-auto bg-white pb-16">
+        <MoodEntryList
+          records={listItems}
+          onClickRecord={(record: SummaryMoodRecord) => {
+            navigate(UPDATE_MOOD_ROUTE, { state: { id: record.id } })
+          }}
+        />
       </div>
       <MainNavBar />
     </div>
