@@ -3,12 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { SummaryBar } from '@/components/navigation/summary-bar.tsx'
 import { useEffect, useState } from 'react'
-import {
-  getDateAbbr,
-  getMoodOfDate,
-  SummaryMoodRecord,
-} from '@/components/SummaryHelper.ts'
-import { CalendarDate, getLocalTimeZone } from '@internationalized/date'
+import { SummaryMoodRecord } from '@/components/SummaryHelper.ts'
 import { SummaryNavbarItem } from '@/components/navigation/summary-bar.tsx'
 import { useDb } from '@/context/db.tsx'
 import * as d3 from 'd3'
@@ -22,14 +17,6 @@ interface DaySummaryPageProps {
   summaryNavBarItem: SummaryNavbarItem
 }
 
-const date2CalendarDate = (date: Date) => {
-  return new CalendarDate(
-    date.getFullYear(),
-    date.getMonth() + 1,
-    date.getDate(),
-  )
-}
-
 const DaySummary = ({ day, summaryNavBarItem }: DaySummaryPageProps) => {
   const { getDb } = useDb()
   const navigate = useNavigate()
@@ -40,7 +27,7 @@ const DaySummary = ({ day, summaryNavBarItem }: DaySummaryPageProps) => {
   useEffect(() => {
     async function run() {
       const db = await getDb()
-      const entries = await getEntriesOfDate(db, today) ?? []
+      const entries = (await getEntriesOfDate(db, today)) ?? []
       const records = Array<SummaryMoodRecord>()
       for (const entry of entries) {
         const mood = await getMoodById(db, entry.moodId)
@@ -53,6 +40,7 @@ const DaySummary = ({ day, summaryNavBarItem }: DaySummaryPageProps) => {
       }
       setListItems(records)
     }
+
     void run()
   }, [today])
 

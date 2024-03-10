@@ -68,7 +68,9 @@ export const DayPickerCalendar = ({ day, onSelectDay }: DayPickerCalendar) => {
     const common =
       'flex items-center justify-center h-full text-center align-middle border-2 rounded-md '
     if (selected) {
-      return common.concat('text-blue-500 font-bold border-blue-500 bg-blue-100')
+      return common.concat(
+        'text-blue-500 font-bold border-blue-500 bg-blue-100',
+      )
     } else if (inCurrentMonth) {
       return common.concat('text-black border-white')
     } else {
