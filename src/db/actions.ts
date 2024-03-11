@@ -9,7 +9,7 @@ import { MOOD_COLLECTION_KEY, SETTINGS_KEY } from './constants.ts'
 import type { Mood, MoodCollectionCategory, MoodId, Settings } from './types.ts'
 
 function createHook<T>(query: Querier<T>) {
-  return <T>(initial?: T) => useQuery(query, [], initial)
+  return <I>(initial: I) => useQuery(query, [], initial)
 }
 
 export const useSettings = createHook(getSettings)
