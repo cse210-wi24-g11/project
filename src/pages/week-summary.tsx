@@ -8,7 +8,7 @@ import {
   get1stDayInWeek,
   sessionStr2date,
   date2sessionStr,
-} from '@/utils/summary'
+} from '@/utils/summary.ts'
 import { getEntriesOfDate, getMoodById } from '@/utils/db.ts'
 import { updateSettingsInDb } from '@/utils/db.ts'
 import { EDIT_MOOD_ROUTE } from '@/routes.ts'

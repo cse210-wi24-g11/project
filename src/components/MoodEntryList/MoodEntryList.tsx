@@ -1,4 +1,4 @@
-import { SummaryMoodRecord } from '@/utils/summary'
+import { SummaryMoodRecord } from '@/utils/summary.ts'
 
 import { MoodListItem } from '@/components/MoodItem/MoodItem.tsx'
 

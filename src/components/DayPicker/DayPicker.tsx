@@ -8,7 +8,7 @@ import {
   Flex,
 } from '@adobe/react-spectrum'
 
-import { displayDate } from '@/utils/summary'
+import { displayDate } from '@/utils/summary.ts'
 
 import { DayPickerCalendar } from '@/components/ICalendar/ICalendar.tsx'
 

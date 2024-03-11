@@ -12,7 +12,7 @@ import {
   get1stDayInWeek,
   getDateAbbr,
   getDatesInWeek,
-} from '@/utils/summary'
+} from '@/utils/summary.ts'
 
 import { WeekPickerCalendar } from '@/components/ICalendar/ICalendar.tsx'
 

@@ -13,7 +13,7 @@ import {
   inSameDay,
   inSameMonth,
   get1stDayInWeek,
-} from '@/utils/summary'
+} from '@/utils/summary.ts'
 import { getEntryDateKey } from '@/utils/db.ts'
 import { cls } from '@/utils/cls.ts'
 
