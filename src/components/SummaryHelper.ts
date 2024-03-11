@@ -1,5 +1,6 @@
 import * as d3 from 'd3'
 import { RGBColor } from 'd3'
+
 import { getEntryDateKey } from '@/utils/db.ts'
 
 export interface SummaryDayMoodRecord {

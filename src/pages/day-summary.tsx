@@ -5,7 +5,6 @@ import * as d3 from 'd3'
 import { UPDATE_MOOD_ROUTE } from '@/routes.ts'
 import {
   date2sessionStr,
-  get1stDayInWeek,
   sessionStr2date,
   SummaryMoodRecord,
 } from '@/components/SummaryHelper.ts'
