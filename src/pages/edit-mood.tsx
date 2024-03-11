@@ -2,11 +2,16 @@ import { useState, useEffect, MutableRefObject, useRef } from 'react'
 import { Button, Picker, Item, Key } from '@adobe/react-spectrum'
 import { ToastContainer, ToastQueue } from '@react-spectrum/toast'
 import { useParams } from 'react-router-dom'
+import { ActionButton } from '@adobe/react-spectrum'
+import { useNavigate } from 'react-router-dom'
 
 import { DisplayImageComponent } from '@/components/custom-mood/display-image.tsx'
 import { useDb } from '@/context/db.tsx'
 
+
 export function EditMood() {
+  const navigate = useNavigate()
+
   const { moodID } = useParams()
   const { getDb } = useDb()
   const moodBlob: MutableRefObject<Blob | null> = useRef<Blob | null>(null)
@@ -114,7 +119,14 @@ export function EditMood() {
   }, [moodID, getDb]) // Dependency array to re-run the effect when moodID changes
 
   if (!moodID) {
-    return <div> Invalid Mood ID </div>
+    return (
+      <div>
+        <ActionButton onPress={() => navigate(-1)}>
+          Back
+        </ActionButton>
+        <div> Invalid Mood ID </div>
+      </div>
+      )
   }
 
   const handleButtonPress = () => {
