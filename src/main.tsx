@@ -2,6 +2,8 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 
+import { ResetIndexedDb } from '../src/components/reset-db/reset-db.tsx'
+
 import { SpectrumProvider } from './context/spectrum.tsx'
 import { AddEntry } from './pages/add-entry.tsx'
 import { DaySummary } from './pages/day-summary.tsx'
@@ -11,7 +13,8 @@ import { UpdateMood } from './pages/update-mood.tsx'
 import { Settings } from './pages/setting.tsx'
 import { Summary } from './pages/summary.tsx'
 import { DbTest } from './pages/db-test.tsx'
-import { ResetIndexedDb } from './components/reset-db/reset-db.tsx'
+import { CustomMood } from './pages/custom-mood.tsx'
+import { EditMood } from './pages/edit-mood.tsx'
 import {
   ADD_ENTRY_ROUTE,
   DAY_SUMMARY_ROUTE,
@@ -28,25 +31,28 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Router>
       <SpectrumProvider>
-        <Routes>
-          <Route path={ADD_ENTRY_ROUTE} element={<AddEntry />} />
-          <Route path={SETTINGS_ROUTE} element={<Settings />} />
-          <Route path={SUMMARY_BASE_ROUTE} element={<Summary />} />
-          <Route
-            path={DAY_SUMMARY_ROUTE}
-            element={<DaySummary summaryNavBarItem={'Day'} />}
-          />
-          <Route
-            path={WEEK_SUMMARY_ROUTE}
-            element={<WeekSummary summaryNavBarItem={'Week'} />}
-          />
-          <Route
-            path={MONTH_SUMMARY_ROUTE}
-            element={<MonthSummary summaryNavBarItem={'Month'} />}
-          />
-          <Route path={UPDATE_MOOD_ROUTE} element={<UpdateMood />} />
-          <Route path="/DbTest" element={<DbTest />} />
-        </Routes>
+          <Routes>
+            <Route path={ADD_ENTRY_ROUTE} element={<AddEntry />} />
+            <Route path={SETTINGS_ROUTE} element={<Settings />} />
+            <Route path={SUMMARY_BASE_ROUTE} element={<Summary />} />
+            <Route
+              path={DAY_SUMMARY_ROUTE}
+              element={<DaySummary summaryNavBarItem={'Day'} />}
+            />
+            <Route
+              path={WEEK_SUMMARY_ROUTE}
+              element={<WeekSummary summaryNavBarItem={'Week'} />}
+            />
+            <Route
+              path={MONTH_SUMMARY_ROUTE}
+              element={<MonthSummary summaryNavBarItem={'Month'} />}
+            />
+            <Route path={UPDATE_MOOD_ROUTE} element={<UpdateMood />} />
+            <Route path="/EditMood/:moodID" element={<EditMood />} />
+            <Route path="/CustomMood" element={<CustomMood />} />
+            <Route path="/Settings" element={<Settings />} />
+            <Route path="/DbTest" element={<DbTest />} />
+          </Routes>
       </SpectrumProvider>
     </Router>
     <ResetIndexedDb />
