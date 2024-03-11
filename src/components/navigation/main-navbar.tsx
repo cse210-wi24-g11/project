@@ -1,73 +1,62 @@
-import { useState } from 'react'
-import { ReactSVG } from 'react-svg'
+import { NavLink } from 'react-router-dom'
+import { type IconPropsWithoutChildren } from '@react-spectrum/icon'
+import Calendar from '@spectrum-icons/workflow/Calendar'
+import Add from '@spectrum-icons/workflow/AddCircle'
+import Settings from '@spectrum-icons/workflow/Settings'
 
-import calendarIcon from '../../assets/icons/calendar.svg'
-import plusIcon from '../../assets/icons/plus.svg'
-import settingIcon from '../../assets/icons/setting.svg'
-
-type NavbarItem = 'calendar' | 'add' | 'settings'
+import {
+  type Route,
+  ADD_ENTRY_ROUTE,
+  SETTINGS_ROUTE,
+  SUMMARY_BASE_ROUTE,
+} from '@/routes.ts'
+import { cls } from '@/utils/cls.ts'
 
 export function MainNavBar() {
-  const [selectedButton, setSelectedButton] = useState<NavbarItem>('calendar')
-  const generalButtonStyle =
-    'rounded-none my-2 border w-1/3 flex items-center justify-center'
-  const selectedButtonStyle = (button: NavbarItem) => {
-    if (button === selectedButton) {
-      return `${generalButtonStyle} bg-blue-100`
-    } else {
-      return `${generalButtonStyle} bg-white`
-    }
-  }
-
   return (
-    <div className="w-full bg-white">
-      <div className="fixed bottom-0 left-0 flex w-full bg-white">
-        <button
-          className={selectedButtonStyle('calendar')}
-          onClick={() => setSelectedButton('calendar')}
-        >
-          <ReactSVG
-            src={calendarIcon}
-            beforeInjection={(svg) => {
-              (svg as SVGSVGElement).setAttribute('style', 'width: 35px; height: 35px')
-              svg.setAttribute(
-                'fill',
-                selectedButton === 'calendar' ? '#3B82F6' : 'black',
-              )
-            }}
-          />
-        </button>
-        <button
-          className={selectedButtonStyle('add')}
-          onClick={() => setSelectedButton('add')}
-        >
-          <ReactSVG
-            src={plusIcon}
-            beforeInjection={(svg) => {
-              svg.setAttribute('style', 'width: 35px; height: 35px')
-              svg.setAttribute(
-                'stroke',
-                selectedButton === 'add' ? '#3B82F6' : 'black',
-              )
-            }}
-          />
-        </button>
-        <button
-          className={selectedButtonStyle('settings')}
-          onClick={() => setSelectedButton('settings')}
-        >
-          <ReactSVG
-            src={settingIcon}
-            beforeInjection={(svg) => {
-              svg.setAttribute('style', 'width: 35px; height: 35px')
-              svg.setAttribute(
-                'stroke',
-                selectedButton === 'settings' ? '#3B82F6' : 'black',
-              )
-            }}
-          />
-        </button>
-      </div>
-    </div>
+    <nav className="fixed bottom-0 left-0 flex w-full bg-white">
+      <NavbarItem to={SUMMARY_BASE_ROUTE} label="summary" icon={Calendar} />
+      <NavbarItem to={ADD_ENTRY_ROUTE} label="add mood" icon={Add} />
+      <NavbarItem to={SETTINGS_ROUTE} label="settings" icon={Settings} />
+    </nav>
   )
+}
+
+interface NavbarItemProps {
+  to: Route
+  label: string
+  icon: React.FC<IconPropsWithoutChildren>
+}
+
+function NavbarItem({ to, label, icon: Icon }: NavbarItemProps) {
+  return (
+    <NavLink
+      to={to}
+      title={label}
+      className={({ isActive }) => navbarItemStyle(isActive)}
+    >
+      <Icon size="S" />
+    </NavLink>
+  )
+}
+
+function navbarItemStyle(active: boolean) {
+  const base = cls(
+    'grow',
+    'px-8 py-4',
+    'flex items-center justify-center',
+    'rounded first:rounded-s-none last:rounded-e-none',
+  )
+  const conditional = active
+    ? [
+        'bg-blue-500',
+        'text-white',
+        'hover:border-blue-500 focus:border-blue-500 active:border-blue-500',
+      ]
+    : [
+        ['bg-white', 'hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200'],
+        'text-slate-500',
+        'hover:border-gray-200 focus:border-gray-200 active:border-gray-200',
+      ]
+  return cls(base, conditional)
 }
