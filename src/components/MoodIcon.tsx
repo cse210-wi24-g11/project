@@ -4,29 +4,28 @@ import { useNavigate } from 'react-router-dom'
 
 import { useLongPress } from './useLongPress.tsx'
 
+
 export type MoodIconProps = {
   color: string
-  image_URL: string
+  imageURL: string
   id: number
 }
 
-const MoodIcon: React.FC<MoodIconProps> = ({ color, image_URL, id }) => {
+export const MoodIcon: React.FC<MoodIconProps> = function({ color, imageURL, id }) {
   const navigate = useNavigate()
 
   const onLongPress = useLongPress(() => {
     // TODO: Navigate to EditMoodPage
-    navigate(`/EditMoodPage/${id}`)
+    navigate()
   }, 500)
 
   return (
     <div className={`border-${color} rounded-md border-4 p-2`} {...onLongPress}>
       <img
-        src={image_URL}
+        src={imageURL}
         className="h-10 w-10 rounded-lg object-cover"
         alt={`Mood ${id}`}
       />
     </div>
   )
 }
-
-export default MoodIcon

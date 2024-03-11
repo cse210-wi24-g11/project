@@ -6,7 +6,7 @@ import { CUSTOM_MOOD_ROUTE } from '@/routes.ts'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { useDb } from '@/context/db.tsx'
-import MoodIcon from '@/components/MoodIcon.tsx'
+import { MoodIcon } from '@/components/MoodIcon.tsx'
 type Mood = {
   color: string
   image: string
@@ -18,14 +18,14 @@ export type MoodSectionProps = {
   moods: Mood[]
 }
 
-const MoodSection: React.FC<MoodSectionProps> = ({ moods }) => {
+const MoodSection: React.FC<MoodSectionProps> = function ({ moods }) {
   return (
     <div className={'grid grid-cols-5 gap-2'}>
       {moods.map((mood, i) => (
         <MoodIcon
           key={i}
           color={mood.color}
-          image_URL={mood.image}
+          imageURL={mood.image}
           id={mood.id}
         />
       ))}
@@ -33,7 +33,7 @@ const MoodSection: React.FC<MoodSectionProps> = ({ moods }) => {
   )
 }
 
-function MoodCollectionPage() {
+export function MoodCollectionPage() {
   const { getDb } = useDb()
   const [favoriteMoods, setFavorites] = useState<Mood[]>([])
   const [generalMoods, setGeneral] = useState<Mood[]>([])
@@ -96,5 +96,3 @@ function MoodCollectionPage() {
     </>
   )
 }
-
-export default MoodCollectionPage
