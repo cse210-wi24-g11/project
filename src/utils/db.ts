@@ -131,41 +131,20 @@ export async function putEntry(
   ])
 }
 
-export function getFavoriteMoods(
+export async function getFavoriteMoods(
   db: IDBDatabase,
-): DbRecord<'mood'>[] /*: Promise<DbRecord<'mood'>[]>*/ {
-  const favoritesRequest = db
-    .transaction('moodCollection', 'readwrite')
-    .objectStore('moodCollection')
-    .get('favorite')
-  favoritesRequest.onsuccess = function (event) {
-    const request = event.target as IDBRequest
-    let favoriteIdData: { moods: string[] }
-
-    if (request.result) {
-      // If the favorite record exists, use it
-      favoriteIdData = request.result as { moods: string[] }
-    } else {
-      // If the favorite record doesn't exist, create a new one
-      favoriteIdData = { moods: [] }
-    }
-
-    return favoriteIdData.moods
-  }
-  return [] // TODO: fix
-  /*
+): Promise<DbRecord<'mood'>[]> {
   const transaction = db.transaction(['mood', 'moodCollection'], 'readonly')
   const moodStore = transaction.objectStore('mood')
   const moodCollectionStore = transaction.objectStore('moodCollection')
-  const moodCollection = await toPromise<DbRecord<'moodCollection'>>(
-    moodCollectionStore.get(MOOD_COLLECTION_KEY),
-  )
-  const favoriteMoodIds = moodCollection.favorites
-  console.log({ favoriteMoodIds })
+  const favoriteMoodIds = await toPromise<
+    DbRecord<'moodCollection'>['favorites']
+  >(moodCollectionStore.get('favorite'))
+
   const favoriteMoods = await toPromise<DbRecord<'mood'>[]>(
     moodStore.get(favoriteMoodIds),
   )
-  return favoriteMoods*/
+  return favoriteMoods
 }
 
 export async function getEntriesOfDate(
