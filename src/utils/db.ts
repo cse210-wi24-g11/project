@@ -29,7 +29,7 @@ export type DbRecord<T extends DbStore> = {
   }
 }[T]
 
-const MOOD_COLLECTION_KEY = 'allMoods'
+//const MOOD_COLLECTION_KEY = 'allMoods'
 const SETTINGS_KEY = 'settings'
 
 /*
@@ -61,6 +61,12 @@ export function openDb() {
       moodCollectionStore.add({ moods: defaultMoodIDs }, 'favorite')
       moodCollectionStore.add({ moods: [] }, 'general')
       moodCollectionStore.add({ moods: [] }, 'archived')
+
+      /*
+      moodCollectionStore.add(
+        { favorites: [], general: [], archived: [] },
+        MOOD_COLLECTION_KEY,
+      )*/
     }
 
     request.onsuccess = function () {
@@ -119,9 +125,28 @@ export async function putEntry(
   ])
 }
 
-export async function getFavoriteMoods(
+export function getFavoriteMoods(
   db: IDBDatabase,
-): Promise<DbRecord<'mood'>[]> {
+) /*: Promise<DbRecord<'mood'>[]>*/ {
+  const favoritesRequest = db
+    .transaction('moodCollection', 'readwrite')
+    .objectStore('moodCollection')
+    .get('favorite')
+  favoritesRequest.onsuccess = function (event) {
+    const request = event.target as IDBRequest
+    let favoriteIdData: { moods: string[] }
+
+    if (request.result) {
+      // If the favorite record exists, use it
+      favoriteIdData = request.result as { moods: string[] }
+    } else {
+      // If the favorite record doesn't exist, create a new one
+      favoriteIdData = { moods: [] }
+    }
+
+    return favoriteIdData.moods
+  }
+  /*
   const transaction = db.transaction(['mood', 'moodCollection'], 'readonly')
   const moodStore = transaction.objectStore('mood')
   const moodCollectionStore = transaction.objectStore('moodCollection')
@@ -133,7 +158,7 @@ export async function getFavoriteMoods(
   const favoriteMoods = await toPromise<DbRecord<'mood'>[]>(
     moodStore.get(favoriteMoodIds),
   )
-  return favoriteMoods
+  return favoriteMoods*/
 }
 
 const DEFAULT_SETTINGS: DbRecord<'settings'> = {
