@@ -1,15 +1,14 @@
 // import { useEffect } from 'react'
 
 import { useQuery } from '@/db/index.ts'
-import { useMoodCollection } from '@/db/actions.ts'
-import { SETTINGS_KEY } from '@/db/constants.ts'
+import { useMoodCollection, useSettings } from '@/db/actions.ts'
 
 import type { Mood } from '@/db/types.ts'
 
 export function DbTest() {
-  const [settings] = useQuery((db) => db.settings.get(SETTINGS_KEY), [])
+  const [settings] = useSettings(null)
   const [moods] = useQuery((db) => db.moods.toArray(), [], [] as Mood[])
-  const [moodCollection] = useMoodCollection()
+  const [moodCollection] = useMoodCollection(null)
 
   return (
     <div className="flex flex-col place-content-center p-8">
