@@ -30,7 +30,7 @@ function DaySummary({ day, summaryNavBarItem }: DaySummaryPageProps) {
   const navigate = useNavigate()
   // const location = useLocation()
   const [today, setToday] = useState<Date>(() => {
-    const saved = sessionStorage.getItem(DAY_SUMMARY_KEY)
+    const saved = sessionStorage?.getItem?.(DAY_SUMMARY_KEY)
     if (!saved) {
       return day ?? new Date()
     } else {
@@ -76,7 +76,7 @@ function DaySummary({ day, summaryNavBarItem }: DaySummaryPageProps) {
       <SummaryBar summaryNavBarItem={summaryNavBarItem} />
       <div className="fixed left-0 right-0 top-10 border bg-white pb-2 pt-2">
         <DayPicker
-          day={today}
+          initialDay={today}
           onChangeDay={(day: Date) => {
             setToday(day)
           }}

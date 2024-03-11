@@ -8,26 +8,24 @@ import {
   Flex,
 } from '@adobe/react-spectrum'
 
-import { getDateAbbr } from '@/components/SummaryHelper.ts'
+import { displayDate } from '@/components/SummaryHelper.ts'
 
 import { DayPickerCalendar } from '@/components/ICalendar/ICalendar.tsx'
 
 interface DayPickerProps {
-  day: Date
+  initialDay: Date
   onChangeDay: (day: Date) => void
 }
 
-function DayPicker({ day, onChangeDay }: DayPickerProps) {
-  const [date, setDate] = useState(day)
+function DayPicker({ initialDay, onChangeDay }: DayPickerProps) {
+  const [date, setDate] = useState(initialDay)
 
   return (
     <DialogTrigger type="tray">
       <ActionButton>
         <div className="flex h-10 flex-row">
           <div className="flex flex-row items-center justify-center border-r border-gray-500">
-            <p className="ml-8 mr-8 line-clamp-1">
-              {getDateAbbr(date) + ' ' + date.getFullYear()}
-            </p>
+            <p className="ml-8 mr-8 line-clamp-1">{displayDate(date)}</p>
           </div>
           <div className="flex w-10 flex-row items-center justify-center">
             <Calendar aria-label="date picker icon" size="S" />

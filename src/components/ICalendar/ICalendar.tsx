@@ -15,6 +15,7 @@ import {
   get1stDayInWeek,
 } from '@/components/SummaryHelper.ts'
 import { getEntryDateKey } from '@/utils/db.ts'
+import { cls } from '@/utils/cls.ts'
 
 interface CalendarGridProps {
   num: string
@@ -55,17 +56,17 @@ export function DayPickerCalendar({ day, onSelectDay }: DayPickerCalendar) {
   }
 
   const dayItemStyle = (selected: boolean, inCurrentMonth: boolean) => {
-    const common =
-      'flex items-center justify-center h-full text-center align-middle border-2 rounded-md '
-    if (selected) {
-      return common.concat(
-        'text-blue-500 font-bold border-blue-500 bg-blue-100',
-      )
-    } else if (inCurrentMonth) {
-      return common.concat('text-black border-white')
-    } else {
-      return common.concat('text-gray-300 border-white')
-    }
+    const base =
+      'flex items-center justify-center h-full text-center align-middle border-2 rounded-md'
+    const selectedStyle = 'text-blue-500 font-bold border-blue-500 bg-blue-100'
+    const currMonthStyle = 'text-black border-white'
+    const otherMonthStyle = 'text-gray-300 border-white'
+    const conditional = selected
+      ? selectedStyle
+      : inCurrentMonth
+        ? currMonthStyle
+        : otherMonthStyle
+    return cls(base, conditional)
   }
 
   const buildGrids = (data: CalendarGridProps[][]) => {
@@ -148,27 +149,26 @@ export function WeekPickerCalendar({
   }
 
   const weekRowStyle = (selected: boolean) => {
-    const common =
-      'mt-2 flex flex-row justify-between border-2 rounded-md font-mono '
-    if (selected) {
-      return common.concat(
-        'bg-blue-100 border-blue-500 text-blue-500 font-bold',
-      )
-    } else {
-      return common.concat('bg-white border-white text-black')
-    }
+    const base =
+      'mt-2 flex flex-row justify-between border-2 rounded-md font-mono'
+    const selectedStyle = 'bg-blue-100 border-blue-500 text-blue-500 font-bold'
+    const notSelectedStyle = 'bg-white border-white text-black'
+    const conditional = selected ? selectedStyle : notSelectedStyle
+    return cls(base, conditional)
   }
 
   const dayItemStyle = (selected: boolean, inCurrentMonth: boolean) => {
-    const common =
-      'flex items-center justify-center h-full text-center align-middle '
-    if (selected) {
-      return common.concat('text-blue-500 font-bold')
-    } else if (inCurrentMonth) {
-      return common.concat('text-black')
-    } else {
-      return common.concat('text-gray-300')
-    }
+    const base =
+      'flex items-center justify-center h-full text-center align-middle'
+    const selectedStyle = 'text-blue-500 font-bold'
+    const currMonthStyle = 'text-black'
+    const otherMonthStyle = 'text-gray-300'
+    const conditional = selected
+      ? selectedStyle
+      : inCurrentMonth
+        ? currMonthStyle
+        : otherMonthStyle
+    return cls(base, conditional)
   }
 
   const buildGrids = (data: CalendarGridProps[][]) => {

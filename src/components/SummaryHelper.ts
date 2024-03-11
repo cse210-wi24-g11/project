@@ -44,6 +44,10 @@ export function getDateAbbr(date: Date): string {
   return abbr[date.getMonth()] + ' ' + date.getDate()
 }
 
+export function displayDate(date: Date): string {
+  return `${getDateAbbr(date)} ${date.getFullYear()}`
+}
+
 export function date2sessionStr(date: Date): string {
   return getEntryDateKey(date)
 }
@@ -164,29 +168,13 @@ export function getNextMonthDatesInCalendar(date: Date): Date[] {
   return res
 }
 
-// TODO: fix
-export function getRecordsInRange(dates: Date[]): SummaryDayMoodRecord[] {
-  return dates.map((d, i) => {
-    // const val = 0 + Math.floor(Math.random() * 3);
-    const val = Math.floor(Math.random() * 6)
-    return {
-      id: i + 100 * d.getDay(),
-      day: new Date(d),
-      title: 'day ' + d.getDate(),
-      value: val,
-      color: mockMoodColors[val],
-      // color: d3.color('steelblue'),
-    }
-  })
-}
-
 export function getMoodOfDate(date: Date): SummaryMoodRecord[] {
-  // TODO: remove!
   return Array.from({ length: 10 }, (_, index) => ({
-    id: index + 100 * date.getDay(),
+    id: (index + 100 * date.getDay()).toString(),
     day: date,
     title: 'Day ' + date.getDate() + ' is good.',
     color: mockMoodColors[Math.floor(Math.random() * 6)],
+    imagePath: ''
   }))
 }
 

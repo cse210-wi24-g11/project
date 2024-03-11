@@ -22,12 +22,12 @@ interface WeekPickerProps {
 }
 
 function WeekPicker({ startDay, onChangeWeek }: WeekPickerProps) {
-  const [weekStart, setWeekStart] = useState(get1stDayInWeek(startDay)) // TODO: remove
+  const [weekStart, setWeekStart] = useState(get1stDayInWeek(startDay))
 
-  const dayToWeekStr = (date: Date) => {
+  function dayToWeekStr(date: Date): string {
     const days = getDatesInWeek(date)
     if (days.length == 0) {
-      return
+      return ''
     }
     const first = days[0]
     const last = days[days.length - 1]

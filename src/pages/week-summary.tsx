@@ -31,7 +31,7 @@ function WeekSummary({ summaryNavBarItem }: WeekSummaryProps) {
   const navigate = useNavigate()
 
   const [startDay, setStartDay] = useState<Date>(() => {
-    const saved = sessionStorage.getItem(WEEK_SUMMARY_KEY)
+    const saved = sessionStorage?.getItem?.(WEEK_SUMMARY_KEY)
     if (!saved) {
       return get1stDayInWeek(new Date())
     } else {
