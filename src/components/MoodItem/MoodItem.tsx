@@ -22,10 +22,7 @@ const MoodListItem = (props: MoodListItemProps) => {
       className="h-30 left-0 right-0 flex flex-row items-start rounded-md border bg-white"
       onClick={() => onClick(recordId)}
     >
-      <img
-        className="rounded-l-md"
-        src={imageUrl}
-      />
+      <img className="rounded-l-md" src={imageUrl} />
       <div className="grid-flow-col">
         <div className="ml-4 mt-2 flex content-center items-center rounded-md">
           <div
