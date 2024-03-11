@@ -51,6 +51,8 @@ type UseQueryResult<T, I> =
   | [data: I, isLoading: true]
   | [data: T, isLoading: false]
 
+export type Querier<T> = (db: DexieDb) => Promise<T>
+
 /**
  * provides observable data from the indexeddb database
  * that automatically updates and triggers a re-render when the observed data changes.
@@ -75,7 +77,7 @@ type UseQueryResult<T, I> =
  * ```
  */
 export function useQuery<T, I = undefined>(
-  querier: (db: DexieDb) => Promise<T>,
+  querier: Querier<T>,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   deps: any[],
   initial?: I,

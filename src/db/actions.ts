@@ -3,24 +3,26 @@
  * functions for reading from and writing to the database
  */
 
-import { db, useQuery } from './index.ts'
+import { type Querier, db, useQuery } from './index.ts'
 import { MOOD_COLLECTION_KEY, SETTINGS_KEY } from './constants.ts'
 
 import type { Mood, MoodCollectionCategory, MoodId, Settings } from './types.ts'
 
-export function useSettings<T>(initial?: T) {
-  return useQuery(
-    async (db) => {
-      const settings = await db.settings.get(SETTINGS_KEY)
-      // settings are populated on db initialization,
-      // only ever get updated and not removed,
-      // and use a stable, constant key.
-      // as such we know that `get` should always be successful and return a value.
-      return settings!
-    },
-    [],
-    initial,
-  )
+function createHook<T>(query: Querier<T>) {
+  return <T>(initial?: T) => useQuery(query, [], initial)
+}
+
+export const useSettings = createHook(getSettings)
+export const useMoodCollection = createHook(getMoodCollection)
+export const useFavoriteMoods = createHook(getFavoriteMoods)
+
+export async function getSettings() {
+  const settings = await db.settings.get(SETTINGS_KEY)
+  // settings are populated on db initialization,
+  // only ever get updated and not removed,
+  // and use a stable, constant key.
+  // as such we know that `get` should always be successful and return a value.
+  return settings!
 }
 
 /**
@@ -33,21 +35,20 @@ export async function updateSettings(settings: Partial<Settings>) {
 }
 
 export async function getMoodCollection() {
-  return (await db.moodCollection.get(MOOD_COLLECTION_KEY))!
+  const moodCollection = await db.moodCollection.get(MOOD_COLLECTION_KEY)
+  // mood collection is populated on db initialization,
+  // only ever gets updated and not removed,
+  // and uses a stable, constant key.
+  // as such we know that `get` should always be successful and return a value.
+  return moodCollection!
 }
 
-export function useMoodCollection<T>(initial?: T) {
-  return useQuery(getMoodCollection, [], initial)
-}
-
-export function useFavoriteMoods<T>(initial?: T) {
-  return useQuery(async (db) => {
-    const moodCollection = await getMoodCollection()
-    const { favorites: favoriteMoodsIds } = moodCollection
-    const favoriteMoods = await db.moods.bulkGet(favoriteMoodsIds)
-    const validFavoriteMoods = favoriteMoods.filter(Boolean) as Mood[]
-    return validFavoriteMoods
-  }, [], initial)
+export async function getFavoriteMoods() {
+  const moodCollection = await getMoodCollection()
+  const { favorites: favoriteMoodsIds } = moodCollection
+  const favoriteMoods = await db.moods.bulkGet(favoriteMoodsIds)
+  const validFavoriteMoods = favoriteMoods.filter(Boolean) as Mood[]
+  return validFavoriteMoods
 }
 
 /**
