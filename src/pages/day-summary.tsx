@@ -1,51 +1,98 @@
-import { NavLink } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import * as d3 from 'd3'
 
+import { UPDATE_MOOD_ROUTE } from '@/routes.ts'
+import {
+  date2sessionStr,
+  sessionStr2date,
+  SummaryMoodRecord,
+} from '@/components/SummaryHelper.ts'
+import { getEntriesOfDate, getMoodById } from '@/utils/db.ts'
 import { updateSettingsInDb } from '@/utils/db.ts'
 
 import { useDb } from '@/context/db.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { SummaryBar } from '@/components/navigation/summary-bar.tsx'
 import { SummaryNavbarItem } from '@/components/navigation/summary-bar.tsx'
+import MoodEntryList from '@/components/MoodEntryList/MoodEntryList.tsx'
+import DayPicker from '@/components/DayPicker/DayPicker.tsx'
 
-type DaySummaryBarProps = {
+interface DaySummaryPageProps {
+  day?: Date
   summaryNavBarItem: SummaryNavbarItem
 }
 
-export function DaySummary({ summaryNavBarItem }: DaySummaryBarProps) {
+const DAY_SUMMARY_KEY = 'day_summary'
+
+function DaySummary({ day, summaryNavBarItem }: DaySummaryPageProps) {
   const { getDb } = useDb()
+  const navigate = useNavigate()
+  // const location = useLocation()
+  const [today, setToday] = useState<Date>(() => {
+    const saved = sessionStorage?.getItem?.(DAY_SUMMARY_KEY)
+    if (!saved) {
+      return day ?? new Date()
+    } else {
+      return sessionStr2date(saved)
+    }
+  })
+  const [listItems, setListItems] = useState<SummaryMoodRecord[]>([])
+
   useEffect(() => {
     async function updateLastVisited() {
       const db = await getDb()
       updateSettingsInDb(db, { lastVisited: 'day' })
     }
+
     void updateLastVisited()
   }, [getDb])
 
+  useEffect(() => {
+    sessionStorage.setItem(DAY_SUMMARY_KEY, date2sessionStr(today))
+
+    async function run() {
+      const db = await getDb()
+      const entries = (await getEntriesOfDate(db, today)) ?? []
+      const records = Array<SummaryMoodRecord>()
+      for (const entry of entries) {
+        const mood = await getMoodById(db, entry.moodId)
+        records.push({
+          id: entry.id,
+          day: entry.timestamp,
+          title: entry.description,
+          color: d3.rgb(mood?.color ?? 'blue'),
+          imagePath: mood?.imagePath ?? 'https://i.imgur.com/yXOvdOSs.jpg', // TODO: remove link
+        })
+      }
+      setListItems(records)
+    }
+
+    void run()
+  }, [today, getDb])
+
   return (
-    <>
+    <div className="flex h-screen flex-col">
       <SummaryBar summaryNavBarItem={summaryNavBarItem} />
-      <div className="flex flex-col items-center">
-        <div>
-          <p className="text-black">Your day so far</p>
-          <div className="mt-2 h-60 w-60 rounded-md border border-gray-200">
-            {/* insert mood source (img?) here */}
-            <div></div>
-          </div>
-        </div>
-        <NavLink className="mt-5 w-80 bg-white" to="/UpdateMood">
-          <div className="rounded-md border px-1 py-2">
-            <div className="fßex items-center justify-start">
-              <div className="mr-2 h-10 w-10 rounded-md border border-gray-200">
-                {/* insert mood source (img?) here */}
-                <div></div>
-              </div>
-              <p className="text-black">time: content</p>
-            </div>
-          </div>
-        </NavLink>
+      <div className="fixed left-0 right-0 top-10 border bg-white pb-2 pt-2">
+        <DayPicker
+          initialDay={today}
+          onChangeDay={(day: Date) => {
+            setToday(day)
+          }}
+        />
+      </div>
+      <div className="mt-24 flex-grow overflow-y-auto bg-white px-8 pb-16">
+        <MoodEntryList
+          records={listItems}
+          onClickRecord={(record: SummaryMoodRecord) => {
+            navigate(UPDATE_MOOD_ROUTE, { state: { id: record.id } })
+          }}
+        />
       </div>
       <MainNavBar />
-    </>
+    </div>
   )
 }
+
+export default DaySummary

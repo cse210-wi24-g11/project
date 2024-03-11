@@ -1,4 +1,6 @@
 // db.ts
+import { getDateAbbr } from '@/components/SummaryHelper.ts'
+
 const DB_NAME = 'user_db'
 
 export type DbStore = 'mood' | 'moodCollection' | 'entry' | 'settings'
@@ -23,8 +25,8 @@ export type DbRecord<T extends DbStore> = {
     timestamp: Date
   }
   settings: {
-    defaultView: 'lastVisited' | 'day' | 'week' | 'month'
-    lastVisited?: 'day' | 'week' | 'month'
+    defaultView: 'lastVisited' | 'day' | 'week'
+    lastVisited?: 'day' | 'week'
     remindMe?: 'daily' | 'weekdays' | 'weekends' | 'none'
     reminderTimes?: '9am' | '3pm' | '6pm' | 'none'
   }
@@ -51,7 +53,9 @@ export function openDb() {
       })
       db.createObjectStore('entry', { keyPath: 'id' })
       db.createObjectStore('settings', { keyPath: null })
-      db.createObjectStore('dateCollection', { keyPath: null })
+      const dateCollection = db.createObjectStore('dateCollection', {
+        keyPath: null,
+      })
 
       /* add default data to the mood store */
       const colors = ['blue', 'green', 'yellow', 'orange', 'red']
@@ -68,6 +72,40 @@ export function openDb() {
         { favorites: [], general: [], archived: [] },
         MOOD_COLLECTION_KEY,
       )*/
+
+      /* add entry in date collection for tests in day summary page */
+      const today = new Date()
+      const todayStr = getDateAbbr(today)
+      const tmp1: DbRecord<'entry'>[] = [
+        {
+          id: '1',
+          moodId: '1',
+          description: `this is a test entry for ${todayStr}. test test test test test test test test test test test `,
+          timestamp: today,
+        },
+        {
+          id: '2',
+          moodId: '2',
+          description: `this is a test entry for ${todayStr}.test test test test test test test test test test test test test test test test test test test test `,
+          timestamp: today,
+        },
+      ] // TODO: change data type
+      // console.log('db create date collection:', tmp1);
+      dateCollection.add(tmp1, getEntryDateKey(today))
+
+      const yesterday = new Date()
+      yesterday.setDate(yesterday.getDate() - 1)
+      console.log('yesterday:', yesterday)
+      const tmp2: DbRecord<'entry'>[] = Array.from(
+        { length: 10 },
+        (_, index) => ({
+          id: (index + 100 * yesterday.getDate()).toString(),
+          moodId: '3',
+          description: 'Test for ' + getEntryDateKey(yesterday),
+          timestamp: yesterday,
+        }),
+      )
+      dateCollection.add(tmp2, getEntryDateKey(yesterday))
     }
 
     request.onsuccess = function () {
@@ -128,7 +166,7 @@ export async function putEntry(
 
 export function getFavoriteMoods(
   db: IDBDatabase,
-) /*: Promise<DbRecord<'mood'>[]>*/ {
+): DbRecord<'mood'>[] /*: Promise<DbRecord<'mood'>[]>*/ {
   const favoritesRequest = db
     .transaction('moodCollection', 'readwrite')
     .objectStore('moodCollection')
@@ -147,6 +185,7 @@ export function getFavoriteMoods(
 
     return favoriteIdData.moods
   }
+  return [] // TODO: fix
   /*
   const transaction = db.transaction(['mood', 'moodCollection'], 'readonly')
   const moodStore = transaction.objectStore('mood')
@@ -160,6 +199,25 @@ export function getFavoriteMoods(
     moodStore.get(favoriteMoodIds),
   )
   return favoriteMoods*/
+}
+
+export async function getEntriesOfDate(
+  db: IDBDatabase,
+  date: Date,
+): Promise<DbRecord<'entry'>[] | undefined> {
+  const dayKey = getEntryDateKey(date)
+  const objectStore = db
+    .transaction('dateCollection', 'readonly')
+    .objectStore('dateCollection')
+  return await toPromise<DbRecord<'entry'>[]>(objectStore.get(dayKey))
+}
+
+export async function getMoodById(
+  db: IDBDatabase,
+  moodId: string,
+): Promise<DbRecord<'mood'> | undefined> {
+  const objectStore = db.transaction('mood', 'readonly').objectStore('mood')
+  return await toPromise<DbRecord<'mood'>>(objectStore.get(moodId))
 }
 
 const DEFAULT_SETTINGS: DbRecord<'settings'> = {
@@ -207,6 +265,6 @@ export function updateSettingsInDb(
   }
 }
 
-function getEntryDateKey(date: Date): string {
+export function getEntryDateKey(date: Date): string {
   return `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`
 }

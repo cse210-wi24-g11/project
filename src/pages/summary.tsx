@@ -1,12 +1,7 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import {
-  DAY_SUMMARY_ROUTE,
-  MONTH_SUMMARY_ROUTE,
-  Route,
-  WEEK_SUMMARY_ROUTE,
-} from '@/routes.ts'
+import { DAY_SUMMARY_ROUTE, Route, WEEK_SUMMARY_ROUTE } from '@/routes.ts'
 import { DbRecord, getSettings } from '@/utils/db.ts'
 
 import { useDb } from '@/context/db.tsx'
@@ -19,7 +14,6 @@ const DEFAULT_VIEW_TO_ROUTE: Record<
 > = {
   day: DAY_SUMMARY_ROUTE,
   week: WEEK_SUMMARY_ROUTE,
-  month: MONTH_SUMMARY_ROUTE,
   lastVisited: DAY_SUMMARY_ROUTE,
 }
 

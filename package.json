@@ -17,15 +17,18 @@
   },
   "dependencies": {
     "@adobe/react-spectrum": "^3.34.1",
+    "@types/d3": "^7.4.3",
     "@spectrum-icons/workflow": "^4.2.10",
     "@react-spectrum/toast": "^3.0.0-beta.10",
     "react": "^18.2.0",
+    "react-aria": "^3.32.1",
     "react-color": "^2.19.3",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.1",
     "react-svg": "^16.1.33"
   },
   "devDependencies": {
+    "@tailwindcss/line-clamp": "^0.4.4",
     "@types/react": "^18.2.55",
     "@types/react-color": "^3.0.12",
     "@types/react-dom": "^18.2.19",
@@ -34,6 +37,7 @@
     "@vitejs/plugin-react": "^4.2.1",
     "@vitest/coverage-v8": "^1.2.2",
     "autoprefixer": "^10.4.17",
+    "d3": "^7.8.5",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.1",
@@ -43,11 +47,15 @@
     "postcss": "^8.4.35",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.11",
+    "react-calendar": "^4.8.0",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.2.2",
     "vite": "^5.1.0",
     "vite-plugin-pwa": "^0.18.2",
     "vite-tsconfig-paths": "^4.3.1",
     "vitest": "^1.2.2"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.12.1"
   }
 }
