@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { useEffect } from 'react'
 import { Picker, Item } from '@adobe/react-spectrum'
-// import { NavLink } from 'react-router-dom'
+import { Button } from '@react-spectrum/button'
+import { useNavigate } from 'react-router-dom'
 
+import { CUSTOM_MOOD_ROUTE } from '@/routes.ts'
 import { DbRecord, getSettings } from '@/utils/db.ts'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
@@ -109,6 +111,10 @@ export function Settings() {
       console.error('Error accessing settings:', error?.message)
     }
   }
+  const navigate = useNavigate()
+  const addCustomMood = () => {
+    navigate(CUSTOM_MOOD_ROUTE)
+  }
   return (
     <div className="flex flex-col items-center bg-white">
       <section className="w-full bg-white p-4 pl-2 pr-6 shadow-md">
@@ -165,11 +171,15 @@ export function Settings() {
         </Picker>
       </section>
 
-      <div className="bg-white p-4 shadow-md">
+      <div className="w-full bg-white p-4 shadow-md">
         <h2 className="mb-4 text-left font-semibold">Mood collection</h2>
-        <button className="rounded-md bg-blue-500 px-4 py-1 text-white">
+        <Button
+          variant="primary"
+          aria-label="customize mood collection"
+          onPress={addCustomMood}
+        >
           Customize mood collection
-        </button>
+        </Button>
       </div>
       <MainNavBar />
     </div>
