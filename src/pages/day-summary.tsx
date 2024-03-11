@@ -25,7 +25,7 @@ interface DaySummaryPageProps {
 
 const DAY_SUMMARY_KEY = 'day_summary'
 
-const DaySummary = ({ day, summaryNavBarItem }: DaySummaryPageProps) => {
+function DaySummary({ day, summaryNavBarItem }: DaySummaryPageProps) {
   const { getDb } = useDb()
   const navigate = useNavigate()
   // const location = useLocation()
@@ -44,6 +44,7 @@ const DaySummary = ({ day, summaryNavBarItem }: DaySummaryPageProps) => {
       const db = await getDb()
       updateSettingsInDb(db, { lastVisited: 'day' })
     }
+
     void updateLastVisited()
   }, [getDb])
 

@@ -21,7 +21,7 @@ interface WeekPickerProps {
   onChangeWeek: (startDay: Date) => void
 }
 
-const WeekPicker = ({ startDay, onChangeWeek }: WeekPickerProps) => {
+function WeekPicker({ startDay, onChangeWeek }: WeekPickerProps) {
   const [weekStart, setWeekStart] = useState(get1stDayInWeek(startDay)) // TODO: remove
 
   const dayToWeekStr = (date: Date) => {

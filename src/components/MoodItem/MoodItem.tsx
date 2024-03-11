@@ -11,7 +11,7 @@ interface MoodListItemProps {
   onClick: (recordId: string) => void
 }
 
-const MoodListItem = (props: MoodListItemProps) => {
+function MoodListItem(props: MoodListItemProps) {
   const { imageUrl, title, date, color, recordId, onClick } = props
 
   const colorTagName = (color: RGBColor) => {

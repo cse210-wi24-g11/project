@@ -28,7 +28,7 @@ interface DayPickerCalendar {
   onSelectDay: (day: Date) => void
 }
 
-export const DayPickerCalendar = ({ day, onSelectDay }: DayPickerCalendar) => {
+export function DayPickerCalendar({ day, onSelectDay }: DayPickerCalendar) {
   const [monthStart, setMonthStart] = useState<Date>(get1stDayInMonth(day))
   const [gridItems, setGridItems] = useState<CalendarGridProps[][]>([])
 
@@ -114,10 +114,10 @@ interface WeekPickerCalendarProps {
   onSelectWeek: (start: Date) => void
 }
 
-export const WeekPickerCalendar = ({
+export function WeekPickerCalendar({
   weekStartDay,
   onSelectWeek,
-}: WeekPickerCalendarProps) => {
+}: WeekPickerCalendarProps) {
   const [monthStart, setMonthStart] = useState<Date>(
     get1stDayInMonth(weekStartDay),
   )
@@ -246,11 +246,11 @@ interface CalendarContainerProps {
   dayItems: React.ReactNode
 }
 
-const CalendarContainer = ({
+function CalendarContainer({
   monthStartDate,
   onChangeMonth,
   dayItems,
-}: CalendarContainerProps) => {
+}: CalendarContainerProps) {
   const [monthStr, setMonthStr] = useState('')
 
   useEffect(() => {
@@ -306,45 +306,3 @@ const CalendarContainer = ({
     </div>
   )
 }
-
-// class ICalendar extends React.Component<ICalendarProps> {
-//   monthStartDay = new Date()
-//
-//   onMonthStartDayChange = (date: Date) => {
-//     if (
-//       this.monthStartDay.getMonth() != date.getMonth() ||
-//       this.monthStartDay.getFullYear() != date.getFullYear()
-//     ) {
-//       this.monthStartDay = date
-//       this.props.onChangeMonth(date)
-//     }
-//   }
-//
-//   render() {
-//     const onClickDay = this.props.onClickDay
-//     return (
-//       <div className="month-summary-page-calendar">
-//         <Calendar
-//           locale="en-GB"
-//           activeStartDate={this.props.monthStartDay}
-//           onClickDay={onClickDay}
-//           onClickMonth={(value: Date) => {
-//             this.onMonthStartDayChange(value)
-//           }}
-//           onActiveStartDateChange={({
-//             action,
-//             activeStartDate,
-//             value,
-//             view,
-//           }) => {
-//             if (view === 'month' && activeStartDate != null) {
-//               this.onMonthStartDayChange(activeStartDate)
-//             }
-//           }}
-//         />
-//       </div>
-//     )
-//   }
-// }
-
-// export default ICalendar

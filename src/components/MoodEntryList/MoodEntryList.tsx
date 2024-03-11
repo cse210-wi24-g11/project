@@ -7,7 +7,7 @@ interface MoodEntryListProps {
   onClickRecord: (record: SummaryMoodRecord) => void
 }
 
-const MoodEntryList = ({ records, onClickRecord }: MoodEntryListProps) => {
+function MoodEntryList({ records, onClickRecord }: MoodEntryListProps) {
   return (
     <div>
       {records.length == 0 ? (

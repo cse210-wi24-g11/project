@@ -17,7 +17,7 @@ interface DayPickerProps {
   onChangeDay: (day: Date) => void
 }
 
-const DayPicker = ({ day, onChangeDay }: DayPickerProps) => {
+function DayPicker({ day, onChangeDay }: DayPickerProps) {
   const [date, setDate] = useState(day)
 
   return (

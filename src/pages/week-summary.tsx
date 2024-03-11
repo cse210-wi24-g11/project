@@ -26,7 +26,7 @@ type WeekSummaryProps = {
 
 const WEEK_SUMMARY_KEY = 'week_summary'
 
-const WeekSummary = ({ summaryNavBarItem }: WeekSummaryProps) => {
+function WeekSummary({ summaryNavBarItem }: WeekSummaryProps) {
   const { getDb } = useDb()
   const navigate = useNavigate()
 
@@ -45,6 +45,7 @@ const WeekSummary = ({ summaryNavBarItem }: WeekSummaryProps) => {
       const db = await getDb()
       updateSettingsInDb(db, { lastVisited: 'week' })
     }
+
     void updateLastVisited()
   }, [getDb])
 
@@ -75,7 +76,7 @@ const WeekSummary = ({ summaryNavBarItem }: WeekSummaryProps) => {
   }, [startDay, getDb])
 
   return (
-    <>
+    <div className="flex h-screen flex-col">
       <SummaryBar summaryNavBarItem={summaryNavBarItem} />
       <div className="fixed left-0 right-0 top-10 border bg-white pb-2 pt-2">
         <WeekPicker
@@ -85,18 +86,16 @@ const WeekSummary = ({ summaryNavBarItem }: WeekSummaryProps) => {
           }}
         />
       </div>
-      <div className="w-full bg-white">
-        <div className="fixed bottom-20 left-8 right-8 top-24 overflow-y-auto">
-          <MoodEntryList
-            records={records}
-            onClickRecord={(record: SummaryMoodRecord) => {
-              navigate(UPDATE_MOOD_ROUTE, { state: { id: record.id } })
-            }}
-          />
-        </div>
+      <div className="mt-24 flex-grow overflow-y-auto bg-white px-8 pb-16">
+        <MoodEntryList
+          records={records}
+          onClickRecord={(record: SummaryMoodRecord) => {
+            navigate(UPDATE_MOOD_ROUTE, { state: { id: record.id } })
+          }}
+        />
       </div>
       <MainNavBar />
-    </>
+    </div>
   )
 }
 
