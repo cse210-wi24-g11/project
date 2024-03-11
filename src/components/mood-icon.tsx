@@ -10,7 +10,7 @@ import { useLongPress } from './use-long-press.tsx'
 export type MoodIconProps = {
   color: string
   imageURL: string
-  id: number
+  id: string
 }
 
 export const MoodIcon: React.FC<MoodIconProps> = function({ color, imageURL, id }) {

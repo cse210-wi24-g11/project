@@ -16,6 +16,7 @@ import { Summary } from './pages/summary.tsx'
 import { DbTest } from './pages/db-test.tsx'
 import { CustomMood } from './pages/custom-mood.tsx'
 import { EditMood } from './pages/edit-mood.tsx'
+import { MoodCollection } from './pages/mood-collection.tsx'
 import {
   ADD_ENTRY_ROUTE,
   DAY_SUMMARY_ROUTE,
@@ -24,6 +25,7 @@ import {
   SUMMARY_BASE_ROUTE,
   UPDATE_MOOD_ROUTE,
   WEEK_SUMMARY_ROUTE,
+  MOOD_COLLECTION_ROUTE
 } from './routes.ts'
 
 import './index.css'
@@ -37,6 +39,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             <Route path={ADD_ENTRY_ROUTE} element={<AddEntry />} />
             <Route path={SETTINGS_ROUTE} element={<Settings />} />
             <Route path={SUMMARY_BASE_ROUTE} element={<Summary />} />
+            <Route path={MOOD_COLLECTION_ROUTE} element={<MoodCollection />} />
             <Route
               path={DAY_SUMMARY_ROUTE}
               element={<DaySummary summaryNavBarItem={'Day'} />}

@@ -4,13 +4,13 @@ import { useNavigate } from 'react-router-dom'
 
 import { CUSTOM_MOOD_ROUTE } from '@/routes.ts'
 
-import { MoodIcon } from '@/components/mood-icon.tsx'
+import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { useDb } from '@/context/db.tsx'
 type Mood = {
   color: string
-  image: string
-  id: number
+  image: Blob
+  id: string
 }
 
 //favorite section
@@ -22,18 +22,18 @@ const MoodSection: React.FC<MoodSectionProps> = function ({ moods }) {
   return (
     <div className={'grid grid-cols-5 gap-2'}>
       {moods.map((mood, i) => (
-        <MoodIcon
+        <MoodSwatch
           key={i}
           color={mood.color}
-          imageURL={mood.image}
-          id={mood.id}
+          imgSrc={URL.createObjectURL(mood.image)}
+          size='single-line-height'
         />
       ))}
     </div>
   )
 }
 
-export function MoodCollectionPage() {
+export function MoodCollection() {
   const { getDb } = useDb()
   const [favoriteMoods, setFavorites] = useState<Mood[]>([])
   const [generalMoods, setGeneral] = useState<Mood[]>([])
@@ -43,6 +43,9 @@ export function MoodCollectionPage() {
   useEffect(() => {
     async function run() {
       const collectionTypes: string[] = ['favorite', 'general', 'archived']
+      const tempFavorites: Mood[] = [];
+      const tempGeneral: Mood[] = [];
+      const tempArchived: Mood[] = [];
       const db = await getDb()
       for (const type of collectionTypes) {
         const requestType = db
@@ -60,14 +63,16 @@ export function MoodCollectionPage() {
               .get(moodID)
             requestMood.onsuccess = (event) => {
               const targetMood = event.target as IDBRequest
-              const moodObj = targetMood.result as { mood: Mood }
-              const mood = moodObj.mood
-              if (type === 'favorite') {
-                setFavorites([...favoriteMoods, mood])
-              } else if (type === 'general') {
-                setGeneral([...generalMoods, mood])
-              } else {
-                setArchived([...archivedMoods, mood])
+              const moodData = targetMood.result as Mood
+              if (type === 'favorite' && targetMood) {
+                tempFavorites.push(moodData)
+                setFavorites(tempFavorites)
+              } else if (type === 'general' && targetMood) {
+                tempGeneral.push(moodData)
+                setGeneral(tempGeneral)
+              } else if (type == "archived" && targetMood){
+                tempArchived.push(moodData)
+                setArchived(tempArchived)
               }
             }
           }
@@ -76,7 +81,8 @@ export function MoodCollectionPage() {
     }
 
     void run()
-  }, [archivedMoods, favoriteMoods, generalMoods, getDb])
+    return () => {}
+  }, [getDb])
 
   const addCustomMood = () => {
     navigate(CUSTOM_MOOD_ROUTE)
@@ -91,6 +97,8 @@ export function MoodCollectionPage() {
         <MoodSection moods={favoriteMoods} />
         <h1>General</h1>
         <MoodSection moods={generalMoods} />
+        <h1>Archived</h1>
+        <MoodSection moods={archivedMoods} />
       </div>
       <MainNavBar />
     </>

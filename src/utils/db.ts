@@ -57,7 +57,7 @@ export function openDb() {
       const colors = ['blue', 'green', 'yellow', 'orange', 'red']
       const defaultMoodIDs = ['1', '2', '3', '4', '5']
       for (let i = 1; i <= 5; i++) {
-        moodStore.add({ id: i, color: colors[i - 1], image: new Blob() })
+        moodStore.add({ id: defaultMoodIDs[i-1], color: colors[i - 1], image: new Blob() })
       }
       moodCollectionStore.add({ moods: defaultMoodIDs }, 'favorite')
       moodCollectionStore.add({ moods: [] }, 'general')
