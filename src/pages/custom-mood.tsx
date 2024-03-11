@@ -2,12 +2,14 @@ import { useState } from 'react'
 import { Button, Picker, Item, Key } from '@adobe/react-spectrum'
 import { ToastContainer, ToastQueue } from '@react-spectrum/toast'
 
+import imagePlaceholderUrl from '@/assets/image-path.png'
+
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import {ColorPicker} from '@/components/custom-mood/color-picker.tsx' // Adjust the import path based on the actual location
 import {ImageUploadComponent} from '@/components/custom-mood/upload-image.tsx'
 import {DisplayImageComponent} from '@/components/custom-mood/display-image.tsx'
 import { useDb } from '@/context/db.tsx'
-import imagePlaceholderUrl from '@/assets/image-path.png'
+
 
 // Function to fetch image as Blob from a given URL
 const getImageBlob = async (imageUrl: string) => {
