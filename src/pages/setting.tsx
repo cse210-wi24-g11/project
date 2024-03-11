@@ -5,7 +5,7 @@ import { Button } from '@react-spectrum/button'
 import { useNavigate } from 'react-router-dom'
 
 import { CUSTOM_MOOD_ROUTE } from '@/routes.ts'
-import { DbRecord, getSettings } from '@/utils/db.ts'
+import { DbRecord, getSettings, updateSettingsInDb } from '@/utils/db.ts'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { useDb } from '@/context/db.tsx'
@@ -24,12 +24,15 @@ const REMINDER_TIMES_LABEL_ID = 'settings-reminder-times-label'
 const defaultViewOptions: PickerOptions<
   Required<SettingsShape>['defaultView']
 > = [
+  { key: 'lastvisited', label: 'Last Visited'},
   { key: 'month', label: 'Month' },
   { key: 'week', label: 'Week' },
   { key: 'day', label: 'Day' },
 ]
 
-const remindMeOptions: PickerOptions<Required<SettingsShape>['remindMe']> = [
+const remindMeOptions: PickerOptions<
+  Required<SettingsShape>['remindMe']
+> = [
   { key: 'daily', label: 'Daily' },
   { key: 'weekdays', label: 'Weekdays' },
   { key: 'weekends', label: 'Weekends' },
@@ -91,26 +94,7 @@ export function Settings() {
     updateSettingsInDb(db, { reminderTimes: newReminderTimes })
   }
 
-  const updateSettingsInDb = (
-    db: IDBDatabase,
-    settings: Partial<SettingsShape>,
-  ) => {
-    const transaction = db.transaction(['settings'], 'readwrite')
-    const store = transaction.objectStore('settings')
-    const request = store.get('settings')
-
-    request.onsuccess = () => {
-      // avoid undefined/any
-      const data = (request.result || {}) as SettingsShape
-      const updatedData: SettingsShape = { ...data, ...settings }
-      store.put(updatedData, 'settings')
-    }
-
-    request.onerror = (e: Event) => {
-      const error = (e.target as IDBRequest).error
-      console.error('Error accessing settings:', error?.message)
-    }
-  }
+  
   const navigate = useNavigate()
   const addCustomMood = () => {
     navigate(CUSTOM_MOOD_ROUTE)

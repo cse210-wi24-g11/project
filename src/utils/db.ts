@@ -2,7 +2,7 @@
 const DB_NAME = 'user_db'
 
 export type DbStore = 'mood' | 'moodCollection' | 'entry' | 'settings'
-
+type viewTpye = 'month' | 'day' | 'week'
 type MoodId = string
 
 export type DbRecord<T extends DbStore> = {
@@ -23,7 +23,8 @@ export type DbRecord<T extends DbStore> = {
     timestamp: Date
   }
   settings: {
-    defaultView: 'day' | 'week' | 'month'
+    defaultView: 'lastvisited' | 'day' | 'week' | 'month'
+    lastvisited?: 'day' | 'week' | 'month'
     remindMe?: 'daily' | 'weekdays' | 'weekends' | 'none'
     reminderTimes?: '9am' | '3pm' | '6pm' | 'none'
   }
@@ -140,7 +141,7 @@ export async function getFavoriteMoods(
 
 const DEFAULT_SETTINGS: DbRecord<'settings'> = {
   // id: 'settings',
-  defaultView: 'month',
+  defaultView: 'lastvisited',
   remindMe: 'none',
   reminderTimes: 'none',
 }
@@ -160,6 +161,32 @@ export async function getSettings(
     return DEFAULT_SETTINGS
   }
   return settings
+}
+
+export const updateSettingsInDb = (
+  db: IDBDatabase,
+  settings: Partial<DbRecord<'settings'>>,
+) => {
+  const transaction = db.transaction(['settings'], 'readwrite')
+  const store = transaction.objectStore('settings')
+  const request = store.get('settings')
+
+  request.onsuccess = () => {
+    // avoid undefined/any
+    const data = (request.result || {}) as DbRecord<'settings'>
+    const updatedData: DbRecord<'settings'> = { ...data, ...settings }
+    store.put(updatedData, 'settings')
+  }
+
+  request.onerror = (e: Event) => {
+    const error = (e.target as IDBRequest).error
+    console.error('Error accessing settings:', error?.message)
+  }
+}
+
+export async function updateLastVisited(dbPromise: Promise<IDBDatabase>, view: viewTpye) {
+  const db = await dbPromise;
+  await updateSettingsInDb(db, { lastvisited: view });
 }
 
 function getEntryDateKey(date: Date): string {

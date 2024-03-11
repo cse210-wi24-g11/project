@@ -35,8 +35,11 @@ export function Summary() {
     async function run() {
       const db = await getDb()
       const settings = await getSettings(db)
-
-      navigate(DEFAULT_VIEW_TO_ROUTE[settings.defaultView])
+      if (settings.defaultView === 'lastvisited' && settings.lastvisited) {
+        navigate(DEFAULT_VIEW_TO_ROUTE[settings.lastvisited])
+      } else {
+        navigate(DEFAULT_VIEW_TO_ROUTE[settings.defaultView])
+      }
     }
 
     void run()
