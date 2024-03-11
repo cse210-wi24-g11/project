@@ -15,7 +15,7 @@ export function MonthSummary({ summaryNavBarItem }: MonthSummaryProps) {
   useEffect(() => {
     updateLastVisited(getDb(), 'month')
   }, [])
-  
+
   return (
     <>
       <SummaryBar summaryNavBarItem={summaryNavBarItem} />

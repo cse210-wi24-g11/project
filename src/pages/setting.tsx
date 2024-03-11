@@ -24,15 +24,13 @@ const REMINDER_TIMES_LABEL_ID = 'settings-reminder-times-label'
 const defaultViewOptions: PickerOptions<
   Required<SettingsShape>['defaultView']
 > = [
-  { key: 'lastvisited', label: 'Last Visited'},
+  { key: 'lastvisited', label: 'Last Visited' },
   { key: 'month', label: 'Month' },
   { key: 'week', label: 'Week' },
   { key: 'day', label: 'Day' },
 ]
 
-const remindMeOptions: PickerOptions<
-  Required<SettingsShape>['remindMe']
-> = [
+const remindMeOptions: PickerOptions<Required<SettingsShape>['remindMe']> = [
   { key: 'daily', label: 'Daily' },
   { key: 'weekdays', label: 'Weekdays' },
   { key: 'weekends', label: 'Weekends' },
@@ -94,7 +92,6 @@ export function Settings() {
     updateSettingsInDb(db, { reminderTimes: newReminderTimes })
   }
 
-  
   const navigate = useNavigate()
   const addCustomMood = () => {
     navigate(CUSTOM_MOOD_ROUTE)
