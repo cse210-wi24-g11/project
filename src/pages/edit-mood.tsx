@@ -162,8 +162,8 @@ export function EditMood() {
 
         generalRequest.onsuccess = function (event) {
           const request = event.target as IDBRequest
-          const generalIddata = request.result as { moods: string[] }
-          generalMoods = generalIddata.moods
+          const generalIdData = request.result as { moods: string[] }
+          generalMoods = generalIdData.moods
           //remove if no longer here
           if (
             generalMoods.includes(moodId as string) &&
@@ -193,9 +193,9 @@ export function EditMood() {
 
         favoriteRequest.onsuccess = function (event) {
           const request = event.target as IDBRequest
-          const favoriteIddata = request.result as { moods: string[] }
-          favoriteMoods = favoriteIddata.moods
-          console.log(favoriteIddata.moods)
+          const favoriteIdData = request.result as { moods: string[] }
+          favoriteMoods = favoriteIdData.moods
+          console.log(favoriteIdData.moods)
           console.log(favoriteMoods)
           //remove if no longer here
           if (
@@ -226,8 +226,8 @@ export function EditMood() {
 
         archivedRequest.onsuccess = function (event) {
           const request = event.target as IDBRequest
-          const archivedIddata = request.result as { moods: string[] }
-          archivedMoods = archivedIddata.moods
+          const archivedIdData = request.result as { moods: string[] }
+          archivedMoods = archivedIdData.moods
           //remove if no longer here
           if (
             archivedMoods.includes(moodId as string) &&
