@@ -17,16 +17,11 @@ import WeekPicker from '@/components/WeekPicker/WeekPicker.tsx'
 import MoodEntryList from '@/components/MoodEntryList/MoodEntryList.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { SummaryBar } from '@/components/navigation/summary-bar.tsx'
-import { SummaryNavbarItem } from '@/components/navigation/summary-bar.tsx'
 import { useDb } from '@/context/db.tsx'
-
-type WeekSummaryProps = {
-  summaryNavBarItem: SummaryNavbarItem
-}
 
 const WEEK_SUMMARY_KEY = 'week_summary'
 
-function WeekSummary({ summaryNavBarItem }: WeekSummaryProps) {
+function WeekSummary() {
   const { getDb } = useDb()
   const navigate = useNavigate()
 
@@ -77,7 +72,7 @@ function WeekSummary({ summaryNavBarItem }: WeekSummaryProps) {
 
   return (
     <div className="flex h-screen flex-col">
-      <SummaryBar summaryNavBarItem={summaryNavBarItem} />
+      <SummaryBar />
       <div className="fixed left-0 right-0 top-10 border bg-white pb-2 pt-2">
         <WeekPicker
           startDay={startDay}
