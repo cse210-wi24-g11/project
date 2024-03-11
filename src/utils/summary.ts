@@ -19,7 +19,7 @@ export interface SummaryMoodRecord {
   imagePath: string
 }
 
-export const MaxMoodValue = 5
+export const MAX_MOOD_VALUE = 5
 
 const abbr = [
   'Jan',
@@ -121,7 +121,7 @@ export function get1stDayOfNextMonth(date: Date): Date {
   return newDate
 }
 
-export function get1stDayOfPrevMonth(date: Date): Date {
+export function getFirstDayOfPrevMonth(date: Date): Date {
   const newDate = new Date(date)
   let month = newDate.getMonth()
   let year = newDate.getFullYear()
@@ -193,9 +193,9 @@ export function getMoodDesc(records: SummaryDayMoodRecord[]): string {
   }
   const avgMood =
     records.reduce((acc, cur) => acc + cur.value, 0) / records.length
-  if (avgMood > (MaxMoodValue / 3) * 2) {
+  if (avgMood > (MAX_MOOD_VALUE / 3) * 2) {
     return 'Seems that you are quite happy these days!'
-  } else if (avgMood > MaxMoodValue / 3) {
+  } else if (avgMood > MAX_MOOD_VALUE / 3) {
     return 'Being ordinary is just a part of life.'
   } else {
     return "Don't worry, things will get better soon!"

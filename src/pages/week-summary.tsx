@@ -8,20 +8,20 @@ import {
   get1stDayInWeek,
   sessionStr2date,
   date2sessionStr,
-} from '@/components/SummaryHelper.ts'
+} from '@/utils/summary'
 import { getEntriesOfDate, getMoodById } from '@/utils/db.ts'
 import { updateSettingsInDb } from '@/utils/db.ts'
 import { EDIT_MOOD_ROUTE } from '@/routes.ts'
 
-import WeekPicker from '@/components/WeekPicker/WeekPicker.tsx'
-import MoodEntryList from '@/components/MoodEntryList/MoodEntryList.tsx'
+import { WeekPicker } from '@/components/WeekPicker/WeekPicker.tsx'
+import { MoodEntryList } from '@/components/MoodEntryList/MoodEntryList.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { SummaryBar } from '@/components/navigation/summary-bar.tsx'
 import { useDb } from '@/context/db.tsx'
 
 const WEEK_SUMMARY_KEY = 'week_summary'
 
-function WeekSummary() {
+export function WeekSummary() {
   const { getDb } = useDb()
   const navigate = useNavigate()
 
@@ -93,5 +93,3 @@ function WeekSummary() {
     </div>
   )
 }
-
-export default WeekSummary

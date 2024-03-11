@@ -4,7 +4,7 @@ import ChevronLeft from '@spectrum-icons/workflow/ChevronLeft'
 
 import {
   get1stDayInMonth,
-  get1stDayOfPrevMonth,
+  getFirstDayOfPrevMonth,
   get1stDayOfNextMonth,
   getDatesInMonth,
   getMonthAbbr,
@@ -13,7 +13,7 @@ import {
   inSameDay,
   inSameMonth,
   get1stDayInWeek,
-} from '@/components/SummaryHelper.ts'
+} from '@/utils/summary'
 import { getEntryDateKey } from '@/utils/db.ts'
 import { cls } from '@/utils/cls.ts'
 
@@ -258,7 +258,7 @@ function CalendarContainer({
   }, [monthStartDate])
 
   const clickPrevMonth = () => {
-    const start = get1stDayOfPrevMonth(monthStartDate)
+    const start = getFirstDayOfPrevMonth(monthStartDate)
     onChangeMonth(start)
   }
 

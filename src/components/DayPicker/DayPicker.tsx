@@ -8,7 +8,7 @@ import {
   Flex,
 } from '@adobe/react-spectrum'
 
-import { displayDate } from '@/components/SummaryHelper.ts'
+import { displayDate } from '@/utils/summary'
 
 import { DayPickerCalendar } from '@/components/ICalendar/ICalendar.tsx'
 
@@ -17,7 +17,7 @@ interface DayPickerProps {
   onChangeDay: (day: Date) => void
 }
 
-function DayPicker({ initialDay, onChangeDay }: DayPickerProps) {
+export function DayPicker({ initialDay, onChangeDay }: DayPickerProps) {
   const [date, setDate] = useState(initialDay)
 
   return (
@@ -51,5 +51,3 @@ function DayPicker({ initialDay, onChangeDay }: DayPickerProps) {
     </DialogTrigger>
   )
 }
-
-export default DayPicker

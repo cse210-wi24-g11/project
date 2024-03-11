@@ -1,13 +1,13 @@
-import { SummaryMoodRecord } from '@/components/SummaryHelper.ts'
+import { SummaryMoodRecord } from '@/utils/summary'
 
-import MoodListItem from '@/components/MoodItem/MoodItem.tsx'
+import { MoodListItem } from '@/components/MoodItem/MoodItem.tsx'
 
 interface MoodEntryListProps {
   records: SummaryMoodRecord[]
   onClickRecord: (record: SummaryMoodRecord) => void
 }
 
-function MoodEntryList({ records, onClickRecord }: MoodEntryListProps) {
+export function MoodEntryList({ records, onClickRecord }: MoodEntryListProps) {
   return (
     <div>
       {records.length == 0 ? (
@@ -34,5 +34,3 @@ function MoodEntryList({ records, onClickRecord }: MoodEntryListProps) {
     </div>
   )
 }
-
-export default MoodEntryList
