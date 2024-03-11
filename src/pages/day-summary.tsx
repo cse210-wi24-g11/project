@@ -36,7 +36,8 @@ const DaySummary = ({ day, summaryNavBarItem }: DaySummaryPageProps) => {
           id: entry.id,
           day: entry.timestamp,
           title: entry.description,
-          color: d3.rgb(mood ? mood.color : 'blue'),
+          color: d3.rgb(mood?.color ?? 'blue'),
+          imagePath: mood?.imagePath ?? 'https://i.imgur.com/yXOvdOSs.jpg', // TODO: remove link
         })
       }
       setListItems(records)
@@ -56,7 +57,7 @@ const DaySummary = ({ day, summaryNavBarItem }: DaySummaryPageProps) => {
           }}
         />
       </div>
-      <div className="px-8 mt-24 flex-grow overflow-y-auto bg-white pb-16">
+      <div className="mt-24 flex-grow overflow-y-auto bg-white px-8 pb-16">
         <MoodEntryList
           records={listItems}
           onClickRecord={(record: SummaryMoodRecord) => {

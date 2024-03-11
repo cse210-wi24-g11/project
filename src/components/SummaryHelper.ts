@@ -14,12 +14,7 @@ export interface SummaryMoodRecord {
   day: Date
   title: string
   color: RGBColor
-}
-
-export interface TempMood {
-  id: string
-  color: string
-  image: Blob
+  imagePath: string
 }
 
 export const MaxMoodValue = 5

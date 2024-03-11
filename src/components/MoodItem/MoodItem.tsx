@@ -22,7 +22,10 @@ const MoodListItem = (props: MoodListItemProps) => {
       className="h-30 left-0 right-0 flex flex-row items-start rounded-md border bg-white"
       onClick={() => onClick(recordId)}
     >
-      <img className="rounded-l-md" src="https://i.imgur.com/yXOvdOSs.jpg" />
+      <img
+        className="rounded-l-md"
+        src={imageUrl}
+      />
       <div className="grid-flow-col">
         <div className="ml-4 mt-2 flex content-center items-center rounded-md">
           <div
@@ -40,7 +43,7 @@ const MoodListItem = (props: MoodListItemProps) => {
             {getTimeAbbr(date)}
           </p>
         </div>
-        <p className="ml-4 mr-4 mt-1 line-clamp-2 text-left text-base">
+        <p className="mb-1 ml-4 mr-4 mt-1 line-clamp-2 text-left text-base">
           {title}
         </p>
       </div>

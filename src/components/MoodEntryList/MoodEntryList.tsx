@@ -17,7 +17,7 @@ const MoodEntryList = ({ records, onClickRecord }: MoodEntryListProps) => {
           {records.map((item) => (
             <li className="left-0 right-0 my-4" key={item.id}>
               <MoodListItem
-                imageUrl={'TODO'} // TODO: fix
+                imageUrl={item.imagePath}
                 title={item.title}
                 date={item.day}
                 color={item.color}

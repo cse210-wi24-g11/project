@@ -41,7 +41,8 @@ const WeekSummary = ({ summaryNavBarItem }: WeekSummaryProps) => {
             id: entry.id,
             day: entry.timestamp,
             title: entry.description,
-            color: d3.rgb(mood ? mood.color : 'blue'),
+            color: d3.rgb(mood?.color ?? 'blue'),
+            imagePath: mood?.imagePath ?? 'https://i.imgur.com/yXOvdOSs.jpg', // TODO: remove link
           })
         }
       }
