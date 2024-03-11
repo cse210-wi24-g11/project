@@ -131,6 +131,28 @@ export async function putEntry(
   ])
 }
 
+export async function getEntry(db: IDBDatabase, entryId: string) {
+  const request = db
+    .transaction(['entry'], 'readonly')
+    .objectStore('entry')
+    .get(entryId)
+  return toPromise<DbRecord<'entry'> | undefined>(request)
+}
+
+export async function updateEntry(
+  db: IDBDatabase,
+  entryId: string,
+  entry: Partial<DbRecord<'entry'>>,
+) {
+  const dbEntry = await getEntry(db, entryId)
+  if (!dbEntry) {
+    return
+  }
+
+  const newEntry = { ...dbEntry, ...entry }
+  return putEntry(db, newEntry)
+}
+
 export async function getFavoriteMoods(
   db: IDBDatabase,
 ): Promise<DbRecord<'mood'>[]> {

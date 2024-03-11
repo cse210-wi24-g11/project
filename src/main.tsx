@@ -7,6 +7,7 @@ import { ResetIndexedDb } from '../src/components/reset-db/reset-db.tsx'
 import { DbProvider } from './context/db.tsx'
 import { SpectrumProvider } from './context/spectrum.tsx'
 import { AddEntry } from './pages/add-entry.tsx'
+import { EditEntry } from './pages/edit-entry.tsx'
 import { Settings } from './pages/setting.tsx'
 import { Summary } from './pages/summary.tsx'
 import { DaySummary } from './pages/day-summary.tsx'
@@ -18,6 +19,7 @@ import { MoodCollection } from './pages/mood-collection.tsx'
 import {
   ADD_ENTRY_ROUTE,
   DAY_SUMMARY_ROUTE,
+  EDIT_ENTRY_ROUTE,
   SETTINGS_ROUTE,
   SUMMARY_BASE_ROUTE,
   EDIT_MOOD_ROUTE,
@@ -35,6 +37,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <DbProvider>
           <Routes>
             <Route path={ADD_ENTRY_ROUTE} element={<AddEntry />} />
+            <Route
+              path={EDIT_ENTRY_ROUTE(':entryId')}
+              element={<EditEntry />}
+            />
             <Route path={SETTINGS_ROUTE} element={<Settings />} />
             <Route path={SUMMARY_BASE_ROUTE} element={<Summary />} />
             <Route path={MOOD_COLLECTION_ROUTE} element={<MoodCollection />} />
