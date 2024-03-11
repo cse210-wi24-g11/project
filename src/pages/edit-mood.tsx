@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom'
 import { DisplayImageComponent } from '@/components/custom-mood/display-image.tsx'
 import { useDb } from '@/context/db.tsx'
 
-
 export function EditMood() {
   const navigate = useNavigate()
 
@@ -121,12 +120,10 @@ export function EditMood() {
   if (!moodID) {
     return (
       <div>
-        <ActionButton onPress={() => navigate(-1)}>
-          Back
-        </ActionButton>
+        <ActionButton onPress={() => navigate(-1)}>Back</ActionButton>
         <div> Invalid Mood ID </div>
       </div>
-      )
+    )
   }
 
   const handleButtonPress = () => {

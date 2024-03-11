@@ -1,6 +1,3 @@
-// db.ts
-import { getDateAbbr } from '@/components/SummaryHelper.ts'
-
 const DB_NAME = 'user_db'
 
 export type DbStore = 'mood' | 'moodCollection' | 'entry' | 'settings'
@@ -53,7 +50,7 @@ export function openDb() {
       })
       db.createObjectStore('entry', { keyPath: 'id' })
       db.createObjectStore('settings', { keyPath: null })
-      const dateCollection = db.createObjectStore('dateCollection', {
+      db.createObjectStore('dateCollection', {
         keyPath: null,
       })
 
