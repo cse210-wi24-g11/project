@@ -1,12 +1,11 @@
-import Calendar from 'react-calendar'
+import React, { useEffect, useState } from 'react'
 import ChevronRight from '@spectrum-icons/workflow/ChevronRight'
 import ChevronLeft from '@spectrum-icons/workflow/ChevronLeft'
-import React, { useEffect, useState } from 'react'
+
 import {
   get1stDayInMonth,
   get1stDayOfPrevMonth,
   get1stDayOfNextMonth,
-  getDateAbbr,
   getDatesInMonth,
   getMonthAbbr,
   getNextMonthDatesInCalendar,
@@ -17,21 +16,12 @@ import {
 } from '@/components/SummaryHelper.ts'
 import { getEntryDateKey } from '@/utils/db.ts'
 
-interface ICalendarProps {
-  monthStartDate: Date
-  selectionType: ICalendarSelectionType
-  selectedDates: Date[]
-  onClickDate: (date: Date) => void
-}
-
 interface CalendarGridProps {
   num: string
   date: Date
   inCurrentMonth: boolean
   selected: boolean
 }
-
-type ICalendarSelectionType = 'day' | 'week'
 
 interface DayPickerCalendar {
   day: Date
@@ -250,81 +240,9 @@ const genGridsInMonth = (start: Date) => {
   return res
 }
 
-export const ICalendar = ({
-  monthStartDate,
-  selectionType,
-  selectedDates,
-  onClickDate,
-}: ICalendarProps) => {
-  const [monthStart, setMonthStart] = useState(monthStartDate)
-  const [monthStr, setMonthStr] = useState('')
-  const [gridItems, setGridItems] = useState<CalendarGridProps[][]>([])
-
-  useEffect(() => {
-    setMonthStr(getMonthAbbr(monthStart))
-  }, [monthStart])
-
-  useEffect(() => {}, [monthStart])
-
-  const clickPrevMonth = () => {
-    setMonthStart(get1stDayOfPrevMonth(monthStart))
-  }
-
-  const clickNextMonth = () => {
-    setMonthStart(get1stDayOfNextMonth(monthStart))
-  }
-
-  const clickDay = (rowIndex: number, colIndex: number) => {
-    const item = gridItems[rowIndex][colIndex]
-    // const item = { ...gridItems[rowIndex][colIndex] }
-    if (selectionType === 'day') {
-      item.selected = true
-    } else {
-    }
-    onClickDate(item.date)
-  }
-
-  const buildGrids = (data: CalendarGridProps[][]) => {
-    return data.map((line: CalendarGridProps[], rowIndex: number) => {
-      return (
-        <div key={rowIndex} className="mt-2 flex flex-row justify-between">
-          {line.map((item: CalendarGridProps, colIndex: number) => {
-            return (
-              <div
-                key={getEntryDateKey(item.date)}
-                className="h-8 flex-1 flex-row items-center justify-center"
-                onClick={() => {
-                  clickDay(rowIndex, colIndex)
-                }}
-              >
-                <p className="text-center font-mono text-base">
-                  {item.date.getDate()}
-                </p>
-              </div>
-            )
-          })}
-        </div>
-      )
-    })
-  }
-
-  return (
-    // <CalendarContainer
-    //   monthStartDate={}
-    //   onClickPrevMonth={}
-    //   onClickNextMonth={}
-    //   dayItems={buildGrids(gridItems)}
-    // />
-    <div></div>
-  )
-}
-
 interface CalendarContainerProps {
   monthStartDate: Date
   onChangeMonth: (start: Date) => void
-  // TODO: remove
-  // onClickPrevMonth: () => void
-  // onClickNextMonth: () => void
   dayItems: React.ReactNode
 }
 
@@ -333,9 +251,7 @@ const CalendarContainer = ({
   onChangeMonth,
   dayItems,
 }: CalendarContainerProps) => {
-  // const [monthStart, setMonthStart] = useState(monthStartDate)
   const [monthStr, setMonthStr] = useState('')
-  const [gridItems, setGridItems] = useState<CalendarGridProps[][]>([])
 
   useEffect(() => {
     setMonthStr(getMonthAbbr(monthStartDate))
@@ -343,13 +259,11 @@ const CalendarContainer = ({
 
   const clickPrevMonth = () => {
     const start = get1stDayOfPrevMonth(monthStartDate)
-    // setMonthStart(start) // TODO: ?
     onChangeMonth(start)
   }
 
   const clickNextMonth = () => {
     const start = get1stDayOfNextMonth(monthStartDate)
-    // setMonthStart(start) // TODO: ?
     onChangeMonth(start)
   }
 

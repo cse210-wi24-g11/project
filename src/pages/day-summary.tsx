@@ -21,7 +21,7 @@ interface DaySummaryPageProps {
 const DaySummary = ({ day, summaryNavBarItem }: DaySummaryPageProps) => {
   const { getDb } = useDb()
   const navigate = useNavigate()
-  const location = useLocation()
+  // const location = useLocation()
   const [today, setToday] = useState<Date>(day ?? new Date())
   const [listItems, setListItems] = useState<SummaryMoodRecord[]>([])
 

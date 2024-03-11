@@ -179,11 +179,6 @@ export function getMoodOfDate(date: Date): SummaryMoodRecord[] {
   }))
 }
 
-// TODO: fix
-export function getMoodLevel(record: SummaryDayMoodRecord): number {
-  return Math.floor(Math.random() * 6)
-}
-
 const mockMoodColors = [
   d3.rgb('black'),
   d3.rgb('darkred'),

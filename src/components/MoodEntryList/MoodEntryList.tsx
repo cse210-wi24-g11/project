@@ -1,4 +1,5 @@
 import { SummaryMoodRecord } from '@/components/SummaryHelper.ts'
+
 import MoodListItem from '@/components/MoodItem/MoodItem.tsx'
 
 interface MoodEntryListProps {

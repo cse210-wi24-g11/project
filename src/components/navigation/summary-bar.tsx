@@ -25,12 +25,6 @@ export function SummaryBar() {
         >
           Week
         </NavLink>
-        <NavLink
-          to={MONTH_SUMMARY_ROUTE}
-          className={({ isActive }) => navbarItemStyle(isActive)}
-        >
-          Month
-        </NavLink>
       </div>
     </div>
   )
