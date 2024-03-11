@@ -1,11 +1,15 @@
 import { NavLink } from 'react-router-dom'
+import { useEffect } from 'react'
 
+import { updateSettingsInDb } from '@/utils/db.ts'
+
+import { useDb } from '@/context/db.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { SummaryBar } from '@/components/navigation/summary-bar.tsx'
 import { SummaryNavbarItem } from '@/components/navigation/summary-bar.tsx'
-import { useEffect } from 'react'
-import { updateLastVisited } from '@/utils/db.ts'
-import { useDb } from '@/context/db.tsx'
+
+
+
 type DaySummaryBarProps = {
   summaryNavBarItem: SummaryNavbarItem
 }
@@ -13,8 +17,12 @@ type DaySummaryBarProps = {
 export function DaySummary({ summaryNavBarItem }: DaySummaryBarProps) {
   const { getDb } = useDb()
   useEffect(() => {
-    updateLastVisited(getDb(), 'day')
-  }, [])
+    async function updateLastVisited() {
+      const db = await getDb()
+      updateSettingsInDb(db, { lastvisited: 'day' })
+    }
+    void updateLastVisited()
+  }, [getDb])
 
   return (
     <>

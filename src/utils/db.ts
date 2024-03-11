@@ -2,7 +2,7 @@
 const DB_NAME = 'user_db'
 
 export type DbStore = 'mood' | 'moodCollection' | 'entry' | 'settings'
-type viewTpye = 'month' | 'day' | 'week'
+
 type MoodId = string
 
 export type DbRecord<T extends DbStore> = {
@@ -182,14 +182,6 @@ export const updateSettingsInDb = (
     const error = (e.target as IDBRequest).error
     console.error('Error accessing settings:', error?.message)
   }
-}
-
-export async function updateLastVisited(
-  dbPromise: Promise<IDBDatabase>,
-  view: viewTpye,
-) {
-  const db = await dbPromise
-  await updateSettingsInDb(db, { lastvisited: view })
 }
 
 function getEntryDateKey(date: Date): string {
