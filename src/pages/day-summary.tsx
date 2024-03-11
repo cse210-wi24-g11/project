@@ -2,17 +2,12 @@ import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 
 import { useQuery } from '@/db/index.ts'
-import {
-  serializeDateForEntry,
-  reviveEntry,
-  type RevivedEntry,
-} from '@/db/utils.ts'
+import { getResolvedEntriesForDate } from '@/db/actions.ts'
+import { type RevivedEntry } from '@/db/utils.ts'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { SummaryBar } from '@/components/navigation/summary-bar.tsx'
 import { SummaryNavbarItem } from '@/components/navigation/summary-bar.tsx'
-
-import type { Mood } from '@/db/types.ts'
 
 type DaySummaryBarProps = {
   summaryNavBarItem: SummaryNavbarItem
@@ -21,23 +16,7 @@ type DaySummaryBarProps = {
 export function DaySummary({ summaryNavBarItem }: DaySummaryBarProps) {
   const [today] = useState(() => new Date())
   const [todayEntries] = useQuery(
-    async (db) => {
-      const entries = await db.entries
-        .where('date')
-        .equals(serializeDateForEntry(today))
-        //.where('timestamp').between(...getTodayRange(today.getTime()))  // alternate
-        .toArray()
-
-      const entriesMoods = await db.moods.bulkGet(entries.map((e) => e.moodId))
-      const moods = entriesMoods.filter(Boolean) as Mood[]
-      const moodIdToMood = new Map(moods.map((mood) => [mood.id, mood]))
-      const resolvedEntries = entries
-        // reverse chronological
-        .sort((a, b) => b.timestamp - a.timestamp)
-        .map((entry) => reviveEntry(entry, moodIdToMood))
-        .filter((x) => x !== null) as RevivedEntry[]
-      return resolvedEntries
-    },
+    () => getResolvedEntriesForDate(today),
     [today],
     [] as RevivedEntry[],
   )

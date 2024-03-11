@@ -5,8 +5,9 @@
 
 import { type Querier, db, useQuery } from './index.ts'
 import { MOOD_COLLECTION_KEY, SETTINGS_KEY } from './constants.ts'
+import { type RevivedEntry, reviveEntry, serializeDateForEntry } from './utils.ts'
 
-import type { Mood, MoodCollectionCategory, MoodId, Settings } from './types.ts'
+import type { Entry, Mood, MoodCollectionCategory, MoodId, Settings } from './types.ts'
 
 function createHook<T>(query: Querier<T>) {
   return <I>(initial: I) => useQuery(query, [], initial)
@@ -80,4 +81,48 @@ export async function moveInCollection<
   })
 
   return result
+}
+
+/**
+ * gets the list of all entries whose date (year/month/day) matches that of the date passed in.
+ * 
+ * the returned list is sorted in reverse chronological order, based on the entries' timestamps.
+ */
+export async function getEntriesForDate(date: Date) {
+  const entries = await db.entries
+    .where('date')
+    .equals(serializeDateForEntry(date))
+    //.where('timestamp').between(...getTodayRange(today.getTime()))  // alternate
+    .toArray()
+
+  const sortedEntries = entries.sort(compareEntryReverseChronological)
+  return sortedEntries
+}
+
+/**
+ * gets the list of all entries whose date (year/month/day) matches that of the date passed in.
+ * 
+ * the resultant entries are in "full form", i.e. contain the full mood object they refer to rather than just the id.
+ * 
+ * the returned list is sorted in reverse chronological order, based on the entries' timestamps.
+ */
+export async function getResolvedEntriesForDate(date: Date) {
+  const entries = await db.entries
+    .where('date')
+    .equals(serializeDateForEntry(date))
+    //.where('timestamp').between(...getTodayRange(today.getTime()))  // alternate
+    .toArray()
+
+  const moods = await db.moods.bulkGet(entries.map((e) => e.moodId))
+  const validMoods = moods.filter(Boolean) as Mood[]
+  const moodIdToMood = new Map(validMoods.map((mood) => [mood.id, mood]))
+  const resolvedEntries = entries
+    .sort(compareEntryReverseChronological)
+    .map((entry) => reviveEntry(entry, moodIdToMood))
+    .filter((x) => x !== null) as RevivedEntry[]
+  return resolvedEntries
+}
+
+function compareEntryReverseChronological(a: Entry, b: Entry) {
+  return b.timestamp - a.timestamp
 }
