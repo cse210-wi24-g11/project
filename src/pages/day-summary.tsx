@@ -14,18 +14,16 @@ import { updateSettingsInDb } from '@/utils/db.ts'
 import { useDb } from '@/context/db.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { SummaryBar } from '@/components/navigation/summary-bar.tsx'
-import { SummaryNavbarItem } from '@/components/navigation/summary-bar.tsx'
 import MoodEntryList from '@/components/MoodEntryList/MoodEntryList.tsx'
 import DayPicker from '@/components/DayPicker/DayPicker.tsx'
 
 interface DaySummaryPageProps {
   day?: Date
-  summaryNavBarItem: SummaryNavbarItem
 }
 
 const DAY_SUMMARY_KEY = 'day_summary'
 
-function DaySummary({ day, summaryNavBarItem }: DaySummaryPageProps) {
+function DaySummary({ day }: DaySummaryPageProps) {
   const { getDb } = useDb()
   const navigate = useNavigate()
   // const location = useLocation()
@@ -73,7 +71,7 @@ function DaySummary({ day, summaryNavBarItem }: DaySummaryPageProps) {
 
   return (
     <div className="flex h-screen flex-col">
-      <SummaryBar summaryNavBarItem={summaryNavBarItem} />
+      <SummaryBar />
       <div className="fixed left-0 right-0 top-10 border bg-white pb-2 pt-2">
         <DayPicker
           initialDay={today}
