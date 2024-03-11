@@ -105,11 +105,11 @@ export function CustomMood() {
             generalIdData = { moods: [] }
           }
 
-          const storedGeneralIDs = generalIdData.moods
-          storedGeneralIDs.push(generatedUuid)
+          const storedGeneralIds = generalIdData.moods
+          storedGeneralIds.push(generatedUuid)
           db.transaction('moodCollection', 'readwrite')
             .objectStore('moodCollection')
-            .put({ moods: storedGeneralIDs }, 'general')
+            .put({ moods: storedGeneralIds }, 'general')
         }
       }
       ToastQueue.positive('Custom Mood Added!', { timeout: 5000 })
