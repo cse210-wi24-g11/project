@@ -184,9 +184,12 @@ export const updateSettingsInDb = (
   }
 }
 
-export async function updateLastVisited(dbPromise: Promise<IDBDatabase>, view: viewTpye) {
-  const db = await dbPromise;
-  await updateSettingsInDb(db, { lastvisited: view });
+export async function updateLastVisited(
+  dbPromise: Promise<IDBDatabase>,
+  view: viewTpye,
+) {
+  const db = await dbPromise
+  await updateSettingsInDb(db, { lastvisited: view })
 }
 
 function getEntryDateKey(date: Date): string {
