@@ -54,24 +54,26 @@ export async function getFavoriteMoods() {
 /**
  * moves the mood with id `moodId` from category `from` to category `to` in the mood collection,
  * at index `i` of the `to` category.
- * 
+ *
  * if `i` is not defined, the mood is added to the end of the `to` category.
- * 
+ *
  * returns `null` and does not do anything if the mood id was not found in category `from`.
  * otherwise returns the result of updating the mood collection (see https://dexie.org/docs/Table/Table.update()#return-value)
  */
 export async function moveInCollection<
   From extends MoodCollectionCategory,
-  To extends Exclude<MoodCollectionCategory, From>
+  To extends Exclude<MoodCollectionCategory, From>,
 >(moodId: MoodId, from: From, to: To, i?: number) {
   const moodCollection = await getMoodCollection()
 
-  const j = moodCollection[from].findIndex(id => id === moodId)
-  if (j === -1) { return null }
-  
+  const j = moodCollection[from].findIndex((id) => id === moodId)
+  if (j === -1) {
+    return null
+  }
+
   const [id] = moodCollection[from].splice(j, 1)
   moodCollection[to].splice(i ?? moodCollection[to].length, 0, id)
-  
+
   const result = await db.moodCollection.update(MOOD_COLLECTION_KEY, {
     [from]: moodCollection[from],
     [to]: moodCollection[to],

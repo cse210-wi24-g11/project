@@ -8,12 +8,16 @@ import type { Entry, Mood, MoodId } from './types.ts'
 
 /**
  * create a virtual entry with the given mood id, description, and date.
- * 
+ *
  * if the date is left unspecified, defaults to the current time.
- * 
+ *
  * note: this does NOT create the entry in the database, only an entry object in memory.
  */
-export function createEntry(moodId: MoodId, description: string, date?: Date): Entry {
+export function createEntry(
+  moodId: MoodId,
+  description: string,
+  date?: Date,
+): Entry {
   if (date === undefined) {
     date = new Date()
   }
@@ -65,9 +69,9 @@ export type RevivedEntry = Omit<Entry, 'moodId' | 'timestamp'> & {
  * "revives" a virtual db Entry into its full form,
  * with the mood id replaced with the mood it resolves to,
  * and the timestamp read back into a Date object, rather than the number representation of a date.
- * 
+ *
  * useful for converting entries read from the database back into "full form".
- * 
+ *
  * if the entry's mood id is not found in the map of moods, returns `null`.
  */
 export function reviveEntry(

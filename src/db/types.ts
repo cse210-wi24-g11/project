@@ -22,10 +22,7 @@ export type Entry = {
 //   category: 'favorites' | 'general' | 'archived'
 // }
 
-export type MoodCollectionCategory =
-  | 'favorites'
-  | 'general'
-  | 'archived'
+export type MoodCollectionCategory = 'favorites' | 'general' | 'archived'
 
 export type MoodCollection = Record<MoodCollectionCategory, MoodId[]>
 

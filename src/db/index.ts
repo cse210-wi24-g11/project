@@ -35,12 +35,14 @@ class DexieDb extends Dexie {
         },
       ]
       const DEFAULT_MOOD_COLLECTION = {
-        favorites: MOCK_FAVORITES.map(mood => mood.id),
+        favorites: MOCK_FAVORITES.map((mood) => mood.id),
         general: [],
         archived: [],
       }
       await tx.table('moods').bulkAdd(MOCK_FAVORITES)
-      await tx.table('moodCollection').add(DEFAULT_MOOD_COLLECTION, MOOD_COLLECTION_KEY)
+      await tx
+        .table('moodCollection')
+        .add(DEFAULT_MOOD_COLLECTION, MOOD_COLLECTION_KEY)
     })
   }
 }

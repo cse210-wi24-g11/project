@@ -2,7 +2,11 @@ import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 
 import { useQuery } from '@/db/index.ts'
-import { serializeDateForEntry, reviveEntry, type RevivedEntry } from '@/db/utils.ts'
+import {
+  serializeDateForEntry,
+  reviveEntry,
+  type RevivedEntry,
+} from '@/db/utils.ts'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { SummaryBar } from '@/components/navigation/summary-bar.tsx'

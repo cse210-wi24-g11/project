@@ -1,7 +1,7 @@
 /**
  * @fileoverview
  * constants used for the database.
- * 
+ *
  * consumers (i.e. files outside of this `db` folder) should NOT directly use the values here.
  */
 
