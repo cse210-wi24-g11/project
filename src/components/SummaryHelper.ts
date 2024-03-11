@@ -174,7 +174,7 @@ export function getMoodOfDate(date: Date): SummaryMoodRecord[] {
     day: date,
     title: 'Day ' + date.getDate() + ' is good.',
     color: mockMoodColors[Math.floor(Math.random() * 6)],
-    imagePath: ''
+    imagePath: '',
   }))
 }
 

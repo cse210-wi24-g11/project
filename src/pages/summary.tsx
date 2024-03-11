@@ -1,11 +1,7 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import {
-  DAY_SUMMARY_ROUTE,
-  Route,
-  WEEK_SUMMARY_ROUTE,
-} from '@/routes.ts'
+import { DAY_SUMMARY_ROUTE, Route, WEEK_SUMMARY_ROUTE } from '@/routes.ts'
 import { DbRecord, getSettings } from '@/utils/db.ts'
 
 import { useDb } from '@/context/db.tsx'
