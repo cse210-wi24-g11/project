@@ -45,6 +45,7 @@ export function AddEntry() {
 
       setFavoriteMoods(favoriteMoods?.length ? favoriteMoods : MOCK_FAVORITES)
     }
+
     void loadFavoriteMoods()
   }, [getDb])
 

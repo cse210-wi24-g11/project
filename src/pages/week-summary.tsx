@@ -10,11 +10,11 @@ import {
   date2sessionStr,
 } from '@/components/SummaryHelper.ts'
 import { getEntriesOfDate, getMoodById } from '@/utils/db.ts'
+import { updateSettingsInDb } from '@/utils/db.ts'
 import { UPDATE_MOOD_ROUTE } from '@/routes.ts'
 
 import WeekPicker from '@/components/WeekPicker/WeekPicker.tsx'
 import MoodEntryList from '@/components/MoodEntryList/MoodEntryList.tsx'
-import { updateSettingsInDb } from '@/utils/db.ts'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { SummaryBar } from '@/components/navigation/summary-bar.tsx'
 import { SummaryNavbarItem } from '@/components/navigation/summary-bar.tsx'
