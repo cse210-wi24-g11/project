@@ -56,6 +56,8 @@ export function CustomMood() {
         .objectStore('mood')
         .add({ id: generatedUUID, color: selectedColor, image: blob })
 
+      //
+
       //append to favorite category
       if (category == 'favorite') {
         const favoritesRequest = db
