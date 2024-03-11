@@ -23,7 +23,7 @@ export type DbRecord<T extends DbStore> = {
     timestamp: Date
   }
   settings: {
-    defaultView: 'lastvisited' | 'day' | 'week' | 'month'
+    defaultView: 'lastVisited' | 'day' | 'week' | 'month'
     lastvisited?: 'day' | 'week' | 'month'
     remindMe?: 'daily' | 'weekdays' | 'weekends' | 'none'
     reminderTimes?: '9am' | '3pm' | '6pm' | 'none'
@@ -141,7 +141,7 @@ export async function getFavoriteMoods(
 
 const DEFAULT_SETTINGS: DbRecord<'settings'> = {
   // id: 'settings',
-  defaultView: 'lastvisited',
+  defaultView: 'lastVisited',
   remindMe: 'none',
   reminderTimes: 'none',
 }
