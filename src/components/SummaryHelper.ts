@@ -1,5 +1,6 @@
 import * as d3 from 'd3'
 import { RGBColor } from 'd3'
+import { getEntryDateKey } from '@/utils/db.ts'
 
 export interface SummaryDayMoodRecord {
   id: number
@@ -40,6 +41,15 @@ export function getMonthAbbr(date: Date): string {
 
 export function getDateAbbr(date: Date): string {
   return abbr[date.getMonth()] + ' ' + date.getDate()
+}
+
+export function date2sessionStr(date: Date): string {
+  return getEntryDateKey(date)
+}
+
+export function sessionStr2date(str: string): Date {
+  const temp = str.replace(/\./g, '-')
+  return new Date(temp)
 }
 
 export function getTimeAbbr(date: Date): string {

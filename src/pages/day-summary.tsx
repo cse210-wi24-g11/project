@@ -1,9 +1,14 @@
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import * as d3 from 'd3'
 
 import { UPDATE_MOOD_ROUTE } from '@/routes.ts'
-import { SummaryMoodRecord } from '@/components/SummaryHelper.ts'
+import {
+  date2sessionStr,
+  get1stDayInWeek,
+  sessionStr2date,
+  SummaryMoodRecord,
+} from '@/components/SummaryHelper.ts'
 import { getEntriesOfDate, getMoodById } from '@/utils/db.ts'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
@@ -18,14 +23,25 @@ interface DaySummaryPageProps {
   summaryNavBarItem: SummaryNavbarItem
 }
 
+const DAY_SUMMARY_KEY = 'day_summary'
+
 const DaySummary = ({ day, summaryNavBarItem }: DaySummaryPageProps) => {
   const { getDb } = useDb()
   const navigate = useNavigate()
   // const location = useLocation()
-  const [today, setToday] = useState<Date>(day ?? new Date())
+  const [today, setToday] = useState<Date>(() => {
+    const saved = sessionStorage.getItem(DAY_SUMMARY_KEY)
+    if (!saved) {
+      return day ?? new Date()
+    } else {
+      return sessionStr2date(saved)
+    }
+  })
   const [listItems, setListItems] = useState<SummaryMoodRecord[]>([])
 
   useEffect(() => {
+    sessionStorage.setItem(DAY_SUMMARY_KEY, date2sessionStr(today))
+
     async function run() {
       const db = await getDb()
       const entries = (await getEntriesOfDate(db, today)) ?? []
@@ -44,7 +60,7 @@ const DaySummary = ({ day, summaryNavBarItem }: DaySummaryPageProps) => {
     }
 
     void run()
-  }, [today])
+  }, [today, getDb])
 
   return (
     <div className="flex h-screen flex-col">

@@ -6,6 +6,8 @@ import {
   SummaryMoodRecord,
   getDatesInWeek,
   get1stDayInWeek,
+  sessionStr2date,
+  date2sessionStr,
 } from '@/components/SummaryHelper.ts'
 import { getEntriesOfDate, getMoodById } from '@/utils/db.ts'
 import { UPDATE_MOOD_ROUTE } from '@/routes.ts'
@@ -21,14 +23,25 @@ type WeekSummaryProps = {
   summaryNavBarItem: SummaryNavbarItem
 }
 
+const WEEK_SUMMARY_KEY = 'week_summary'
+
 const WeekSummary = ({ summaryNavBarItem }: WeekSummaryProps) => {
   const { getDb } = useDb()
   const navigate = useNavigate()
 
-  const [startDay, setStartDay] = useState(get1stDayInWeek(new Date()))
+  const [startDay, setStartDay] = useState<Date>(() => {
+    const saved = sessionStorage.getItem(WEEK_SUMMARY_KEY)
+    if (!saved) {
+      return get1stDayInWeek(new Date())
+    } else {
+      return sessionStr2date(saved)
+    }
+  })
   const [records, setRecords] = useState<SummaryMoodRecord[]>([])
 
   useEffect(() => {
+    sessionStorage.setItem(WEEK_SUMMARY_KEY, date2sessionStr(startDay))
+
     async function run() {
       const db = await getDb()
       const records = Array<SummaryMoodRecord>()
@@ -50,7 +63,7 @@ const WeekSummary = ({ summaryNavBarItem }: WeekSummaryProps) => {
     }
 
     void run()
-  }, [startDay])
+  }, [startDay, getDb])
 
   return (
     <>
