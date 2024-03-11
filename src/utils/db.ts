@@ -71,8 +71,7 @@ export function openDb() {
       moodCollectionStore.add(
         { favorites: [], general: [], archived: [] },
         MOOD_COLLECTION_KEY,
-<<<<<<< HEAD
-      )
+      )*/
 
       /* add entry in date collection for tests in day summary page */
       const today = new Date()
@@ -107,9 +106,6 @@ export function openDb() {
         }),
       )
       dateCollection.add(tmp2, getEntryDateKey(yesterday))
-=======
-      )*/
->>>>>>> main
     }
 
     request.onsuccess = function () {
