@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 
 import { useQuery } from '@/db/index.ts'
 import { getResolvedEntriesForDate } from '@/db/actions.ts'
-import { type RevivedEntry } from '@/db/utils.ts'
+import { type ExpandedEntry } from '@/db/utils.ts'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { SummaryBar } from '@/components/navigation/summary-bar.tsx'
@@ -18,7 +18,7 @@ export function DaySummary({ summaryNavBarItem }: DaySummaryBarProps) {
   const [todayEntries] = useQuery(
     () => getResolvedEntriesForDate(today),
     [today],
-    [] as RevivedEntry[],
+    [] as ExpandedEntry[],
   )
 
   console.log({ todayEntries })

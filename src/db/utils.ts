@@ -60,24 +60,22 @@ export function getTodayRange(
   return [startOfDay, startOfNextDay]
 }
 
-export type RevivedEntry = Omit<Entry, 'moodId' | 'timestamp'> & {
+export type ExpandedEntry = Omit<Entry, 'moodId' | 'timestamp'> & {
   mood: Mood
   timestamp: Date
 }
 
 /**
- * "revives" a virtual db Entry into its full form,
+ * expands a virtual db Entry into its full form,
  * with the mood id replaced with the mood it resolves to,
  * and the timestamp read back into a Date object, rather than the number representation of a date.
  *
- * useful for converting entries read from the database back into "full form".
- *
  * if the entry's mood id is not found in the map of moods, returns `null`.
  */
-export function reviveEntry(
+export function expandEntry(
   entry: Entry,
   moodIdToMood: Map<Mood['id'], Mood>,
-): RevivedEntry | null {
+): ExpandedEntry | null {
   const { moodId, timestamp, ...rest } = entry
   if (!moodIdToMood.has(moodId)) {
     return null
