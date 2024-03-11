@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import imagePlaceholderUrl from '@/assets/image-path.png'
+import { useEffect, useState } from 'react'
+
+import imagePlaceholderUrl from '@/assets/No-Image-Placeholder.png'
 
 //display image
 interface DisplayImageProps {

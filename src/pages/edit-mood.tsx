@@ -3,7 +3,7 @@ import { Button, Picker, Item, Key } from '@adobe/react-spectrum'
 import { ToastContainer, ToastQueue } from '@react-spectrum/toast'
 import { useParams } from 'react-router-dom'
 
-import DisplayImageComponent from '@/components/custom-mood/display-image.tsx'
+import { DisplayImageComponent } from '@/components/custom-mood/display-image.tsx'
 import { useDb } from '@/context/db.tsx'
 
 export function EditMood() {

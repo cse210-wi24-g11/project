@@ -40,4 +40,3 @@ export class ColorPicker extends Component<ColorPickerProps, ColorPickerState> {
     )
   }
 }
-

@@ -2,14 +2,13 @@ import { useState } from 'react'
 import { Button, Picker, Item, Key } from '@adobe/react-spectrum'
 import { ToastContainer, ToastQueue } from '@react-spectrum/toast'
 
-import imagePlaceholderUrl from '@/assets/image-path.png'
+import imagePlaceholderUrl from '@/assets/No-Image-Placeholder.png'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
-import {ColorPicker} from '@/components/custom-mood/color-picker.tsx' // Adjust the import path based on the actual location
-import {ImageUploadComponent} from '@/components/custom-mood/upload-image.tsx'
-import {DisplayImageComponent} from '@/components/custom-mood/display-image.tsx'
+import { ColorPicker } from '@/components/custom-mood/color-picker.tsx' // Adjust the import path based on the actual location
+import { ImageUploadComponent } from '@/components/custom-mood/upload-image.tsx'
+import { DisplayImageComponent } from '@/components/custom-mood/display-image.tsx'
 import { useDb } from '@/context/db.tsx'
-
 
 // Function to fetch image as Blob from a given URL
 const getImageBlob = async (imageUrl: string) => {
@@ -23,16 +22,14 @@ const getImageBlob = async (imageUrl: string) => {
   }
 }
 
-
 export function CustomMood() {
   const { getDb } = useDb()
 
   const [selectedColor, setSelectedColor] = useState<string | undefined>(
     '#000000',
   ) // default white
-  const [uploadedImage, setUploadedImage] = useState<string>(
-    imagePlaceholderUrl ,
-  )
+  const [uploadedImage, setUploadedImage] =
+    useState<string>(imagePlaceholderUrl)
 
   const handleImageUpload = (imageData: string) => {
     setUploadedImage(imageData)

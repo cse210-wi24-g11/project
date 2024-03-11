@@ -26,7 +26,6 @@ import {
   WEEK_SUMMARY_ROUTE,
 } from './routes.ts'
 
-
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
