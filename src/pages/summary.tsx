@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'
 
 import {
   DAY_SUMMARY_ROUTE,
-  MONTH_SUMMARY_ROUTE,
   Route,
   WEEK_SUMMARY_ROUTE,
 } from '@/routes.ts'
@@ -19,7 +18,7 @@ const DEFAULT_VIEW_TO_ROUTE: Record<
 > = {
   day: DAY_SUMMARY_ROUTE,
   week: WEEK_SUMMARY_ROUTE,
-  month: MONTH_SUMMARY_ROUTE,
+  lastVisited: DAY_SUMMARY_ROUTE,
 }
 
 export function Summary() {
@@ -35,8 +34,11 @@ export function Summary() {
     async function run() {
       const db = await getDb()
       const settings = await getSettings(db)
-
-      navigate(DEFAULT_VIEW_TO_ROUTE[settings.defaultView])
+      if (settings.defaultView === 'lastVisited' && settings.lastVisited) {
+        navigate(DEFAULT_VIEW_TO_ROUTE[settings.lastVisited], { replace: true })
+      } else {
+        navigate(DEFAULT_VIEW_TO_ROUTE[settings.defaultView], { replace: true })
+      }
     }
 
     void run()

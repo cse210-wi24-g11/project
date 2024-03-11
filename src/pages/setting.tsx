@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { useEffect } from 'react'
 import { Picker, Item } from '@adobe/react-spectrum'
-// import { NavLink } from 'react-router-dom'
+import { Button } from '@react-spectrum/button'
+import { useNavigate } from 'react-router-dom'
 
-import { DbRecord, getSettings } from '@/utils/db.ts'
+import { CUSTOM_MOOD_ROUTE } from '@/routes.ts'
+import { DbRecord, getSettings, updateSettingsInDb } from '@/utils/db.ts'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { useDb } from '@/context/db.tsx'
@@ -22,7 +24,7 @@ const REMINDER_TIMES_LABEL_ID = 'settings-reminder-times-label'
 const defaultViewOptions: PickerOptions<
   Required<SettingsShape>['defaultView']
 > = [
-  { key: 'month', label: 'Month' },
+  { key: 'lastVisited', label: 'Last Visited' },
   { key: 'week', label: 'Week' },
   { key: 'day', label: 'Day' },
 ]
@@ -89,25 +91,9 @@ export function Settings() {
     updateSettingsInDb(db, { reminderTimes: newReminderTimes })
   }
 
-  const updateSettingsInDb = (
-    db: IDBDatabase,
-    settings: Partial<SettingsShape>,
-  ) => {
-    const transaction = db.transaction(['settings'], 'readwrite')
-    const store = transaction.objectStore('settings')
-    const request = store.get('settings')
-
-    request.onsuccess = () => {
-      // avoid undefined/any
-      const data = (request.result || {}) as SettingsShape
-      const updatedData: SettingsShape = { ...data, ...settings }
-      store.put(updatedData, 'settings')
-    }
-
-    request.onerror = (e: Event) => {
-      const error = (e.target as IDBRequest).error
-      console.error('Error accessing settings:', error?.message)
-    }
+  const navigate = useNavigate()
+  const addCustomMood = () => {
+    navigate(CUSTOM_MOOD_ROUTE)
   }
   return (
     <div className="flex flex-col items-center bg-white">
@@ -165,11 +151,15 @@ export function Settings() {
         </Picker>
       </section>
 
-      <div className="bg-white p-4 shadow-md">
+      <div className="w-full bg-white p-4 shadow-md">
         <h2 className="mb-4 text-left font-semibold">Mood collection</h2>
-        <button className="rounded-md bg-blue-500 px-4 py-1 text-white">
+        <Button
+          variant="primary"
+          aria-label="customize mood collection"
+          onPress={addCustomMood}
+        >
           Customize mood collection
-        </button>
+        </Button>
       </div>
       <MainNavBar />
     </div>

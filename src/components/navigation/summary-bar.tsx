@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 import { DAY_SUMMARY_ROUTE, WEEK_SUMMARY_ROUTE } from '@/routes.ts'
 import { cls } from '@/utils/cls.ts'
 
-export type SummaryNavbarItem = 'Day' | 'Week' | 'Month'
+export type SummaryNavbarItem = 'Day' | 'Week'
 
 export function SummaryBar() {
   return (

@@ -9,11 +9,12 @@ import {
   SummaryMoodRecord,
 } from '@/components/SummaryHelper.ts'
 import { getEntriesOfDate, getMoodById } from '@/utils/db.ts'
+import { updateSettingsInDb } from '@/utils/db.ts'
 
+import { useDb } from '@/context/db.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { SummaryBar } from '@/components/navigation/summary-bar.tsx'
 import { SummaryNavbarItem } from '@/components/navigation/summary-bar.tsx'
-import { useDb } from '@/context/db.tsx'
 import MoodEntryList from '@/components/MoodEntryList/MoodEntryList.tsx'
 import DayPicker from '@/components/DayPicker/DayPicker.tsx'
 
@@ -37,6 +38,14 @@ const DaySummary = ({ day, summaryNavBarItem }: DaySummaryPageProps) => {
     }
   })
   const [listItems, setListItems] = useState<SummaryMoodRecord[]>([])
+
+  useEffect(() => {
+    async function updateLastVisited() {
+      const db = await getDb()
+      updateSettingsInDb(db, { lastVisited: 'day' })
+    }
+    void updateLastVisited()
+  }, [getDb])
 
   useEffect(() => {
     sessionStorage.setItem(DAY_SUMMARY_KEY, date2sessionStr(today))
