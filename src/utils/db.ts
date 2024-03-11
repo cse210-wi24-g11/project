@@ -166,7 +166,7 @@ export async function putEntry(
 
 export function getFavoriteMoods(
   db: IDBDatabase,
-) /*: Promise<DbRecord<'mood'>[]>*/ {
+): DbRecord<'mood'>[]/*: Promise<DbRecord<'mood'>[]>*/ {
   const favoritesRequest = db
     .transaction('moodCollection', 'readwrite')
     .objectStore('moodCollection')
@@ -185,6 +185,7 @@ export function getFavoriteMoods(
 
     return favoriteIdData.moods
   }
+  return [] // TODO: fix
   /*
   const transaction = db.transaction(['mood', 'moodCollection'], 'readonly')
   const moodStore = transaction.objectStore('mood')
