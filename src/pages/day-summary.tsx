@@ -17,7 +17,7 @@ export function DaySummary({ summaryNavBarItem }: DaySummaryBarProps) {
   useEffect(() => {
     async function updateLastVisited() {
       const db = await getDb()
-      updateSettingsInDb(db, { lastvisited: 'day' })
+      updateSettingsInDb(db, { lastVisited: 'day' })
     }
     void updateLastVisited()
   }, [getDb])

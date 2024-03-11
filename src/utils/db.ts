@@ -24,7 +24,7 @@ export type DbRecord<T extends DbStore> = {
   }
   settings: {
     defaultView: 'lastVisited' | 'day' | 'week' | 'month'
-    lastvisited?: 'day' | 'week' | 'month'
+    lastVisited?: 'day' | 'week' | 'month'
     remindMe?: 'daily' | 'weekdays' | 'weekends' | 'none'
     reminderTimes?: '9am' | '3pm' | '6pm' | 'none'
   }
@@ -163,10 +163,10 @@ export async function getSettings(
   return settings
 }
 
-export const updateSettingsInDb = (
+export function updateSettingsInDb(
   db: IDBDatabase,
   settings: Partial<DbRecord<'settings'>>,
-) => {
+) {
   const transaction = db.transaction(['settings'], 'readwrite')
   const store = transaction.objectStore('settings')
   const request = store.get('settings')

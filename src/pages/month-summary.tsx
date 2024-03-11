@@ -16,7 +16,7 @@ export function MonthSummary({ summaryNavBarItem }: MonthSummaryProps) {
   useEffect(() => {
     async function updateLastVisited() {
       const db = await getDb()
-      updateSettingsInDb(db, { lastvisited: 'month' })
+      updateSettingsInDb(db, { lastVisited: 'month' })
     }
     void updateLastVisited()
   }, [getDb])

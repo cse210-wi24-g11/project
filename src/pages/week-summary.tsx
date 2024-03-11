@@ -16,7 +16,7 @@ export function WeekSummary({ summaryNavBarItem }: WeekSummaryProps) {
   useEffect(() => {
     async function updateLastVisited() {
       const db = await getDb()
-      updateSettingsInDb(db, { lastvisited: 'week' })
+      updateSettingsInDb(db, { lastVisited: 'week' })
     }
     void updateLastVisited()
   }, [getDb])
