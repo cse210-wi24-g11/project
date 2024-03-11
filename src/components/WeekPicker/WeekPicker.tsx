@@ -12,7 +12,7 @@ import {
   get1stDayInWeek,
   getDateAbbr,
   getDatesInWeek,
-} from '@/components/SummaryHelper.ts'
+} from '@/utils/summary.ts'
 
 import { WeekPickerCalendar } from '@/components/ICalendar/ICalendar.tsx'
 
@@ -21,7 +21,7 @@ interface WeekPickerProps {
   onChangeWeek: (startDay: Date) => void
 }
 
-function WeekPicker({ startDay, onChangeWeek }: WeekPickerProps) {
+export function WeekPicker({ startDay, onChangeWeek }: WeekPickerProps) {
   const [weekStart, setWeekStart] = useState(get1stDayInWeek(startDay))
 
   function dayToWeekStr(date: Date): string {
@@ -65,5 +65,3 @@ function WeekPicker({ startDay, onChangeWeek }: WeekPickerProps) {
     </DialogTrigger>
   )
 }
-
-export default WeekPicker
