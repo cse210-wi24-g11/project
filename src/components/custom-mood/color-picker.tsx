@@ -9,8 +9,7 @@ interface ColorPickerProps {
 interface ColorPickerState {
   color: ColorResult
 }
-
-class ColorPicker extends Component<ColorPickerProps, ColorPickerState> {
+export class ColorPicker extends Component<ColorPickerProps, ColorPickerState> {
   state: ColorPickerState = {
     color: this.props.color
       ? {
@@ -41,5 +40,3 @@ class ColorPicker extends Component<ColorPickerProps, ColorPickerState> {
     )
   }
 }
-
-export default ColorPicker

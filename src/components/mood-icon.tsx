@@ -2,7 +2,9 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { useLongPress } from './useLongPress.tsx'
+import { EDIT_MOOD_ROUTE } from '@/routes.ts'
+
+import { useLongPress } from './use-long-press.tsx'
 
 
 export type MoodIconProps = {
@@ -16,7 +18,7 @@ export const MoodIcon: React.FC<MoodIconProps> = function({ color, imageURL, id 
 
   const onLongPress = useLongPress(() => {
     // TODO: Navigate to EditMoodPage
-    navigate()
+    navigate(EDIT_MOOD_ROUTE)
   }, 500)
 
   return (

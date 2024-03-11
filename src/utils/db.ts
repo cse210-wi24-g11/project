@@ -23,13 +23,14 @@ export type DbRecord<T extends DbStore> = {
     timestamp: Date
   }
   settings: {
-    defaultView: 'day' | 'week' | 'month'
+    defaultView: 'lastVisited' | 'day' | 'week' | 'month'
+    lastVisited?: 'day' | 'week' | 'month'
     remindMe?: 'daily' | 'weekdays' | 'weekends' | 'none'
     reminderTimes?: '9am' | '3pm' | '6pm' | 'none'
   }
 }[T]
 
-const MOOD_COLLECTION_KEY = 'allMoods'
+//const MOOD_COLLECTION_KEY = 'allMoods'
 const SETTINGS_KEY = 'settings'
 
 /*
@@ -39,7 +40,7 @@ const SETTINGS_KEY = 'settings'
  */
 export function openDb() {
   return new Promise<IDBDatabase>((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, 3)
+    const request = indexedDB.open(DB_NAME, 1)
 
     request.onupgradeneeded = function () {
       const db = request.result
@@ -54,15 +55,19 @@ export function openDb() {
 
       /* add default data to the mood store */
       const colors = ['blue', 'green', 'yellow', 'orange', 'red']
+      const defaultMoodIDs = ['1', '2', '3', '4', '5']
       for (let i = 1; i <= 5; i++) {
-        moodStore.add({ id: `${i}`, color: colors[i - 1], image: new Blob() })
+        moodStore.add({ id: i, color: colors[i - 1], image: new Blob() })
       }
+      moodCollectionStore.add({ moods: defaultMoodIDs }, 'favorite')
+      moodCollectionStore.add({ moods: [] }, 'general')
+      moodCollectionStore.add({ moods: [] }, 'archived')
 
-      /* initialize mood collection with empty arrays */
+      /*
       moodCollectionStore.add(
         { favorites: [], general: [], archived: [] },
         MOOD_COLLECTION_KEY,
-      )
+      )*/
     }
 
     request.onsuccess = function () {
@@ -121,9 +126,28 @@ export async function putEntry(
   ])
 }
 
-export async function getFavoriteMoods(
+export function getFavoriteMoods(
   db: IDBDatabase,
-): Promise<DbRecord<'mood'>[]> {
+) /*: Promise<DbRecord<'mood'>[]>*/ {
+  const favoritesRequest = db
+    .transaction('moodCollection', 'readwrite')
+    .objectStore('moodCollection')
+    .get('favorite')
+  favoritesRequest.onsuccess = function (event) {
+    const request = event.target as IDBRequest
+    let favoriteIdData: { moods: string[] }
+
+    if (request.result) {
+      // If the favorite record exists, use it
+      favoriteIdData = request.result as { moods: string[] }
+    } else {
+      // If the favorite record doesn't exist, create a new one
+      favoriteIdData = { moods: [] }
+    }
+
+    return favoriteIdData.moods
+  }
+  /*
   const transaction = db.transaction(['mood', 'moodCollection'], 'readonly')
   const moodStore = transaction.objectStore('mood')
   const moodCollectionStore = transaction.objectStore('moodCollection')
@@ -135,12 +159,12 @@ export async function getFavoriteMoods(
   const favoriteMoods = await toPromise<DbRecord<'mood'>[]>(
     moodStore.get(favoriteMoodIds),
   )
-  return favoriteMoods
+  return favoriteMoods*/
 }
 
 const DEFAULT_SETTINGS: DbRecord<'settings'> = {
   // id: 'settings',
-  defaultView: 'month',
+  defaultView: 'lastVisited',
   remindMe: 'none',
   reminderTimes: 'none',
 }
@@ -160,6 +184,27 @@ export async function getSettings(
     return DEFAULT_SETTINGS
   }
   return settings
+}
+
+export function updateSettingsInDb(
+  db: IDBDatabase,
+  settings: Partial<DbRecord<'settings'>>,
+) {
+  const transaction = db.transaction(['settings'], 'readwrite')
+  const store = transaction.objectStore('settings')
+  const request = store.get('settings')
+
+  request.onsuccess = () => {
+    // avoid undefined/any
+    const data = (request.result || {}) as DbRecord<'settings'>
+    const updatedData: DbRecord<'settings'> = { ...data, ...settings }
+    store.put(updatedData, 'settings')
+  }
+
+  request.onerror = (e: Event) => {
+    const error = (e.target as IDBRequest).error
+    console.error('Error accessing settings:', error?.message)
+  }
 }
 
 function getEntryDateKey(date: Date): string {

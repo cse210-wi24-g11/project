@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom'
 
 import { CUSTOM_MOOD_ROUTE } from '@/routes.ts'
 
+import { MoodIcon } from '@/components/mood-icon.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { useDb } from '@/context/db.tsx'
-import { MoodIcon } from '@/components/MoodIcon.tsx'
 type Mood = {
   color: string
   image: string

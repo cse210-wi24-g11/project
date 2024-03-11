@@ -8,6 +8,7 @@ export type Route =
   | typeof WEEK_SUMMARY_ROUTE
   | typeof MONTH_SUMMARY_ROUTE
   | typeof CUSTOM_MOOD_ROUTE
+  | typeof EDIT_MOOD_ROUTE
 
 export const ADD_ENTRY_ROUTE = '/'
 
@@ -18,6 +19,8 @@ export const MOOD_COLLECTION_ROUTE = '/mood-collection'
 export const SETTINGS_ROUTE = '/settings'
 
 export const CUSTOM_MOOD_ROUTE = '/custom-mood'
+
+export const EDIT_MOOD_ROUTE = '/edit-mood'
 
 export const SUMMARY_BASE_ROUTE = '/summary'
 export const DAY_SUMMARY_ROUTE = `${SUMMARY_BASE_ROUTE}/day`

@@ -1,4 +1,3 @@
-// src/components/mood_icon/useLongPress.tsx
 import { useEffect, useRef } from 'react'
 
 export const useLongPress = (callback: () => void, timeout: number = 300) => {
