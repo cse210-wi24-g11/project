@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import * as d3 from 'd3'
 
-import { UPDATE_MOOD_ROUTE } from '@/routes.ts'
+import { EDIT_MOOD_ROUTE } from '@/routes.ts'
 import {
   date2sessionStr,
   sessionStr2date,
@@ -86,7 +86,7 @@ function DaySummary({ day, summaryNavBarItem }: DaySummaryPageProps) {
         <MoodEntryList
           records={listItems}
           onClickRecord={(record: SummaryMoodRecord) => {
-            navigate(UPDATE_MOOD_ROUTE, { state: { id: record.id } })
+            navigate(EDIT_MOOD_ROUTE, { state: { id: record.id } })
           }}
         />
       </div>

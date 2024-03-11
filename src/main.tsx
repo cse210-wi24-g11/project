@@ -9,7 +9,6 @@ import DaySummary from './pages/day-summary.tsx'
 import WeekSummary from './pages/week-summary.tsx'
 import { SpectrumProvider } from './context/spectrum.tsx'
 import { AddEntry } from './pages/add-entry.tsx'
-import { UpdateMood } from './pages/update-mood.tsx'
 import { Settings } from './pages/setting.tsx'
 import { Summary } from './pages/summary.tsx'
 import { DbTest } from './pages/db-test.tsx'
@@ -20,7 +19,7 @@ import {
   DAY_SUMMARY_ROUTE,
   SETTINGS_ROUTE,
   SUMMARY_BASE_ROUTE,
-  UPDATE_MOOD_ROUTE,
+  EDIT_MOOD_ROUTE,
   WEEK_SUMMARY_ROUTE,
 } from './routes.ts'
 
@@ -43,7 +42,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
               path={WEEK_SUMMARY_ROUTE}
               element={<WeekSummary summaryNavBarItem={'Week'} />}
             />
-            <Route path={UPDATE_MOOD_ROUTE} element={<UpdateMood />} />
+            <Route path={EDIT_MOOD_ROUTE} element={<EditMood />} />
             <Route path="/EditMood/:moodID" element={<EditMood />} />
             <Route path="/CustomMood" element={<CustomMood />} />
             <Route path="/Settings" element={<Settings />} />

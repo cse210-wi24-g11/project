@@ -11,7 +11,7 @@ import {
 } from '@/components/SummaryHelper.ts'
 import { getEntriesOfDate, getMoodById } from '@/utils/db.ts'
 import { updateSettingsInDb } from '@/utils/db.ts'
-import { UPDATE_MOOD_ROUTE } from '@/routes.ts'
+import { EDIT_MOOD_ROUTE } from '@/routes.ts'
 
 import WeekPicker from '@/components/WeekPicker/WeekPicker.tsx'
 import MoodEntryList from '@/components/MoodEntryList/MoodEntryList.tsx'
@@ -90,7 +90,7 @@ function WeekSummary({ summaryNavBarItem }: WeekSummaryProps) {
         <MoodEntryList
           records={records}
           onClickRecord={(record: SummaryMoodRecord) => {
-            navigate(UPDATE_MOOD_ROUTE, { state: { id: record.id } })
+            navigate(EDIT_MOOD_ROUTE, { state: { id: record.id } })
           }}
         />
       </div>

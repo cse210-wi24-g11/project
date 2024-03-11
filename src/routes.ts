@@ -1,6 +1,6 @@
 export type Route =
   | typeof ADD_ENTRY_ROUTE
-  | typeof UPDATE_MOOD_ROUTE
+  | typeof EDIT_MOOD_ROUTE
   | typeof MOOD_COLLECTION_ROUTE
   | typeof SETTINGS_ROUTE
   | typeof SUMMARY_BASE_ROUTE
@@ -11,7 +11,7 @@ export type Route =
 
 export const ADD_ENTRY_ROUTE = '/'
 
-export const UPDATE_MOOD_ROUTE = '/update-mood'
+export const EDIT_MOOD_ROUTE = '/edit-mood'
 
 export const MOOD_COLLECTION_ROUTE = '/mood-collection'
 
