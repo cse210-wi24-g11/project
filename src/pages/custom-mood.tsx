@@ -51,10 +51,10 @@ export function CustomMood() {
       console.log('Blob:', blob)
 
       //add mood to data base
-      const generatedUUID: string = window.crypto.randomUUID()
+      const generatedUuid: string = window.crypto.randomUUID()
       db.transaction('mood', 'readwrite')
         .objectStore('mood')
-        .add({ id: generatedUUID, color: selectedColor, image: blob })
+        .add({ id: generatedUuid, color: selectedColor, image: blob })
 
       //
 
@@ -80,7 +80,7 @@ export function CustomMood() {
           }
 
           const storedFavoriteIds = favoriteIdData.moods
-          storedFavoriteIds.push(generatedUUID)
+          storedFavoriteIds.push(generatedUuid)
           db.transaction('moodCollection', 'readwrite')
             .objectStore('moodCollection')
             .put({ moods: storedFavoriteIds }, 'favorite')
@@ -106,7 +106,7 @@ export function CustomMood() {
           }
 
           const storedGeneralIDs = generalIdData.moods
-          storedGeneralIDs.push(generatedUUID)
+          storedGeneralIDs.push(generatedUuid)
           db.transaction('moodCollection', 'readwrite')
             .objectStore('moodCollection')
             .put({ moods: storedGeneralIDs }, 'general')

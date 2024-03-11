@@ -37,7 +37,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             <Route path={SUMMARY_BASE_ROUTE} element={<Summary />} />
             <Route path={DAY_SUMMARY_ROUTE} element={<DaySummary />} />
             <Route path={WEEK_SUMMARY_ROUTE} element={<WeekSummary />} />
-            <Route path={`${EDIT_MOOD_ROUTE}/:moodID`} element={<EditMood />} />
+            <Route path={`${EDIT_MOOD_ROUTE}/:moodId`} element={<EditMood />} />
             <Route path={CUSTOM_MOOD_ROUTE} element={<CustomMood />} />
             <Route path="/DbTest" element={<DbTest />} />
           </Routes>
