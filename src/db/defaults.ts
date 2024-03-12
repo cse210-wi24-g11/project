@@ -1,3 +1,9 @@
+import happyMood from '@/assets/default-moods/happy.png'
+import overwhelmedMood from '@/assets/default-moods/overwhelmed.png'
+import angryMood from '@/assets/default-moods/angry.png'
+import mehMood from '@/assets/default-moods/meh.png'
+import sadMood from '@/assets/default-moods/sad.png'
+
 import { generateId } from './utils.ts'
 
 import type { Mood, MoodCollection, Settings } from './types.ts'
@@ -15,11 +21,11 @@ export type DefaultMoodTemplate = {
 }
 
 export const DEFAULT_FAVORITE_MOODS: DefaultMoodTemplate[] = [
-  { color: '#f2cc59', image: '/src/assets/default-moods/happy.png' },
-  { color: '#fc805e', image: '/src/assets/default-moods/overwhelmed.png' },
-  { color: '#df5c50', image: '/src/assets/default-moods/angry.png' },
-  { color: '#b499e4', image: '/src/assets/default-moods/meh.png' },
-  { color: '#85aedd', image: '/src/assets/default-moods/sad.png' },
+  { color: '#f2cc59', image: happyMood },
+  { color: '#fc805e', image: overwhelmedMood },
+  { color: '#df5c50', image: angryMood },
+  { color: '#b499e4', image: mehMood },
+  { color: '#85aedd', image: sadMood },
 
   // add here
 ].map(addId)
