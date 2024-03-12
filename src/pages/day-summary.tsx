@@ -36,7 +36,6 @@ export function DaySummary({ day }: DaySummaryPageProps) {
       return sessionStorageStr2Date(saved)
     }
   })
-  console.log({today})
 
   useEffect(() => {
     sessionStorage.setItem(DAY_SUMMARY_KEY, date2SessionStorageStr(today))
