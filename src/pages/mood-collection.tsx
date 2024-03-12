@@ -26,7 +26,7 @@ const MoodSection: React.FC<MoodSectionProps> = function ({ moods }) {
           key={i}
           color={mood.color}
           imgSrc={URL.createObjectURL(mood.image)}
-          size='single-line-height'
+          size="single-line-height"
         />
       ))}
     </div>
@@ -43,9 +43,9 @@ export function MoodCollection() {
   useEffect(() => {
     async function run() {
       const collectionTypes: string[] = ['favorite', 'general', 'archived']
-      const tempFavorites: Mood[] = [];
-      const tempGeneral: Mood[] = [];
-      const tempArchived: Mood[] = [];
+      const tempFavorites: Mood[] = []
+      const tempGeneral: Mood[] = []
+      const tempArchived: Mood[] = []
       const db = await getDb()
       for (const type of collectionTypes) {
         const requestType = db
@@ -70,7 +70,7 @@ export function MoodCollection() {
               } else if (type === 'general' && targetMood) {
                 tempGeneral.push(moodData)
                 setGeneral(tempGeneral)
-              } else if (type == "archived" && targetMood){
+              } else if (type == 'archived' && targetMood) {
                 tempArchived.push(moodData)
                 setArchived(tempArchived)
               }

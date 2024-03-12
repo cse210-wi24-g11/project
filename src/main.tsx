@@ -23,7 +23,7 @@ import {
   EDIT_MOOD_ROUTE,
   WEEK_SUMMARY_ROUTE,
   CUSTOM_MOOD_ROUTE,
-  MOOD_COLLECTION_ROUTE
+  MOOD_COLLECTION_ROUTE,
 } from './routes.ts'
 
 import './index.css'
