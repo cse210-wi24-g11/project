@@ -143,7 +143,7 @@ export function CustomMood() {
         selectedKey={category}
         onSelectionChange={(selected) => setCategory(selected)}
       >
-        <Item key="favorite">Favorite</Item>
+        <Item key="favorites">Favorite</Item>
         <Item key="general">General</Item>
       </Picker>
       <div>
