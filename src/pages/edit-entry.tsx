@@ -158,15 +158,8 @@ export function EditEntry() {
   )
 }
 
-function validateState(state: unknown): state is State {
-  if (!state) {
-    return false
-  }
-  if (typeof state !== 'object') {
-    return false
-  }
-
-  const { selectedMood } = state as Record<string, unknown>
+function validateState(state: Record<string, unknown>): state is State {
+  const { selectedMood } = state
   if (!selectedMood) {
     return false
   }
