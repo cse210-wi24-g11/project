@@ -2,20 +2,20 @@ import React, { useEffect, useState } from 'react'
 import ChevronRight from '@spectrum-icons/workflow/ChevronRight'
 import ChevronLeft from '@spectrum-icons/workflow/ChevronLeft'
 
+import { serializeDateForEntry } from '@/db/utils.ts'
+import { cls } from '@/utils/cls.ts'
 import {
   get1stDayInMonth,
-  get1stDayOfPrevMonth,
+  getFirstDayOfPrevMonth,
   get1stDayOfNextMonth,
   getDatesInMonth,
-  getMonthAbbr,
+  displayMonthYear,
   getNextMonthDatesInCalendar,
   getPrevMonthDatesInCalendar,
   inSameDay,
   inSameMonth,
   get1stDayInWeek,
-} from '@/components/SummaryHelper.ts'
-import { getEntryDateKey } from '@/utils/db.ts'
-import { cls } from '@/utils/cls.ts'
+} from '@/utils/summary.ts'
 
 interface CalendarGridProps {
   num: string
@@ -79,7 +79,7 @@ export function DayPickerCalendar({ day, onSelectDay }: DayPickerCalendar) {
           {line.map((item: CalendarGridProps, colIndex: number) => {
             return (
               <div
-                key={getEntryDateKey(item.date)}
+                key={serializeDateForEntry(item.date)}
                 className="h-10 flex-1 flex-row items-center justify-center"
                 onClick={() => {
                   clickDay(rowIndex, colIndex)
@@ -185,7 +185,7 @@ export function WeekPickerCalendar({
           {line.map((item: CalendarGridProps) => {
             return (
               <div
-                key={getEntryDateKey(item.date)}
+                key={serializeDateForEntry(item.date)}
                 className="h-10 flex-1 flex-row items-center justify-center"
               >
                 <p className={dayItemStyle(item.selected, item.inCurrentMonth)}>
@@ -254,11 +254,11 @@ function CalendarContainer({
   const [monthStr, setMonthStr] = useState('')
 
   useEffect(() => {
-    setMonthStr(getMonthAbbr(monthStartDate))
+    setMonthStr(displayMonthYear(monthStartDate))
   }, [monthStartDate])
 
   const clickPrevMonth = () => {
-    const start = get1stDayOfPrevMonth(monthStartDate)
+    const start = getFirstDayOfPrevMonth(monthStartDate)
     onChangeMonth(start)
   }
 

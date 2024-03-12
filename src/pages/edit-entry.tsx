@@ -1,36 +1,81 @@
-import { useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useMemo, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Button } from '@react-spectrum/button'
 import { TextField } from '@react-spectrum/textfield'
-import Send from '@spectrum-icons/workflow/Send'
+import Edit from '@spectrum-icons/workflow/Edit'
 import More from '@spectrum-icons/workflow/More'
 
 import {
-  ADD_ENTRY_ROUTE,
   DAY_SUMMARY_ROUTE,
+  EDIT_ENTRY_ROUTE,
   MOOD_COLLECTION_ROUTE,
 } from '@/routes.ts'
+import { db, useQuery } from '@/db/index.ts'
+import { useFavoriteMoods } from '@/db/actions.ts'
+import { ExpandedMood, blobToUrl, expandMood } from '@/db/utils.ts'
 import { useAsyncMemo } from '@/hooks/use-async-memo.ts'
 import { useLocationState } from '@/hooks/use-location-state.ts'
-import { db } from '@/db/index.ts'
-import { useFavoriteMoods } from '@/db/actions.ts'
-import { ExpandedMood, blobToUrl, createEntry, expandMood } from '@/db/utils.ts'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
 
-import type { Mood } from '@/db/types.ts'
+import type { Entry, Mood } from '@/db/types.ts'
 
-type State = {
+export type Params = {
+  entryId: Entry['id']
+}
+
+export type State = {
   selectedMood: ExpandedMood
 }
 
-export function AddEntry() {
+export function EditEntry() {
+  const { entryId } = useParams()
   const state = useLocationState(validateState)
   const navigate = useNavigate()
 
+  const [entry] = useQuery(
+    async (db) => {
+      const entry = await db.entries.get(entryId!)
+
+      return entry ?? null
+    },
+    [entryId],
+    null,
+  )
+  const [entryMood] = useQuery(
+    async (db) => {
+      if (entry === null) {
+        return null
+      }
+      const mood = await db.moods.get(entry.moodId)
+      if (!mood) {
+        return null
+      }
+      return await expandMood(mood)
+    },
+    [entry],
+    null,
+  )
+  const [description, setDescription] = useState('')
+  useEffect(() => {
+    if (!entry) {
+      return
+    }
+
+    setDescription((desc) => {
+      if (desc) {
+        return desc
+      }
+      return entry?.description ?? ''
+    })
+    // should only default the description to the entry's original description. but the entry shouldn't change across renders
+  }, [entry])
+
+  const selectedMood = useMemo(() => state?.selectedMood ?? null, [state])
+
   const [mood, setMood] = useState<ExpandedMood | null>(() =>
-    state === null ? null : state.selectedMood,
+    state === null ? null : selectedMood,
   )
   const moodImageUrl = useMemo(() => {
     if (mood === null) {
@@ -38,19 +83,20 @@ export function AddEntry() {
     }
     return blobToUrl(mood.imageBlob)
   }, [mood])
-
-  const [description, setDescription] = useState('')
+  useEffect(() => {
+    // if we're coming from a selected mood, we don't want to override that with the entry's mood once resolved
+    if (state === null) {
+      setMood(entryMood)
+    }
+    // should only default the description to the entry's original description. but the entry shouldn't change across renders
+  }, [entryMood, state])
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const [favoriteMoods] = useFavoriteMoods([] as Mood[])
-  const visibleFavoriteMoods = useMemo(
-    () => favoriteMoods.slice(-5),
-    [favoriteMoods],
-  )
   const expandedFavoriteMoods = useAsyncMemo(
-    () => Promise.all(visibleFavoriteMoods.map(expandMood)),
-    [visibleFavoriteMoods],
+    () => Promise.all(favoriteMoods.map(expandMood)),
+    [favoriteMoods],
     [] as ExpandedMood[],
   )
   const expandedFavoriteMoodsWithImageUrls = useMemo(
@@ -64,22 +110,19 @@ export function AddEntry() {
   function pickFromMoodCollection() {
     navigate(MOOD_COLLECTION_ROUTE, {
       state: {
-        returnTo: ADD_ENTRY_ROUTE,
+        returnTo: EDIT_ENTRY_ROUTE(entryId!),
       },
     })
   }
 
-  async function addMoodEntry() {
+  async function updateMoodEntry() {
     // sanity check
-    if (mood === null) {
+    if (entryId == null || mood === null) {
       return
     }
 
     setIsSubmitting(true)
-
-    const entry = createEntry(mood.id, description)
-
-    await db.entries.add(entry)
+    await db.entries.update(entryId, { moodId: mood.id, description })
     setIsSubmitting(false)
 
     navigate(DAY_SUMMARY_ROUTE)
@@ -88,10 +131,8 @@ export function AddEntry() {
   return (
     <>
       <main className="max-w-120 flex w-full grow flex-col items-center gap-4 pt-4">
-        Add entry
+        Edit entry
         <div className="flex w-full grow flex-col items-center justify-center gap-4">
-          {/* day overview (TODO) */}
-
           {/* favorite moods */}
           <div className="flex gap-4">
             {expandedFavoriteMoodsWithImageUrls.map(([m, imageUrl]) => (
@@ -124,22 +165,26 @@ export function AddEntry() {
               onClick={
                 mood
                   ? () => {
-                      setMood(null)
+                      setMood(entryMood)
                     }
                   : undefined
               }
             />
-            <TextField label="entry" onChange={setDescription} />
+            <TextField
+              label="entry"
+              value={description}
+              onChange={setDescription}
+            />
             <Button
               variant="primary"
               aria-label="submit"
               isDisabled={mood === null}
               isPending={isSubmitting}
               onPress={() => {
-                void addMoodEntry()
+                void updateMoodEntry()
               }}
             >
-              <Send />
+              <Edit />
             </Button>
           </div>
         </div>

@@ -1,33 +1,33 @@
 import { useState } from 'react'
-import { Button, Picker, Item, Key } from '@adobe/react-spectrum'
+import { useNavigate } from 'react-router-dom'
+import { Button, Picker, Item } from '@adobe/react-spectrum'
 import { ToastContainer, ToastQueue } from '@react-spectrum/toast'
 
+import { db } from '@/db/index.ts'
+import { createMood, urlToBlob } from '@/db/utils.ts'
 import imagePlaceholderUrl from '@/assets/No-Image-Placeholder.png'
+import { MOOD_COLLECTION_ROUTE } from '@/routes.ts'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { ColorPicker } from '@/components/custom-mood/color-picker.tsx' // Adjust the import path based on the actual location
 import { ImageUploadComponent } from '@/components/custom-mood/upload-image.tsx'
 import { DisplayImageComponent } from '@/components/custom-mood/display-image.tsx'
-import { useDb } from '@/context/db.tsx'
 
-// Function to fetch image as Blob from a given URL
-const getImageBlob = async (imageUrl: string) => {
-  try {
-    const response = await fetch(imageUrl)
-    const blob = await response.blob()
-    return blob
-  } catch (error) {
-    console.error('Error fetching image as Blob:', error)
-    return null
-  }
-}
+import type { MoodCollectionCategory } from '@/db/types.ts'
+
+type PickerOptions<KeyType extends React.Key> = Array<{
+  key: KeyType
+  label: string
+}>
+
+const categoryOptions: PickerOptions<MoodCollectionCategory> = [
+  { key: 'favorites', label: 'Favorites' },
+  { key: 'general', label: 'General' },
+]
 
 export function CustomMood() {
-  const { getDb } = useDb()
-
-  const [selectedColor, setSelectedColor] = useState<string | undefined>(
-    '#000000',
-  ) // default white
+  const navigate = useNavigate()
+  const [selectedColor, setSelectedColor] = useState<string>('#000000') // default white
   const [uploadedImage, setUploadedImage] =
     useState<string>(imagePlaceholderUrl)
 
@@ -37,86 +37,35 @@ export function CustomMood() {
   const handleColorChange = (color: string) => {
     setSelectedColor(color)
   }
+  const moodCollection = () => {
+    navigate(MOOD_COLLECTION_ROUTE)
+  }
 
-  const [category, setCategory] = useState<Key>('general')
+  const [category, setCategory] = useState<MoodCollectionCategory>('general')
 
   async function handleSubmitMood() {
-    const db = await getDb()
-
     // Ensure that ToastQueue is properly typed and positive is accessed on the correct object/type
     //if (!submitDisabled){
-    const blob = await getImageBlob(uploadedImage)
-    if (blob) {
-      // Now you can use the 'blob' object as needed, e.g., in your IndexedDB code
-      console.log('Blob:', blob)
-
-      //add mood to data base
-      const generatedUUID: string = window.crypto.randomUUID()
-      db.transaction('mood', 'readwrite')
-        .objectStore('mood')
-        .add({ id: generatedUUID, color: selectedColor, image: blob })
-
-      //
-
-      //append to favorite category
-      if (category == 'favorite') {
-        const favoritesRequest = db
-          .transaction('moodCollection', 'readwrite')
-          .objectStore('moodCollection')
-          .get('favorite')
-
-        // console.log(favoritesRequest)
-
-        favoritesRequest.onsuccess = function (event) {
-          const request = event.target as IDBRequest
-          let favoriteIdData: { moods: string[] }
-
-          if (request.result) {
-            // If the favorite record exists, use it
-            favoriteIdData = request.result as { moods: string[] }
-          } else {
-            // If the favorite record doesn't exist, create a new one
-            favoriteIdData = { moods: [] }
-          }
-
-          const storedFavoriteIds = favoriteIdData.moods
-          storedFavoriteIds.push(generatedUUID)
-          db.transaction('moodCollection', 'readwrite')
-            .objectStore('moodCollection')
-            .put({ moods: storedFavoriteIds }, 'favorite')
-        }
-      }
-      //append to general category
-      else {
-        const generalRequest = db
-          .transaction('moodCollection', 'readwrite')
-          .objectStore('moodCollection')
-          .get('general')
-
-        generalRequest.onsuccess = function (event) {
-          const request = event.target as IDBRequest
-          let generalIdData: { moods: string[] }
-
-          if (request.result) {
-            // If the favorite record exists, use it
-            generalIdData = request.result as { moods: string[] }
-          } else {
-            // If the favorite record doesn't exist, create a new one
-            generalIdData = { moods: [] }
-          }
-
-          const storedGeneralIDs = generalIdData.moods
-          storedGeneralIDs.push(generatedUUID)
-          db.transaction('moodCollection', 'readwrite')
-            .objectStore('moodCollection')
-            .put({ moods: storedGeneralIDs }, 'general')
-        }
-      }
-      ToastQueue.positive('Custom Mood Added!', { timeout: 5000 })
-    } else {
+    const blob = await urlToBlob(uploadedImage)
+    if (!blob) {
       // TODO: render a floating window to notify the user to upload an image
       console.log('Failed to fetch image as Blob.')
+      return
     }
+
+    // Now you can use the 'blob' object as needed, e.g., in your IndexedDB code
+    console.log('Blob:', blob)
+
+    //add mood to data base
+    const mood = await createMood(selectedColor, blob)
+    await db.moods.add(mood)
+
+    //append to category in mood collection
+    const collection = (await db.moodCollection.get(category)) ?? []
+    collection.push(mood.id)
+    await db.moodCollection.put(collection, category)
+
+    ToastQueue.positive('Custom Mood Added!', { timeout: 5000 })
   }
 
   return (
