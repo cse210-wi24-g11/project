@@ -6,14 +6,17 @@ import { EDIT_MOOD_ROUTE } from '@/routes.ts'
 
 import { useLongPress } from './use-long-press.tsx'
 
-
 export type MoodIconProps = {
   color: string
   imageURL: string
   id: string
 }
 
-export const MoodIcon: React.FC<MoodIconProps> = function({ color, imageURL, id }) {
+export const MoodIcon: React.FC<MoodIconProps> = function ({
+  color,
+  imageURL,
+  id,
+}) {
   const navigate = useNavigate()
 
   const onLongPress = useLongPress(() => {
