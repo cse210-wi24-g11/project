@@ -1,18 +1,14 @@
 import { NavLink } from 'react-router-dom'
 
-import {
-  DAY_SUMMARY_ROUTE,
-  MONTH_SUMMARY_ROUTE,
-  WEEK_SUMMARY_ROUTE,
-} from '@/routes.ts'
+import { DAY_SUMMARY_ROUTE, WEEK_SUMMARY_ROUTE } from '@/routes.ts'
 import { cls } from '@/utils/cls.ts'
 
-export type SummaryNavbarItem = 'Day' | 'Week' | 'Month'
+export type SummaryNavbarItem = 'Day' | 'Week'
 
 export function SummaryBar() {
   return (
     <div className="w-full bg-white">
-      <div className="fixed left-0 top-10 flex w-full border-b-2 bg-white pb-1">
+      <div className="fixed left-0 flex w-full border-b-2 bg-white pb-1">
         <NavLink
           to={DAY_SUMMARY_ROUTE}
           className={({ isActive }) => navbarItemStyle(isActive)}
@@ -24,12 +20,6 @@ export function SummaryBar() {
           className={({ isActive }) => navbarItemStyle(isActive)}
         >
           Week
-        </NavLink>
-        <NavLink
-          to={MONTH_SUMMARY_ROUTE}
-          className={({ isActive }) => navbarItemStyle(isActive)}
-        >
-          Month
         </NavLink>
       </div>
     </div>

@@ -25,7 +25,6 @@ const defaultViewOptions: PickerOptions<
   Required<SettingsShape>['defaultView']
 > = [
   { key: 'lastVisited', label: 'Last Visited' },
-  { key: 'month', label: 'Month' },
   { key: 'week', label: 'Week' },
   { key: 'day', label: 'Day' },
 ]

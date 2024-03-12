@@ -32,7 +32,6 @@ export type DbRecord<T extends DbStore> = {
 
 //const MOOD_COLLECTION_KEY = 'allMoods'
 const SETTINGS_KEY = 'settings'
-
 /*
  ** open the indexedDB database
  ** returns a promise that resolves to the database object
@@ -52,7 +51,26 @@ export function openDb() {
       db.createObjectStore('entry', { keyPath: 'id' })
       db.createObjectStore('settings', { keyPath: null })
       db.createObjectStore('dateCollection', { keyPath: null })
-
+      
+      async function createBlobFromPath(filePath: string): Promise<Blob | undefined> {
+        try {
+          // Fetch the file using the file path
+          const response = await fetch(filePath);
+      
+          // Check if the request was successful
+          if (!response.ok) {
+            throw new Error(`Failed to fetch file: ${response.statusText}`);
+          }
+      
+          // Convert the response to a Blob
+          const blob = await response.blob();
+          
+          return blob;
+        } catch (error) {
+          console.error('Error converting file to Blob:', error);
+        }
+      }
+     
       /* add default data to the mood store */
       const colors = ['#f2cc59', '#fc805e', '#df5c50', '#b499e4', '#85aedd']
       const imagePaths = ['/src/assets/default-moods/happy.PNG',
@@ -60,37 +78,48 @@ export function openDb() {
       '/src/assets/default-moods/angry.PNG',
       '/src/assets/default-moods/meh.png','/src/assets/sad.PNG'];
       const defaultMoodIds = ['happy', 'overwhelmed','angry','meh','sad']
+      let imageBlobs: Blob[] = []
       //Julia: tried this and didn't work either 
       
-      async function createBlobFromPath(filePath: string): Promise<Blob | undefined> {
-        try {
-          const response = await fetch(filePath);
-          const arrayBuffer = await response.arrayBuffer();
-          
-          // Ensure content type is not null
-          const contentType = response.headers.get('content-type') || undefined;
-      
-          const blob = new Blob([arrayBuffer], { type: contentType });
-          return blob;
-        } catch (error) {
-          console.error('Error creating Blob from path:', error);
-          return undefined;
-        }
+      try {
+        // Use Promise.all to wait for all promises to resolve
+        const resolvedBlobs = await Promise.all(defaultMoodIds.map(async (moodId, index) => {
+          try {
+            const blob = await createBlobFromPath(imagePaths[index]);
+            if (blob) {
+              return blob;
+            } else {
+              console.error('Failed to convert file to Blob.');
+              return undefined;
+            }
+          } catch (error) {
+            console.error('Error converting file to Blob:', error);
+            return undefined;
+          }
+        }));
+
+        // Filter out undefined values
+        imageBlobs = resolvedBlobs.filter(blob => blob !== undefined) as Blob[];
       }
-      
+      catch (error){
+        console.error('Error converting file to Blob:', error);
+      }
      
-      /*
-      for (let i = 1; i <= 5; i++) {
-        moodStore.add({ id: defaultMoodIds[i-1], color: colors[i - 1], image: createBlobFromPath(imagePaths[i-1]) })
-      }*/
-      for (let i = 1; i <= 5; i++) {
-        moodStore.add({ id: defaultMoodIds[i-1], color: colors[i - 1], image: new Blob()})
+      for (let i = 0; i < 5; i++){
+      db.transaction('mood', 'readwrite')
+            .objectStore('mood')
+            .put({id: defaultMoodIds [i] ,color: colors[i], image:imageBlobs[i] })
       }
 
-      moodCollectionStore.add({ moods: defaultMoodIds }, 'favorite')
-      moodCollectionStore.add({ moods: [] }, 'general')
-      moodCollectionStore.add({ moods: [] }, 'archived')
-
+      db.transaction('moodCollection', 'readwrite')
+            .objectStore('moodCollection')
+            .put({ moods: defaultMoodIds }, 'favorite')
+     db.transaction('moodCollection', 'readwrite')
+            .objectStore('moodCollection')
+            .put({ moods: [] }, 'general')
+    db.transaction('moodCollection', 'readwrite')
+            .objectStore('moodCollection')
+            .put({ moods: [] }, 'archived')
  
     }
 
