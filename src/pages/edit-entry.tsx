@@ -36,6 +36,7 @@ export function EditEntry() {
 
   const [entry] = useQuery(async (db) => {
     const entry = await db.entries.get(entryId!)
+    
     return entry ?? null
   }, [entryId], null)
   const [entryMood] = useQuery(async (db) => {
@@ -44,13 +45,6 @@ export function EditEntry() {
     if (!mood) { return null }
     return await expandMood(mood)
   }, [entry], null)
-  useEffect(() => {
-    if (entry === null || entryMood === null) {
-      // @ts-expect-error -1 is a valid argument, representing going back. see https://reactrouter.com/en/main/hooks/use-navigate
-      navigate(-1, { replace: true })
-      return
-    }
-  }, [entry, entryMood, navigate])
   const [description, setDescription] = useState('')
   useEffect(() => {
     setDescription(entry?.description ?? '')
@@ -66,6 +60,14 @@ export function EditEntry() {
     if (mood === null) { return undefined }
     return blobToUrl(mood.imageBlob)
   }, [mood])
+  useEffect(() => {
+    // if we're coming from a selected mood, we don't want to override that with the entry's mood once resolved
+    if (state === null) {
+      setMood(entryMood)
+    }
+  // should only default the description to the entry's original description. but the entry shouldn't change across renders
+  }, [entryMood, state])
+  
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
