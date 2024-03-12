@@ -60,7 +60,7 @@ export function WeekSummary() {
             day: entry.timestamp,
             title: entry.description,
             color: d3.rgb(mood?.color ?? 'blue'),
-            imagePath: mood?.imagePath ?? 'https://i.imgur.com/yXOvdOSs.jpg', // TODO: remove link
+            image: mood!.image,
           })
         }
       }

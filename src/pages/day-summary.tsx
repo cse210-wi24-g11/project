@@ -60,12 +60,10 @@ export function DaySummary({ day }: DaySummaryPageProps) {
           day: entry.timestamp,
           title: entry.description,
           color: d3.rgb(mood?.color ?? 'blue'),
-          imagePath: mood?.imagePath ?? 'https://i.imgur.com/yXOvdOSs.jpg', // TODO: remove link
+          image: mood!.image,
         })
       }
-      records.sort(
-        (a, b) => new Date(b.day).getTime() - new Date(a.day).getTime(),
-      )
+      records.sort((a, b) => new Date(b.day).getTime() - new Date(a.day).getTime());
       setListItems(records)
     }
 

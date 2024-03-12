@@ -129,7 +129,7 @@ export function EditEntry() {
                 key={m.id}
                 size="single-line-height"
                 color={m.color}
-                imgSrc={m.imagePath}
+                imgSrc={URL.createObjectURL(m.image)}
                 onClick={() => {
                   setMood(m)
                 }}
@@ -150,7 +150,9 @@ export function EditEntry() {
             <MoodSwatch
               size="single-line-height"
               color={mood?.color}
-              imgSrc={mood?.imagePath}
+              imgSrc={
+                mood && mood.image ? URL.createObjectURL(mood.image) : undefined
+              }
               onClick={
                 mood
                   ? () => {
