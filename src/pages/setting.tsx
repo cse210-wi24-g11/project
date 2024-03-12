@@ -74,8 +74,8 @@ export function Settings() {
     navigate(CUSTOM_MOOD_ROUTE)
   }
   return (
-    <div className="flex flex-col items-center bg-white">
-      <section className="w-full bg-white p-4 pl-2 pr-6 shadow-md">
+    <div className="flex flex-col items-center">
+      <div className="w-full p-4 pl-2 pr-6">
         <h2 className="mb-4 text-left text-base font-bold">
           Calendar Settings
         </h2>
@@ -93,9 +93,9 @@ export function Settings() {
         >
           {(item) => <Item key={item.key}>{item.label}</Item>}
         </Picker>
-      </section>
+      </div>
 
-      <section className="w-full bg-white p-4 pl-2 pr-6 shadow-md">
+      <section className="w-full p-4 pl-2 pr-6">
         <h2 className="mb-4 text-left text-base font-bold">
           Notification Settings
         </h2>
@@ -129,7 +129,7 @@ export function Settings() {
         </Picker>
       </section>
 
-      <div className="w-full bg-white p-4 shadow-md">
+      <div className="w-full p-4">
         <h2 className="mb-4 text-left font-semibold">Mood collection</h2>
         <Button
           variant="primary"
