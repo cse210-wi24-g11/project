@@ -47,7 +47,12 @@ export function EditEntry() {
   }, [entry], null)
   const [description, setDescription] = useState('')
   useEffect(() => {
-    setDescription(entry?.description ?? '')
+    if (!entry) { return }
+    
+    setDescription(desc => {
+      if (desc) { return desc }
+      return entry?.description ?? ''
+    })
   // should only default the description to the entry's original description. but the entry shouldn't change across renders
   }, [entry])
 
@@ -145,7 +150,7 @@ export function EditEntry() {
                   : undefined
               }
             />
-            <TextField label="entry" onChange={setDescription} />
+            <TextField label="entry" value={description} onChange={setDescription} />
             <Button
               variant="primary"
               aria-label="submit"
