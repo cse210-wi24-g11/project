@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { EDIT_MOOD_ROUTE } from '@/routes.ts'
+import { EDIT_ENTRY_ROUTE } from '@/routes.ts'
 import {
   date2SessionStorageStr,
   sessionStorageStr2Date,
@@ -64,7 +64,7 @@ export function DaySummary({ day }: DaySummaryPageProps) {
         <MoodEntryList
           entries={todayEntries}
           onClickEntry={(entry) => {
-            navigate(EDIT_MOOD_ROUTE, { state: { id: entry.id } })
+            navigate(EDIT_ENTRY_ROUTE(entry.id))
           }}
         />
       </div>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { EDIT_MOOD_ROUTE } from '@/routes.ts'
+import { EDIT_ENTRY_ROUTE } from '@/routes.ts'
 import { getResolvedEntriesForDate, updateSettings } from '@/db/actions.ts'
 import { ExpandedEntry } from '@/db/utils.ts'
 import { useAsyncMemo } from '@/hooks/use-async-memo.ts'
@@ -60,7 +60,7 @@ export function WeekSummary() {
         <MoodEntryList
           entries={expandedEntries}
           onClickEntry={(entry) => {
-            navigate(EDIT_MOOD_ROUTE, { state: { id: entry.id } })
+            navigate(EDIT_ENTRY_ROUTE(entry.id))
           }}
         />
       </div>
