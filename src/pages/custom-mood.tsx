@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button, Picker, Item } from '@adobe/react-spectrum'
-import { ToastContainer, ToastQueue } from '@react-spectrum/toast'
 
 import { db } from '@/db/index.ts'
 import { createMood, urlToBlob } from '@/db/utils.ts'
@@ -65,44 +64,39 @@ export function CustomMood() {
     collection.push(mood.id)
     await db.moodCollection.put(collection, category)
 
-    ToastQueue.positive('Custom Mood Added!', { timeout: 5000 })
+    moodCollection()
   }
 
   return (
-    <div>
-      <ToastContainer />
-      <ImageUploadComponent
-        onImageUpload={handleImageUpload}
-        uploadedImage={uploadedImage}
-      />
-      <div
-        className="rounded-lg"
-        style={{ border: `20px solid ${selectedColor}`, padding: '1px' }}
-      >
-        <DisplayImageComponent uploadedImage={uploadedImage} />
-      </div>
-      <ColorPicker color={selectedColor} onChange={handleColorChange} />
-      <Picker
-        label="category"
-        selectedKey={category}
-        onSelectionChange={(selected) =>
-          setCategory(selected as MoodCollectionCategory)
-        }
-        items={categoryOptions}
-      >
-        {(item) => <Item key={item.key}>{item.label}</Item>}
-      </Picker>
-      <div>
-        <Button onPress={() => void handleSubmitMood()} variant="primary">
-          Submit Mood
-        </Button>
-      </div>
-      <div>
-        <Button onPress={() => moodCollection()} variant="primary">
-          Mood Collection
-        </Button>
+    <>
+      <div className="mt-12 flex flex-col items-center space-y-4">
+        <ImageUploadComponent
+          onImageUpload={handleImageUpload}
+          uploadedImage={uploadedImage}
+        />
+        <div
+          className="m-4 h-max w-max rounded-lg"
+          style={{ border: `20px solid ${selectedColor}` }}
+        >
+          <DisplayImageComponent uploadedImage={uploadedImage} />
+        </div>
+        <ColorPicker color={selectedColor} onChange={handleColorChange} />
+        <Picker
+          items={categoryOptions}
+          selectedKey={category}
+          onSelectionChange={(selected) =>
+            setCategory(selected as MoodCollectionCategory)
+          }
+        >
+          {(categoryOptions) => <Item>{categoryOptions.label}</Item>}
+        </Picker>
+        <div>
+          <Button onPress={() => void handleSubmitMood()} variant="primary">
+            Submit Mood
+          </Button>
+        </div>
       </div>
       <MainNavBar />
-    </div>
+    </>
   )
 }
