@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { EDIT_ENTRY_ROUTE } from '@/routes.ts'
 import {
+  DAY_SUMMARY_SESSIONSTORAGE_KEY,
   date2SessionStorageStr,
   sessionStorageStr2Date,
 } from '@/utils/summary.ts'
@@ -19,8 +20,6 @@ interface DaySummaryPageProps {
   day?: Date
 }
 
-const DAY_SUMMARY_KEY = 'day_summary'
-
 export function DaySummary({ day }: DaySummaryPageProps) {
   const navigate = useNavigate()
 
@@ -29,7 +28,7 @@ export function DaySummary({ day }: DaySummaryPageProps) {
   }, [])
 
   const [today, setToday] = useState<Date>(() => {
-    const saved = sessionStorage?.getItem?.(DAY_SUMMARY_KEY)
+    const saved = sessionStorage?.getItem?.(DAY_SUMMARY_SESSIONSTORAGE_KEY)
     if (!saved) {
       return day ?? new Date()
     } else {
@@ -38,7 +37,10 @@ export function DaySummary({ day }: DaySummaryPageProps) {
   })
 
   useEffect(() => {
-    sessionStorage.setItem(DAY_SUMMARY_KEY, date2SessionStorageStr(today))
+    sessionStorage.setItem(
+      DAY_SUMMARY_SESSIONSTORAGE_KEY,
+      date2SessionStorageStr(today),
+    )
   }, [today])
 
   const [todayEntries] = useQuery(
