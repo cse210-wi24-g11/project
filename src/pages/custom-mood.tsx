@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { Button, Picker, Item, Key } from '@adobe/react-spectrum'
 import { ToastContainer, ToastQueue } from '@react-spectrum/toast'
+import { useNavigate } from 'react-router-dom'
 
 import imagePlaceholderUrl from '@/assets/No-Image-Placeholder.png'
+import { MOOD_COLLECTION_ROUTE } from '@/routes.ts'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { ColorPicker } from '@/components/custom-mood/color-picker.tsx' // Adjust the import path based on the actual location
@@ -24,7 +26,7 @@ const getImageBlob = async (imageUrl: string) => {
 
 export function CustomMood() {
   const { getDb } = useDb()
-
+  const navigate = useNavigate()
   const [selectedColor, setSelectedColor] = useState<string | undefined>(
     '#000000',
   ) // default white
@@ -36,6 +38,9 @@ export function CustomMood() {
   }
   const handleColorChange = (color: string) => {
     setSelectedColor(color)
+  }
+  const moodCollection = () => {
+    navigate(MOOD_COLLECTION_ROUTE)
   }
 
   const [category, setCategory] = useState<Key>('general')
@@ -111,6 +116,9 @@ export function CustomMood() {
         }
       }
       ToastQueue.positive('Custom Mood Added!', { timeout: 5000 })
+      setTimeout(() => {
+        navigate('/mood-collection')
+      }, 5000)
     } else {
       // TODO: render a floating window to notify the user to upload an image
       console.log('Failed to fetch image as Blob.')
@@ -141,6 +149,11 @@ export function CustomMood() {
       <div>
         <Button onPress={() => void handleSubmitMood()} variant="primary">
           Submit Mood
+        </Button>
+      </div>
+      <div>
+        <Button onPress={() => moodCollection()} variant="primary">
+          Mood Collection
         </Button>
       </div>
       <MainNavBar />
