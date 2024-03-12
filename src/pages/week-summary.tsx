@@ -35,7 +35,10 @@ export function WeekSummary() {
   })
 
   useEffect(() => {
-    sessionStorage.setItem(WEEK_SUMMARY_SESSIONSTORAGE_KEY, date2SessionStorageStr(startDay))
+    sessionStorage.setItem(
+      WEEK_SUMMARY_SESSIONSTORAGE_KEY,
+      date2SessionStorageStr(startDay),
+    )
   }, [startDay])
 
   const expandedEntries = useAsyncMemo(

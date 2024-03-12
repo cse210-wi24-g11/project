@@ -12,7 +12,10 @@ import {
 } from '@/routes.ts'
 import { useAsyncMemo } from '@/hooks/use-async-memo.ts'
 import { useLocationState } from '@/hooks/use-location-state.ts'
-import { DAY_SUMMARY_SESSIONSTORAGE_KEY, date2SessionStorageStr } from '@/utils/summary.ts'
+import {
+  DAY_SUMMARY_SESSIONSTORAGE_KEY,
+  date2SessionStorageStr,
+} from '@/utils/summary.ts'
 import { db } from '@/db/index.ts'
 import { useFavoriteMoods } from '@/db/actions.ts'
 import { ExpandedMood, blobToUrl, createEntry, expandMood } from '@/db/utils.ts'
@@ -84,7 +87,10 @@ export function AddEntry() {
     await db.entries.add(entry)
     setIsSubmitting(false)
 
-    sessionStorage.setItem(DAY_SUMMARY_SESSIONSTORAGE_KEY, date2SessionStorageStr(date))
+    sessionStorage.setItem(
+      DAY_SUMMARY_SESSIONSTORAGE_KEY,
+      date2SessionStorageStr(date),
+    )
     navigate(DAY_SUMMARY_ROUTE)
   }
 

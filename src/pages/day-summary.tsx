@@ -37,7 +37,10 @@ export function DaySummary({ day }: DaySummaryPageProps) {
   })
 
   useEffect(() => {
-    sessionStorage.setItem(DAY_SUMMARY_SESSIONSTORAGE_KEY, date2SessionStorageStr(today))
+    sessionStorage.setItem(
+      DAY_SUMMARY_SESSIONSTORAGE_KEY,
+      date2SessionStorageStr(today),
+    )
   }, [today])
 
   const [todayEntries] = useQuery(
