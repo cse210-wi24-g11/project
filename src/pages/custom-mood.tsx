@@ -4,8 +4,8 @@ import { ToastContainer, ToastQueue } from '@react-spectrum/toast'
 import { useNavigate } from 'react-router-dom'
 
 import imagePlaceholderUrl from '@/assets/No-Image-Placeholder.png'
-
 import { MOOD_COLLECTION_ROUTE } from '@/routes.ts'
+
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { ColorPicker } from '@/components/custom-mood/color-picker.tsx' // Adjust the import path based on the actual location
 import { ImageUploadComponent } from '@/components/custom-mood/upload-image.tsx'
