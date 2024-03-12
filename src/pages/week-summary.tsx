@@ -1,74 +1,55 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import * as d3 from 'd3'
 
+import { EDIT_ENTRY_ROUTE } from '@/routes.ts'
+import { getResolvedEntriesForDate, updateSettings } from '@/db/actions.ts'
+import { ExpandedEntry } from '@/db/utils.ts'
+import { useAsyncMemo } from '@/hooks/use-async-memo.ts'
 import {
-  SummaryMoodRecord,
   getDatesInWeek,
   get1stDayInWeek,
-  sessionStr2date,
-  date2sessionStr,
+  sessionStorageStr2Date,
+  date2SessionStorageStr,
 } from '@/utils/summary.ts'
-import { getEntriesOfDate, getMoodById } from '@/utils/db.ts'
-import { updateSettingsInDb } from '@/utils/db.ts'
-import { EDIT_MOOD_ROUTE } from '@/routes.ts'
 
 import { WeekPicker } from '@/components/WeekPicker/WeekPicker.tsx'
-import { MoodEntryList } from '@/components/MoodEntryList/MoodEntryList.tsx'
+import { MoodEntryList } from '@/components/mood-entry-list/mood-entry-list.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { SummaryBar } from '@/components/navigation/summary-bar.tsx'
-import { useDb } from '@/context/db.tsx'
 
 const WEEK_SUMMARY_KEY = 'week_summary'
 
 export function WeekSummary() {
-  const { getDb } = useDb()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    void updateSettings({ lastVisited: 'week' })
+  }, [])
 
   const [startDay, setStartDay] = useState<Date>(() => {
     const saved = sessionStorage?.getItem?.(WEEK_SUMMARY_KEY)
     if (!saved) {
       return get1stDayInWeek(new Date())
     } else {
-      return sessionStr2date(saved)
+      return sessionStorageStr2Date(saved)
     }
   })
-  const [records, setRecords] = useState<SummaryMoodRecord[]>([])
 
   useEffect(() => {
-    async function updateLastVisited() {
-      const db = await getDb()
-      updateSettingsInDb(db, { lastVisited: 'week' })
-    }
+    sessionStorage.setItem(WEEK_SUMMARY_KEY, date2SessionStorageStr(startDay))
+  }, [startDay])
 
-    void updateLastVisited()
-  }, [getDb])
-
-  useEffect(() => {
-    sessionStorage.setItem(WEEK_SUMMARY_KEY, date2sessionStr(startDay))
-
-    async function run() {
-      const db = await getDb()
-      const records = Array<SummaryMoodRecord>()
+  const expandedEntries = useAsyncMemo(
+    async () => {
       const daysInWeek = getDatesInWeek(startDay)
-      for (const day of daysInWeek) {
-        const entries = (await getEntriesOfDate(db, day)) ?? []
-        for (const entry of entries) {
-          const mood = await getMoodById(db, entry.moodId)
-          records.push({
-            id: entry.id,
-            day: entry.timestamp,
-            title: entry.description,
-            color: d3.rgb(mood?.color ?? 'blue'),
-            imagePath: mood?.imagePath ?? 'https://i.imgur.com/yXOvdOSs.jpg', // TODO: remove link
-          })
-        }
-      }
-      setRecords(records)
-    }
-
-    void run()
-  }, [startDay, getDb])
+      const entries = await Promise.all(
+        daysInWeek.map(getResolvedEntriesForDate),
+      )
+      return entries.flat()
+    },
+    [startDay],
+    [] as ExpandedEntry[],
+  )
 
   return (
     <div className="flex h-screen flex-col">
@@ -83,9 +64,9 @@ export function WeekSummary() {
       </div>
       <div className="mt-24 flex-grow overflow-y-auto bg-white px-8 pb-16">
         <MoodEntryList
-          records={records}
-          onClickRecord={(record: SummaryMoodRecord) => {
-            navigate(EDIT_MOOD_ROUTE, { state: { id: record.id } })
+          entries={expandedEntries}
+          onClickEntry={(entry) => {
+            navigate(EDIT_ENTRY_ROUTE(entry.id))
           }}
         />
       </div>

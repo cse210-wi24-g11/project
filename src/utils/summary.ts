@@ -1,7 +1,7 @@
 import * as d3 from 'd3'
 import { RGBColor } from 'd3'
 
-import { getEntryDateKey } from '@/utils/db.ts'
+import { ExpandedEntry, serializeDateForEntry } from '@/db/utils.ts'
 
 export interface SummaryDayMoodRecord {
   id: number
@@ -21,40 +21,45 @@ export interface SummaryMoodRecord {
 
 export const MAX_MOOD_VALUE = 5
 
-const abbr = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec',
-]
-
-export function getMonthAbbr(date: Date): string {
-  return abbr[date.getMonth()] + ' ' + date.getFullYear()
+export function displayMonthYear(date: Date): string {
+  return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
 }
 
-export function getDateAbbr(date: Date): string {
-  return abbr[date.getMonth()] + ' ' + date.getDate()
+export function displayMonthDay(date: Date): string {
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
-export function displayDate(date: Date): string {
-  return `${getDateAbbr(date)} ${date.getFullYear()}`
+export function displayTime(date: Date): string {
+  return date.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    hour12: true,
+    minute: '2-digit',
+  })
 }
 
-export function date2sessionStr(date: Date): string {
-  return getEntryDateKey(date)
+export function displayMonthDayYear(date: Date): string {
+  return `${displayMonthDay(date)} ${date.getFullYear()}`
 }
 
-export function sessionStr2date(str: string): Date {
-  const temp = str.replace(/\./g, '-')
-  return new Date(temp)
+export function date2SessionStorageStr(date: Date): string {
+  return `${date.getFullYear()}.${date.getMonth()}.${date.getDate()}`
+}
+
+export function sessionStorageStr2Date(str: string): Date {
+  const date = new Date()
+  try {
+    const [y, m, d] = str.split('.').map(Number)
+    date.setFullYear(y)
+    date.setMonth(m)
+    date.setDate(d)
+  } catch (e) {
+    console.error('error parsing sessionstorage date string', e)
+  }
+  date.setHours(0)
+  date.setMinutes(0)
+  date.setSeconds(0)
+  date.setMilliseconds(0)
+  return date
 }
 
 export function getTimeAbbr(date: Date): string {
@@ -168,13 +173,17 @@ export function getNextMonthDatesInCalendar(date: Date): Date[] {
   return res
 }
 
-export function getMoodOfDate(date: Date): SummaryMoodRecord[] {
-  return Array.from({ length: 10 }, (_, index) => ({
-    id: (index + 100 * date.getDay()).toString(),
-    day: date,
-    title: 'Day ' + date.getDate() + ' is good.',
-    color: mockMoodColors[Math.floor(Math.random() * 6)],
-    imagePath: '',
+export function mockEntriesOnDate(date: Date, n: number = 10): ExpandedEntry[] {
+  return Array.from({ length: n }, (_, i) => ({
+    id: (i + 100 * date.getDay()).toString(),
+    timestamp: date,
+    date: serializeDateForEntry(date),
+    description: 'Day ' + date.getDate() + ' is good.',
+    mood: {
+      id: `mood-${i + 100 * date.getDay()}`,
+      color: mockMoodColors[Math.floor(Math.random() * 6)].toString(),
+      imageBlob: new Blob(),
+    },
   }))
 }
 
