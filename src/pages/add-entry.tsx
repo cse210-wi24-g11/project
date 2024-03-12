@@ -15,7 +15,6 @@ import {
   DbRecord,
   getFavoriteMoods,
   putEntry,
-  getMoodById,
 } from '@/utils/db.ts'
 
 import { useDb } from '@/context/db.tsx'
@@ -46,7 +45,6 @@ export function AddEntry() {
   useEffect(() => {
     async function loadFavoriteMoods() {
       const db = await getDb()
-      // TODO: fix the await.
       const favoriteMoods = await getFavoriteMoods(db)
       const newFavoriteMoods = favoriteMoods?.length
         ? favoriteMoods.slice(-5)
