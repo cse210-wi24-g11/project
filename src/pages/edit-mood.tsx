@@ -65,8 +65,8 @@ export function EditMood() {
 
             generalRequest.onsuccess = function (event) {
               const request = event.target as IDBRequest
-              const generalIdData = request.result as { moods: string[] }
-              if (generalIdData.moods.includes(moodId as string)) {
+              const generalIds = request.result as string[]
+              if (generalIds.includes(moodId as string)) {
                 setCategory('general')
               }
             }
@@ -77,13 +77,13 @@ export function EditMood() {
             const favoriteRequest = db
               .transaction('moodCollection', 'readwrite')
               .objectStore('moodCollection')
-              .get('favorite')
+              .get('favorites')
 
             favoriteRequest.onsuccess = function (event) {
               const request = event.target as IDBRequest
-              const favoriteIdData = request.result as { moods: string[] }
-              if (favoriteIdData.moods.includes(moodId as string)) {
-                setCategory('favorite')
+              const favoritesIds = request.result as string[]
+              if (favoritesIds.includes(moodId as string)) {
+                setCategory('favorites')
               }
             }
           } catch (error) {
@@ -97,8 +97,8 @@ export function EditMood() {
 
             archivedRequest.onsuccess = function (event) {
               const request = event.target as IDBRequest
-              const archivedIdData = request.result as { moods: string[] }
-              if (archivedIdData.moods.includes(moodId as string)) {
+              const archivedIds = request.result as string[]
+              if (archivedIds.includes(moodId as string)) {
                 setCategory('archived')
               }
             }
@@ -138,9 +138,6 @@ export function EditMood() {
   }
 
   async function handleEditMood() {
-    let favoriteMoods: string[]
-    let generalMoods: string[]
-    let archivedMoods: string[]
     const db = await getDb()
 
     if (db) {
@@ -162,25 +159,18 @@ export function EditMood() {
 
         generalRequest.onsuccess = function (event) {
           const request = event.target as IDBRequest
-          const generalIdData = request.result as { moods: string[] }
-          generalMoods = generalIdData.moods
+          const generalIds = request.result as string[]
           //remove if no longer here
-          if (
-            generalMoods.includes(moodId as string) &&
-            category != 'general'
-          ) {
-            generalMoods.splice(generalMoods.indexOf(moodId as string, 1))
+          if (generalIds.includes(moodId!) && category != 'general') {
+            generalIds.splice(generalIds.indexOf(moodId!, 1))
           }
           //add if not yet in category
-          else if (
-            !generalMoods.includes(moodId as string) &&
-            category == 'general'
-          ) {
-            generalMoods.push(moodId as string)
+          else if (!generalIds.includes(moodId!) && category == 'general') {
+            generalIds.push(moodId!)
           }
           db.transaction('moodCollection', 'readwrite')
             .objectStore('moodCollection')
-            .put({ moods: generalMoods }, 'general')
+            .put(generalIds, 'general')
         }
       } catch (error) {
         console.error('Error fetching "general" mood information:', error)
@@ -189,31 +179,23 @@ export function EditMood() {
         const favoriteRequest = db
           .transaction('moodCollection', 'readwrite')
           .objectStore('moodCollection')
-          .get('favorite')
+          .get('favorites')
 
         favoriteRequest.onsuccess = function (event) {
           const request = event.target as IDBRequest
-          const favoriteIdData = request.result as { moods: string[] }
-          favoriteMoods = favoriteIdData.moods
-          console.log(favoriteIdData.moods)
-          console.log(favoriteMoods)
+          const favoritesIds = request.result as string[]
+          console.log(favoritesIds)
           //remove if no longer here
-          if (
-            favoriteMoods.includes(moodId as string) &&
-            category != 'favorite'
-          ) {
-            favoriteMoods.splice(favoriteMoods.indexOf(moodId as string, 1))
+          if (favoritesIds.includes(moodId!) && category != 'favorites') {
+            favoritesIds.splice(favoritesIds.indexOf(moodId!, 1))
           }
           //add if not yet in category
-          else if (
-            !favoriteMoods.includes(moodId as string) &&
-            category == 'favorite'
-          ) {
-            favoriteMoods.push(moodId as string)
+          else if (!favoritesIds.includes(moodId!) && category == 'favorites') {
+            favoritesIds.push(moodId!)
           }
           db.transaction('moodCollection', 'readwrite')
             .objectStore('moodCollection')
-            .put({ moods: favoriteMoods }, 'favorite')
+            .put(favoritesIds, 'favorites')
         }
       } catch (error) {
         console.error('Error fetching "favorite" mood information:', error)
@@ -226,25 +208,18 @@ export function EditMood() {
 
         archivedRequest.onsuccess = function (event) {
           const request = event.target as IDBRequest
-          const archivedIdData = request.result as { moods: string[] }
-          archivedMoods = archivedIdData.moods
+          const archivedIds = request.result as string[]
           //remove if no longer here
-          if (
-            archivedMoods.includes(moodId as string) &&
-            category != 'archived'
-          ) {
-            archivedMoods.splice(archivedMoods.indexOf(moodId as string, 1))
+          if (archivedIds.includes(moodId!) && category != 'archived') {
+            archivedIds.splice(archivedIds.indexOf(moodId!, 1))
           }
           //add if not yet in category
-          else if (
-            !archivedMoods.includes(moodId as string) &&
-            category == 'archived'
-          ) {
-            archivedMoods.push(moodId as string)
+          else if (!archivedIds.includes(moodId!) && category == 'archived') {
+            archivedIds.push(moodId!)
           }
           db.transaction('moodCollection', 'readwrite')
             .objectStore('moodCollection')
-            .put({ moods: archivedMoods }, 'archived')
+            .put(archivedIds, 'archived')
         }
       } catch (error) {
         console.error('Error fetching "archived" mood information:', error)

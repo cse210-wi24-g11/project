@@ -64,9 +64,9 @@ export function openDb() {
           image: new Blob(),
         })
       }
-      moodCollectionStore.add({ moods: defaultMoodIds }, 'favorite')
-      moodCollectionStore.add({ moods: [] }, 'general')
-      moodCollectionStore.add({ moods: [] }, 'archived')
+      moodCollectionStore.add(defaultMoodIds, 'favorites')
+      moodCollectionStore.add([], 'general')
+      moodCollectionStore.add([], 'archived')
 
       /*
       moodCollectionStore.add(
@@ -131,24 +131,42 @@ export async function putEntry(
   ])
 }
 
+export async function getEntry(db: IDBDatabase, entryId: string) {
+  const request = db
+    .transaction(['entry'], 'readonly')
+    .objectStore('entry')
+    .get(entryId)
+  return toPromise<DbRecord<'entry'> | undefined>(request)
+}
+
+export async function updateEntry(
+  db: IDBDatabase,
+  entryId: string,
+  entry: Partial<DbRecord<'entry'>>,
+) {
+  const dbEntry = await getEntry(db, entryId)
+  if (!dbEntry) {
+    return
+  }
+
+  const newEntry = { ...dbEntry, ...entry }
+  return putEntry(db, newEntry)
+}
+
 export async function getFavoriteMoods(
   db: IDBDatabase,
 ): Promise<DbRecord<'mood'>[]> {
-  const transaction = db.transaction(['moodCollection'], 'readonly')
-  const store = transaction.objectStore('moodCollection')
-  const favoriteMoodsRequest = store.get('favorite')
+  const transaction = db.transaction(['mood', 'moodCollection'], 'readonly')
+  const moodStore = transaction.objectStore('mood')
+  const moodCollectionStore = transaction.objectStore('moodCollection')
+  const favoriteMoodIds = await toPromise<
+    DbRecord<'moodCollection'>['favorites']
+  >(moodCollectionStore.get('favorites'))
 
-  const favoriteMoodIds = await toPromise<{ moods: string[] } | undefined>(
-    favoriteMoodsRequest,
+  const favoriteMoods = await toPromise<DbRecord<'mood'>[]>(
+    moodStore.get(favoriteMoodIds),
   )
-
-  if (!favoriteMoodIds || !favoriteMoodIds.moods.length) {
-    return []
-  }
-  const moods = await Promise.all(
-    favoriteMoodIds.moods.map((moodId) => getMoodById(db, moodId)),
-  )
-  return moods.filter((mood): mood is DbRecord<'mood'> => mood !== undefined)
+  return favoriteMoods ?? []
 }
 
 export async function getEntriesOfDate(
