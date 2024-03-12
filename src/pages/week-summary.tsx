@@ -10,14 +10,13 @@ import {
   get1stDayInWeek,
   sessionStorageStr2Date,
   date2SessionStorageStr,
+  WEEK_SUMMARY_SESSIONSTORAGE_KEY,
 } from '@/utils/summary.ts'
 
 import { WeekPicker } from '@/components/WeekPicker/WeekPicker.tsx'
 import { MoodEntryList } from '@/components/mood-entry-list/mood-entry-list.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { SummaryBar } from '@/components/navigation/summary-bar.tsx'
-
-const WEEK_SUMMARY_KEY = 'week_summary'
 
 export function WeekSummary() {
   const navigate = useNavigate()
@@ -27,7 +26,7 @@ export function WeekSummary() {
   }, [])
 
   const [startDay, setStartDay] = useState<Date>(() => {
-    const saved = sessionStorage?.getItem?.(WEEK_SUMMARY_KEY)
+    const saved = sessionStorage?.getItem?.(WEEK_SUMMARY_SESSIONSTORAGE_KEY)
     if (!saved) {
       return get1stDayInWeek(new Date())
     } else {
@@ -36,7 +35,7 @@ export function WeekSummary() {
   })
 
   useEffect(() => {
-    sessionStorage.setItem(WEEK_SUMMARY_KEY, date2SessionStorageStr(startDay))
+    sessionStorage.setItem(WEEK_SUMMARY_SESSIONSTORAGE_KEY, date2SessionStorageStr(startDay))
   }, [startDay])
 
   const expandedEntries = useAsyncMemo(
