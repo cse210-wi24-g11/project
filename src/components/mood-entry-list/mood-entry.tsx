@@ -21,10 +21,13 @@ export function MoodListItem({ entry, onClick }: MoodListItemProps) {
 
   return (
     <div
-      className="h-30 left-0 right-0 flex flex-row items-start rounded-md border bg-white"
+      className="left-0 right-0 flex h-24 flex-row items-start rounded-md border bg-white"
       onClick={() => onClick(entry.id)}
     >
-      <img className="rounded-l-md" src={entryMoodImageUrl} />
+      <img
+        className="h-24 w-24 rounded-l-md object-cover"
+        src={entryMoodImageUrl}
+      />
       <div className="grid-flow-col">
         <div className="ml-4 mt-2 flex content-center items-center rounded-md">
           <div
