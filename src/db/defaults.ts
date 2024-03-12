@@ -15,7 +15,12 @@ export type DefaultMoodTemplate = {
 }
 
 export const DEFAULT_FAVORITE_MOODS: DefaultMoodTemplate[] = [
-  { color: '#ff0000', image: '/vite.svg' },
+  { color: '#f2cc59', image: '/src/assets/default-moods/happy.png' },
+  { color: '#fc805e', image: '/src/assets/default-moods/overwhelmed.png' },
+  { color: '#df5c50', image: '/src/assets/default-moods/angry.png' },
+  { color: '#b499e4', image: '/src/assets/default-moods/meh.png' },
+  { color: '#85aedd', image: '/src/assets/default-moods/sad.png' },
+
   // add here
 ].map(addId)
 export const DEFAULT_GENERAL_MOODS: DefaultMoodTemplate[] = [
