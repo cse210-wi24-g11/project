@@ -94,7 +94,7 @@ export function MoodCollection() {
 
   const handleSelectMood = (selectedMood: DbRecord<'mood'>) => {
     if (returnTo) {
-      navigate(returnTo, { state: { selectedMood: selectedMood.id } })
+      navigate(returnTo, { state: { selectedMood: selectedMood } })
     } else {
       console.log('No returnTo path specified.')
     }

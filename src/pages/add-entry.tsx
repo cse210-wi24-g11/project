@@ -158,16 +158,12 @@ function validateState(state: unknown): state is State {
     return false
   }
 
-  const { id, color, imagePath } = selectedMood as Record<string, unknown>
+  const { id, color} = selectedMood as Record<string, unknown>
   if (typeof id !== 'string') {
     return false
   }
   if (typeof color !== 'string') {
     return false
   }
-  if (typeof imagePath !== 'string') {
-    return false
-  }
-
   return true
 }
