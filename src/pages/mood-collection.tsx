@@ -63,8 +63,7 @@ export function MoodCollection() {
           .get(type)
         requestType.onsuccess = (event) => {
           const targetCollection = event.target as IDBRequest
-          const typeIDData = targetCollection.result as { moods: string[] }
-          const moodIDs = typeIDData.moods
+          const moodIDs = targetCollection.result as string[]
           for (const moodID of moodIDs) {
             const requestMood = db
               .transaction('mood', 'readonly')
