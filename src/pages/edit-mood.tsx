@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { Button, Picker, Item } from '@adobe/react-spectrum'
-import { ToastContainer, ToastQueue } from '@react-spectrum/toast'
 import { useParams } from 'react-router-dom'
 import { ActionButton } from '@adobe/react-spectrum'
 import { useNavigate } from 'react-router-dom'
@@ -73,14 +72,11 @@ export function EditMood() {
     //update categories (TODO: not working )
     // get category information and set picker
     await moveOrAddToInCollection(mood.id, category)
-
-    ToastQueue.positive(' Mood Collection Updated!!', { timeout: 5000 })
   }
   // Render your component with moodData
   // NOTE: warn user that the choosing archived means mood can not be retrieved
   return (
-    <div>
-      <ToastContainer />
+    <>
       <div
         className="rounded-lg"
         style={{ border: `20px solid ${selectedColor}`, padding: '1px' }}
@@ -102,6 +98,6 @@ export function EditMood() {
           Change Category
         </Button>
       </div>
-    </div>
+    </>
   )
 }
