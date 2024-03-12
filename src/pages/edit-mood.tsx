@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom'
 import { db } from '@/db/index.ts'
 import { getMoodIdsInCategory, moveOrAddToInCollection } from '@/db/actions.ts'
 import { base64ToBlob, blobToUrl, createMood } from '@/db/utils.ts'
+import imagePlaceholderUrl from '@/assets/No-Image-Placeholder.png'
 
 import { DisplayImageComponent } from '@/components/custom-mood/display-image.tsx'
 
@@ -19,9 +20,8 @@ export function EditMood() {
 
   const [moodBlob, setMoodBlob] = useState<Blob | null>(null)
   const [selectedColor, setSelectedColor] = useState<string>('#000000')
-  const [uploadedImage, setUploadedImage] = useState<string>(
-    'src/assets/No-Image-Placeholder.png',
-  )
+  const [uploadedImage, setUploadedImage] =
+    useState<string>(imagePlaceholderUrl)
 
   const [category, setCategory] = useState<MoodCollectionCategory>('general')
 
