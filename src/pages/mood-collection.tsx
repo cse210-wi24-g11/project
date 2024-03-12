@@ -18,7 +18,9 @@ export type MoodSectionProps = {
   moods: Mood[]
 }
 
-const MoodSection: React.FC<MoodSectionProps & { onSelectMood: (mood: Mood) => void }> = function ({ moods, onSelectMood }) {
+const MoodSection: React.FC<
+  MoodSectionProps & { onSelectMood: (mood: Mood) => void }
+> = function ({ moods, onSelectMood }) {
   return (
     <div className={'grid grid-cols-5 gap-2'}>
       {moods.map(
@@ -29,14 +31,13 @@ const MoodSection: React.FC<MoodSectionProps & { onSelectMood: (mood: Mood) => v
               color={mood.color}
               imgSrc={URL.createObjectURL(mood.image)}
               size="single-line-height"
-               onClick={() => onSelectMood(mood)}
+              onClick={() => onSelectMood(mood)}
             />
           ),
       )}
     </div>
   )
 }
-
 
 export function MoodCollection() {
   const { getDb } = useDb()
@@ -93,11 +94,11 @@ export function MoodCollection() {
 
   const handleSelectMood = (selectedMood: Mood) => {
     if (returnTo) {
-      navigate(returnTo, { state: { selectedMoodId: selectedMood.id } });
+      navigate(returnTo, { state: { selectedMoodId: selectedMood.id } })
     } else {
-      console.log("No returnTo path specified.");
+      console.log('No returnTo path specified.')
     }
-  };
+  }
 
   const addCustomMood = () => {
     navigate(CUSTOM_MOOD_ROUTE)
