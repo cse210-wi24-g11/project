@@ -27,9 +27,7 @@ const categoryOptions: PickerOptions<MoodCollectionCategory> = [
 
 export function CustomMood() {
   const navigate = useNavigate()
-  const [selectedColor, setSelectedColor] = useState<string>(
-    '#000000',
-  ) // default white
+  const [selectedColor, setSelectedColor] = useState<string>('#000000') // default white
   const [uploadedImage, setUploadedImage] =
     useState<string>(imagePlaceholderUrl)
 
@@ -54,7 +52,7 @@ export function CustomMood() {
       console.log('Failed to fetch image as Blob.')
       return
     }
-    
+
     // Now you can use the 'blob' object as needed, e.g., in your IndexedDB code
     console.log('Blob:', blob)
 
@@ -87,7 +85,9 @@ export function CustomMood() {
       <Picker
         label="category"
         selectedKey={category}
-        onSelectionChange={(selected) => setCategory(selected as MoodCollectionCategory)}
+        onSelectionChange={(selected) =>
+          setCategory(selected as MoodCollectionCategory)
+        }
         items={categoryOptions}
       >
         {(item) => <Item key={item.key}>{item.label}</Item>}

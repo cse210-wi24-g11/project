@@ -34,26 +34,42 @@ export function EditEntry() {
   const state = useLocationState(validateState)
   const navigate = useNavigate()
 
-  const [entry] = useQuery(async (db) => {
-    const entry = await db.entries.get(entryId!)
-    
-    return entry ?? null
-  }, [entryId], null)
-  const [entryMood] = useQuery(async (db) => {
-    if (entry === null) { return null }
-    const mood = await db.moods.get(entry.moodId)
-    if (!mood) { return null }
-    return await expandMood(mood)
-  }, [entry], null)
+  const [entry] = useQuery(
+    async (db) => {
+      const entry = await db.entries.get(entryId!)
+
+      return entry ?? null
+    },
+    [entryId],
+    null,
+  )
+  const [entryMood] = useQuery(
+    async (db) => {
+      if (entry === null) {
+        return null
+      }
+      const mood = await db.moods.get(entry.moodId)
+      if (!mood) {
+        return null
+      }
+      return await expandMood(mood)
+    },
+    [entry],
+    null,
+  )
   const [description, setDescription] = useState('')
   useEffect(() => {
-    if (!entry) { return }
-    
-    setDescription(desc => {
-      if (desc) { return desc }
+    if (!entry) {
+      return
+    }
+
+    setDescription((desc) => {
+      if (desc) {
+        return desc
+      }
       return entry?.description ?? ''
     })
-  // should only default the description to the entry's original description. but the entry shouldn't change across renders
+    // should only default the description to the entry's original description. but the entry shouldn't change across renders
   }, [entry])
 
   const selectedMood = useMemo(() => state?.selectedMood ?? null, [state])
@@ -62,7 +78,9 @@ export function EditEntry() {
     state === null ? null : selectedMood,
   )
   const moodImageUrl = useMemo(() => {
-    if (mood === null) { return undefined }
+    if (mood === null) {
+      return undefined
+    }
     return blobToUrl(mood.imageBlob)
   }, [mood])
   useEffect(() => {
@@ -70,9 +88,8 @@ export function EditEntry() {
     if (state === null) {
       setMood(entryMood)
     }
-  // should only default the description to the entry's original description. but the entry shouldn't change across renders
+    // should only default the description to the entry's original description. but the entry shouldn't change across renders
   }, [entryMood, state])
-  
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -83,7 +100,10 @@ export function EditEntry() {
     [] as ExpandedMood[],
   )
   const expandedFavoriteMoodsWithImageUrls = useMemo(
-    () => expandedFavoriteMoods.map(mood => [mood, blobToUrl(mood.imageBlob)] as const),
+    () =>
+      expandedFavoriteMoods.map(
+        (mood) => [mood, blobToUrl(mood.imageBlob)] as const,
+      ),
     [expandedFavoriteMoods],
   )
 
@@ -150,7 +170,11 @@ export function EditEntry() {
                   : undefined
               }
             />
-            <TextField label="entry" value={description} onChange={setDescription} />
+            <TextField
+              label="entry"
+              value={description}
+              onChange={setDescription}
+            />
             <Button
               variant="primary"
               aria-label="submit"

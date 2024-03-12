@@ -29,7 +29,9 @@ export function WeekPicker({ startDay, onChangeWeek }: WeekPickerProps) {
       <ActionButton>
         <div className="flex h-10 flex-row">
           <div className="flex flex-row items-center justify-center border-r border-gray-500">
-            <p className="ml-8 mr-8 line-clamp-1">{displayWeekRange(weekStart)}</p>
+            <p className="ml-8 mr-8 line-clamp-1">
+              {displayWeekRange(weekStart)}
+            </p>
           </div>
           <div className="flex w-10 flex-row items-center justify-center">
             <Calendar aria-label="date picker icon" size="S" />

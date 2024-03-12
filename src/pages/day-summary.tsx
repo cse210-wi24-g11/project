@@ -46,7 +46,6 @@ export function DaySummary({ day }: DaySummaryPageProps) {
     [today],
     [] as ExpandedEntry[],
   )
-  
 
   return (
     <div className="flex h-screen flex-col">
@@ -71,4 +70,3 @@ export function DaySummary({ day }: DaySummaryPageProps) {
     </div>
   )
 }
-

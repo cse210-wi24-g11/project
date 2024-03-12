@@ -57,7 +57,9 @@ export async function getMoodCollection(): Promise<MoodCollection> {
   return { favorites, general, archived }
 }
 
-export async function getExpandedMoodCollection(): Promise<Record<MoodCollectionCategory, Mood[]>> {
+export async function getExpandedMoodCollection(): Promise<
+  Record<MoodCollectionCategory, Mood[]>
+> {
   const moodCollection = await getMoodCollection()
   return {
     favorites: await expandMoodIds(moodCollection.favorites),
@@ -66,7 +68,9 @@ export async function getExpandedMoodCollection(): Promise<Record<MoodCollection
   }
 }
 
-export async function getFullyExpandedMoodCollection(): Promise<Record<MoodCollectionCategory, ExpandedMood[]>> {
+export async function getFullyExpandedMoodCollection(): Promise<
+  Record<MoodCollectionCategory, ExpandedMood[]>
+> {
   const moodCollection = await getMoodCollection()
   return {
     favorites: await fullyExpandMoodIds(moodCollection.favorites),
@@ -86,7 +90,9 @@ export async function expandMoodIds(moodIds: MoodId[]): Promise<Mood[]> {
   return validMoods
 }
 
-export async function fullyExpandMoodIds(moodIds: MoodId[]): Promise<ExpandedMood[]> {
+export async function fullyExpandMoodIds(
+  moodIds: MoodId[],
+): Promise<ExpandedMood[]> {
   const moods = await expandMoodIds(moodIds)
   const expandedMoods = await Promise.all(moods.map(expandMood))
   return expandedMoods
@@ -111,7 +117,6 @@ export async function moveInCollection<
   From extends MoodCollectionCategory,
   To extends Exclude<MoodCollectionCategory, From>,
 >(moodId: MoodId, from: From, to: To, i?: number) {
-  
   const [fromCollection, toCollection] = await Promise.all([
     getMoodIdsInCategory(from),
     getMoodIdsInCategory(to),
@@ -135,10 +140,14 @@ export async function moveInCollection<
 
 /**
  * adds mood id `moodId` to category `to` in the mood collection at index `i` (or to the end, if defined).
- * 
+ *
  * if `moodId` is in another category, removes it from that category (i.e. "moves it" from that category to `to`)
  */
-export async function moveOrAddToInCollection(moodId: MoodId, to: MoodCollectionCategory, i?: number) {
+export async function moveOrAddToInCollection(
+  moodId: MoodId,
+  to: MoodCollectionCategory,
+  i?: number,
+) {
   let from: [MoodCollectionCategory, number] | null = null
   const moodCollection = await getMoodCollection()
   if (i === undefined) {
@@ -156,12 +165,16 @@ export async function moveOrAddToInCollection(moodId: MoodId, to: MoodCollection
   // if we're moving within a category, just shift position instead
   if (from !== null && from[0] === to) {
     const [category, j] = from
-    if (j === i) { return }
-    
+    if (j === i) {
+      return
+    }
+
     moodCollection[category].splice(j, 1)
     // if we found it at an earlier index, splicing it means the target index should also shift down by 1
-    if (j < i) { i -= 1 }
-    
+    if (j < i) {
+      i -= 1
+    }
+
     moodCollection[to].splice(i, 0, moodId)
 
     return Promise.all([
@@ -221,8 +234,12 @@ export async function getResolvedEntriesForDate(date: Date) {
   const validMoods = moods.filter(Boolean) as Mood[]
   const moodIdToMood = new Map(validMoods.map((mood) => [mood.id, mood]))
   const sortedEntries = entries.sort(compareEntryReverseChronological)
-  const expandedEntries = await Promise.all(sortedEntries.map((entry) => expandEntry(entry, moodIdToMood)))
-  const validExpandedEntries = expandedEntries.filter((x) => x !== null) as ExpandedEntry[]
+  const expandedEntries = await Promise.all(
+    sortedEntries.map((entry) => expandEntry(entry, moodIdToMood)),
+  )
+  const validExpandedEntries = expandedEntries.filter(
+    (x) => x !== null,
+  ) as ExpandedEntry[]
   return validExpandedEntries
 }
 

@@ -2,10 +2,20 @@ import Dexie, { Table } from 'dexie'
 import { useLiveQuery } from 'dexie-react-hooks'
 
 import { DB_NAME, FIRST_RUN_KEY, SETTINGS_KEY } from './constants.ts'
-import { DEFAULT_FAVORITE_MOODS, DEFAULT_MOOD_COLLECTION, DEFAULT_SETTINGS } from './defaults.ts'
+import {
+  DEFAULT_FAVORITE_MOODS,
+  DEFAULT_MOOD_COLLECTION,
+  DEFAULT_SETTINGS,
+} from './defaults.ts'
 import { urlToBase64 } from './utils.ts'
 
-import type { Mood, Entry, Settings, MoodCollectionCategory, MoodId } from './types.ts'
+import type {
+  Mood,
+  Entry,
+  Settings,
+  MoodCollectionCategory,
+  MoodId,
+} from './types.ts'
 
 class DexieDb extends Dexie {
   moods!: Table<Mood, Mood['id']>
@@ -44,16 +54,29 @@ class DexieDb extends Dexie {
       await db.settings.add(DEFAULT_SETTINGS, SETTINGS_KEY)
 
       // TODO: update/fix default moods & favorites
-      async function resolveDefaultMoods(moods: Array<Omit<Mood, 'image'> & { image: string }>) {
-        return Promise.all(moods.map(async ({ image, ...rest }) => ({ ...rest, image: await urlToBase64(image) })))
+      async function resolveDefaultMoods(
+        moods: Array<Omit<Mood, 'image'> & { image: string }>,
+      ) {
+        return Promise.all(
+          moods.map(async ({ image, ...rest }) => ({
+            ...rest,
+            image: await urlToBase64(image),
+          })),
+        )
       }
       const FAVORITE_MOODS = await resolveDefaultMoods(DEFAULT_FAVORITE_MOODS)
       await db.moods.bulkAdd(FAVORITE_MOODS)
-      await db.moodCollection.add(DEFAULT_MOOD_COLLECTION['favorites'], 'favorites')
+      await db.moodCollection.add(
+        DEFAULT_MOOD_COLLECTION['favorites'],
+        'favorites',
+      )
       await db.moodCollection.add(DEFAULT_MOOD_COLLECTION['general'], 'general')
-      await db.moodCollection.add(DEFAULT_MOOD_COLLECTION['archived'], 'archived')
+      await db.moodCollection.add(
+        DEFAULT_MOOD_COLLECTION['archived'],
+        'archived',
+      )
 
-      // on('ready') event will fire when database is open but 
+      // on('ready') event will fire when database is open but
       // before any other queued operations start executing.
       // By returning a Promise from this event,
       // the framework will wait until promise completes before

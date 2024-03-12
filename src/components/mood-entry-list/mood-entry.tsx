@@ -12,7 +12,10 @@ interface MoodListItemProps {
 }
 
 export function MoodListItem({ entry, onClick }: MoodListItemProps) {
-  const entryMoodImageUrl = useMemo(() => blobToUrl(entry.mood.imageBlob), [entry])
+  const entryMoodImageUrl = useMemo(
+    () => blobToUrl(entry.mood.imageBlob),
+    [entry],
+  )
 
   const colorStr = useMemo(() => toCssStr(entry.mood.color), [entry.mood.color])
 

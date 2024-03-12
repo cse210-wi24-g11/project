@@ -16,11 +16,9 @@ import type { MoodCollectionCategory } from '@/db/types.ts'
 export function EditMood() {
   const navigate = useNavigate()
   const { moodId } = useParams()
-  
+
   const [moodBlob, setMoodBlob] = useState<Blob | null>(null)
-  const [selectedColor, setSelectedColor] = useState<string>(
-    '#000000',
-  )
+  const [selectedColor, setSelectedColor] = useState<string>('#000000')
   const [uploadedImage, setUploadedImage] = useState<string>(
     'src/assets/No-Image-Placeholder.png',
   )
@@ -32,7 +30,7 @@ export function EditMood() {
       const mood = (await db.moods.get(moodId!))!
       const blob = await base64ToBlob(mood.image)
       const blobUrl = blobToUrl(blob)
-      
+
       setMoodBlob(blob)
       setSelectedColor(mood.color)
       setUploadedImage(blobUrl)
@@ -91,7 +89,9 @@ export function EditMood() {
       </div>
       <Picker
         selectedKey={category}
-        onSelectionChange={(selected) => setCategory(selected as MoodCollectionCategory)}
+        onSelectionChange={(selected) =>
+          setCategory(selected as MoodCollectionCategory)
+        }
       >
         <Item key="favorite">Favorite</Item>
         <Item key="general">General</Item>

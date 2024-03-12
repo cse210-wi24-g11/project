@@ -25,7 +25,9 @@ export function DayPicker({ initialDay, onChangeDay }: DayPickerProps) {
       <ActionButton>
         <div className="flex h-10 flex-row">
           <div className="flex flex-row items-center justify-center border-r border-gray-500">
-            <p className="ml-8 mr-8 line-clamp-1">{displayMonthDayYear(date)}</p>
+            <p className="ml-8 mr-8 line-clamp-1">
+              {displayMonthDayYear(date)}
+            </p>
           </div>
           <div className="flex w-10 flex-row items-center justify-center">
             <Calendar aria-label="date picker icon" size="S" />

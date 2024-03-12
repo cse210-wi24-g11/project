@@ -51,7 +51,11 @@ export function blobToUrl(blob: Blob) {
   return url
 }
 
-export async function createMood(color: string, image: Blob, id?: string): Promise<Mood> {
+export async function createMood(
+  color: string,
+  image: Blob,
+  id?: string,
+): Promise<Mood> {
   if (id === undefined) {
     id = generateId()
   }
@@ -89,7 +93,9 @@ export function createEntry(
   return entry
 }
 
-export function serializeDateForEntry(date: Date): `${number}.${number}.${number}` {
+export function serializeDateForEntry(
+  date: Date,
+): `${number}.${number}.${number}` {
   return `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`
 }
 

@@ -39,11 +39,17 @@ export function WeekSummary() {
     sessionStorage.setItem(WEEK_SUMMARY_KEY, date2SessionStorageStr(startDay))
   }, [startDay])
 
-  const expandedEntries = useAsyncMemo(async () => {
-    const daysInWeek = getDatesInWeek(startDay)
-    const entries = await Promise.all(daysInWeek.map(getResolvedEntriesForDate))
-    return entries.flat()
-  }, [startDay], [] as ExpandedEntry[])
+  const expandedEntries = useAsyncMemo(
+    async () => {
+      const daysInWeek = getDatesInWeek(startDay)
+      const entries = await Promise.all(
+        daysInWeek.map(getResolvedEntriesForDate),
+      )
+      return entries.flat()
+    },
+    [startDay],
+    [] as ExpandedEntry[],
+  )
 
   return (
     <div className="flex h-screen flex-col">

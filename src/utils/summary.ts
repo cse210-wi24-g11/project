@@ -30,7 +30,11 @@ export function displayMonthDay(date: Date): string {
 }
 
 export function displayTime(date: Date): string {
-  return date.toLocaleTimeString('en-US', { hour: 'numeric', hour12: true, minute: '2-digit' })
+  return date.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    hour12: true,
+    minute: '2-digit',
+  })
 }
 
 export function displayMonthDayYear(date: Date): string {

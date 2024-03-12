@@ -7,12 +7,11 @@ export function useLocationState<State extends Record<string, unknown>>(
   const location = useLocation()
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const state = location.state
-  const resolvedState = useMemo(
-    () => {
-      if (!state || typeof state !== 'object') { return null }
-      return validate(state as Record<string, unknown>) ? state as State : null
-    },
-    [validate, state],
-  )
+  const resolvedState = useMemo(() => {
+    if (!state || typeof state !== 'object') {
+      return null
+    }
+    return validate(state as Record<string, unknown>) ? (state as State) : null
+  }, [validate, state])
   return resolvedState
 }

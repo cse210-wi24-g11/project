@@ -21,19 +21,21 @@ export function MoodCollection() {
   const state = useLocationState(validateState)
   const navigate = useNavigate()
 
-  const [moodCollection] = useQuery(
-    getFullyExpandedMoodCollection,
-    [],
-    { general: [], favorites: [], archived: [] } as Record<MoodCollectionCategory, ExpandedMood[]>
-  )
+  const [moodCollection] = useQuery(getFullyExpandedMoodCollection, [], {
+    general: [],
+    favorites: [],
+    archived: [],
+  } as Record<MoodCollectionCategory, ExpandedMood[]>)
 
   const addCustomMood = () => {
     navigate(CUSTOM_MOOD_ROUTE)
   }
 
   const onClickMood = useMemo(() => {
-    if (!state?.returnTo) { return undefined }
-    
+    if (!state?.returnTo) {
+      return undefined
+    }
+
     function onClick(mood: ExpandedMood) {
       console.log(state!.returnTo, mood)
       navigate(state!.returnTo as Route, { state: { selectedMood: mood } })
@@ -48,11 +50,17 @@ export function MoodCollection() {
           <Text>Add New Mood</Text>
         </Button>
         <h1>Favorites</h1>
-        <MoodSection moods={moodCollection.favorites} onClickMood={onClickMood} />
+        <MoodSection
+          moods={moodCollection.favorites}
+          onClickMood={onClickMood}
+        />
         <h1>General</h1>
         <MoodSection moods={moodCollection.general} onClickMood={onClickMood} />
         <h1>Archived</h1>
-        <MoodSection moods={moodCollection.archived} onClickMood={onClickMood} />
+        <MoodSection
+          moods={moodCollection.archived}
+          onClickMood={onClickMood}
+        />
       </div>
       <MainNavBar />
     </>
@@ -67,7 +75,9 @@ type MoodSectionProps = {
 
 function MoodSection({ moods, onClickMood }: MoodSectionProps) {
   const getOnClick = useMemo(() => {
-    if (!onClickMood) { return undefined }
+    if (!onClickMood) {
+      return undefined
+    }
     return (mood: ExpandedMood) => () => onClickMood(mood)
   }, [onClickMood])
 
@@ -88,7 +98,11 @@ function MoodSection({ moods, onClickMood }: MoodSectionProps) {
 
 function validateState(state: Record<string, unknown>): state is State {
   const { returnTo } = state
-  if (!returnTo) { return false }
-  if (typeof returnTo !== 'string') { return false }
+  if (!returnTo) {
+    return false
+  }
+  if (typeof returnTo !== 'string') {
+    return false
+  }
   return true
 }

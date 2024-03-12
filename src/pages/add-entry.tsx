@@ -33,8 +33,10 @@ export function AddEntry() {
     state === null ? null : state.selectedMood,
   )
   const moodImageUrl = useMemo(() => {
-    if (mood === null) { return undefined }
-     return blobToUrl(mood.imageBlob)
+    if (mood === null) {
+      return undefined
+    }
+    return blobToUrl(mood.imageBlob)
   }, [mood])
 
   const [description, setDescription] = useState('')
@@ -42,17 +44,23 @@ export function AddEntry() {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const [favoriteMoods] = useFavoriteMoods([] as Mood[])
-  const visibleFavoriteMoods = useMemo(() => favoriteMoods.slice(-5), [favoriteMoods])
+  const visibleFavoriteMoods = useMemo(
+    () => favoriteMoods.slice(-5),
+    [favoriteMoods],
+  )
   const expandedFavoriteMoods = useAsyncMemo(
     () => Promise.all(visibleFavoriteMoods.map(expandMood)),
     [visibleFavoriteMoods],
     [] as ExpandedMood[],
   )
   const expandedFavoriteMoodsWithImageUrls = useMemo(
-    () => expandedFavoriteMoods.map(mood => [mood, blobToUrl(mood.imageBlob)] as const),
+    () =>
+      expandedFavoriteMoods.map(
+        (mood) => [mood, blobToUrl(mood.imageBlob)] as const,
+      ),
     [expandedFavoriteMoods],
   )
-  
+
   function pickFromMoodCollection() {
     navigate(MOOD_COLLECTION_ROUTE, {
       state: {

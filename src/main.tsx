@@ -34,10 +34,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <SpectrumProvider>
         <Routes>
           <Route path={ADD_ENTRY_ROUTE} element={<AddEntry />} />
-          <Route
-            path={EDIT_ENTRY_ROUTE(':entryId')}
-            element={<EditEntry />}
-          />
+          <Route path={EDIT_ENTRY_ROUTE(':entryId')} element={<EditEntry />} />
           <Route path={SETTINGS_ROUTE} element={<Settings />} />
           <Route path={SUMMARY_BASE_ROUTE} element={<Summary />} />
           <Route path={MOOD_COLLECTION_ROUTE} element={<MoodCollection />} />
