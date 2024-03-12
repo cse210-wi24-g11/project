@@ -115,8 +115,8 @@ export function CustomMood() {
       }
       ToastQueue.positive('Custom Mood Added!', { timeout: 5000 })
       setTimeout(() => {
-        navigate('/mood-collection');
-      }, 5000);
+        navigate('/mood-collection')
+      }, 5000)
     } else {
       // TODO: render a floating window to notify the user to upload an image
       console.log('Failed to fetch image as Blob.')
