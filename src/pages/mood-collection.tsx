@@ -12,7 +12,6 @@ type Mood = {
   id: string
   color: string
   image: Blob
-  
 }
 
 //favorite section
