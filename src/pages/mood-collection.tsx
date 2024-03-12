@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 
 import { CUSTOM_MOOD_ROUTE } from '@/routes.ts'
+import { DbRecord } from '@/utils/db.ts'
+
 
 import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
@@ -92,9 +94,9 @@ export function MoodCollection() {
     return () => {}
   }, [getDb])
 
-  const handleSelectMood = (selectedMood: Mood) => {
+  const handleSelectMood = (selectedMood: DbRecord<'mood'>) => {
     if (returnTo) {
-      navigate(returnTo, { state: { selectedMoodId: selectedMood.id } })
+      navigate(returnTo, { state: { selectedMood: selectedMood.id } })
     } else {
       console.log('No returnTo path specified.')
     }

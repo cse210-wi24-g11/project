@@ -11,15 +11,15 @@ import {
   MOOD_COLLECTION_ROUTE,
 } from '@/routes.ts'
 import { useLocationState } from '@/hooks/use-location-state.ts'
-import { DbRecord, getFavoriteMoods, putEntry } from '@/utils/db.ts'
+import { DbRecord, getFavoriteMoods, putEntry, getMoodById } from '@/utils/db.ts'
 
 import { useDb } from '@/context/db.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
 
-const MOCK_FAVORITES = [
-  { id: 'sdfa;sdf', color: '#ff0000', imagePath: '/vite.svg ' },
-]
+// const MOCK_FAVORITES = [
+//   { id: 'sdfa;sdf', color: '#ff0000', imagePath: '/vite.svg ' },
+// ]
 
 type State = {
   selectedMood: DbRecord<'mood'>
@@ -42,11 +42,25 @@ export function AddEntry() {
     async function loadFavoriteMoods() {
       const db = await getDb()
       const favoriteMoods = await getFavoriteMoods(db)
-      setFavoriteMoods(favoriteMoods?.length ? favoriteMoods : MOCK_FAVORITES)
+      const newFavoriteMoods = favoriteMoods?.length ? favoriteMoods.slice(-5) : [];
+      setFavoriteMoods(newFavoriteMoods)
     }
 
     void loadFavoriteMoods()
   }, [getDb])
+
+  useEffect(() => {
+    async function fetchSelectedMood() {
+      const selectedMoodId = state?.selectedMood.id;
+      if (!selectedMoodId) return;
+  
+      const db = await getDb();
+      const fetchedMood = await getMoodById(db, selectedMoodId);
+      setMood(fetchedMood || null);
+    }
+  
+    fetchSelectedMood();
+  }, [state, getDb]);
 
   function pickFromMoodCollection() {
     navigate(MOOD_COLLECTION_ROUTE, {
@@ -92,7 +106,7 @@ export function AddEntry() {
                 key={m.id}
                 size="single-line-height"
                 color={m.color}
-                imgSrc={m.imagePath}
+                imgSrc={URL.createObjectURL(m.image)}
                 onClick={() => {
                   setMood(m)
                 }}
@@ -113,7 +127,7 @@ export function AddEntry() {
             <MoodSwatch
               size="single-line-height"
               color={mood?.color}
-              imgSrc={mood?.imagePath}
+              imgSrc={mood && mood.image ? URL.createObjectURL(mood.image) : undefined}
               onClick={
                 mood
                   ? () => {
