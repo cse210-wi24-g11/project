@@ -55,12 +55,13 @@ export function DaySummary({ day }: DaySummaryPageProps) {
       const records = Array<SummaryMoodRecord>()
       for (const entry of entries) {
         const mood = await getMoodById(db, entry.moodId)
+        const imagePath = mood && mood.image ? URL.createObjectURL(mood.image) : '';
         records.push({
           id: entry.id,
           day: entry.timestamp,
           title: entry.description,
           color: d3.rgb(mood?.color ?? 'blue'),
-          image: mood!.image,
+          imagePath: imagePath,
         })
       }
       records.sort((a, b) => new Date(b.day).getTime() - new Date(a.day).getTime());

@@ -60,7 +60,7 @@ export function WeekSummary() {
             day: entry.timestamp,
             title: entry.description,
             color: d3.rgb(mood?.color ?? 'blue'),
-            image: mood!.image,
+            imagePath: URL.createObjectURL(mood!.image),
           })
         }
       }

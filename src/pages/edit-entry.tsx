@@ -88,8 +88,10 @@ export function EditEntry() {
     async function loadFavoriteMoods() {
       const db = await getDb()
       const favoriteMoods = await getFavoriteMoods(db)
-
-      setFavoriteMoods(favoriteMoods?.length ? favoriteMoods : MOCK_FAVORITES)
+      const newFavoriteMoods = favoriteMoods?.length
+        ? favoriteMoods.slice(-5)
+        : []
+      setFavoriteMoods(newFavoriteMoods)
     }
     void loadFavoriteMoods()
   }, [getDb])
