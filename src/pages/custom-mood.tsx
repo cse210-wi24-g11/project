@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 
 import imagePlaceholderUrl from '@/assets/No-Image-Placeholder.png'
 
+import { MOOD_COLLECTION_ROUTE } from '@/routes.ts'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { ColorPicker } from '@/components/custom-mood/color-picker.tsx' // Adjust the import path based on the actual location
 import { ImageUploadComponent } from '@/components/custom-mood/upload-image.tsx'
@@ -37,6 +38,9 @@ export function CustomMood() {
   }
   const handleColorChange = (color: string) => {
     setSelectedColor(color)
+  }
+  const moodCollection = () => {
+    navigate(MOOD_COLLECTION_ROUTE)
   }
 
   const [category, setCategory] = useState<Key>('general')
@@ -147,6 +151,11 @@ export function CustomMood() {
       <div>
         <Button onPress={() => void handleSubmitMood()} variant="primary">
           Submit Mood
+        </Button>
+      </div>
+      <div>
+        <Button onPress={() => moodCollection()} variant="primary">
+          Mood Collection
         </Button>
       </div>
       <MainNavBar />
