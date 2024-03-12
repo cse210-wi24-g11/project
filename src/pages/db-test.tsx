@@ -3,12 +3,13 @@
 import { useQuery } from '@/db/index.ts'
 import { useMoodCollection, useSettings } from '@/db/actions.ts'
 
-import type { Mood } from '@/db/types.ts'
+import type { Entry, Mood } from '@/db/types.ts'
 
 export function DbTest() {
   const [settings] = useSettings(null)
   const [moods] = useQuery((db) => db.moods.toArray(), [], [] as Mood[])
   const [moodCollection] = useMoodCollection(null)
+  const [entries] = useQuery((db) => db.entries.toArray(), [], [] as Entry[])
 
   return (
     <div className="flex flex-col place-content-center p-8">
@@ -22,6 +23,9 @@ export function DbTest() {
         <hr />
         <h2>collection</h2>
         <pre>{JSON.stringify(moodCollection, null, 2) ?? 'undefined'}</pre>
+        <hr />
+        <h2>entries</h2>
+        <pre>{JSON.stringify(entries, null, 2) ?? 'undefined'}</pre>
       </div>
     </div>
   )
