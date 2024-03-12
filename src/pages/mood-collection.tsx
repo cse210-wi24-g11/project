@@ -45,7 +45,7 @@ export function MoodCollection() {
 
   return (
     <>
-      <div className='mt-8 flex flex-col items-center space-y-4'>
+      <div className="mt-8 flex flex-col items-center space-y-4">
         <Button variant="primary" onPress={addCustomMood}>
           <Text>Add New Mood</Text>
         </Button>
