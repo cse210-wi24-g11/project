@@ -14,7 +14,7 @@ import { useAsyncMemo } from '@/hooks/use-async-memo.ts'
 import { useLocationState } from '@/hooks/use-location-state.ts'
 import { db } from '@/db/index.ts'
 import { useFavoriteMoods } from '@/db/actions.ts'
-import { base64ToUrl, createEntry } from '@/db/utils.ts'
+import { ExpandedMood, createEntry, expandMood } from '@/db/utils.ts'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
@@ -22,20 +22,17 @@ import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
 import type { Mood } from '@/db/types.ts'
 
 type State = {
-  selectedMood: Mood
+  selectedMood: ExpandedMood
 }
 
 export function AddEntry() {
   const state = useLocationState(validateState)
   const navigate = useNavigate()
 
-  const [mood, setMood] = useState<Mood | null>(() =>
+  const [mood, setMood] = useState<ExpandedMood | null>(() =>
     state === null ? null : state.selectedMood,
   )
-  const moodImageUrl = useAsyncMemo(() => {
-    if (mood === null) { return undefined }
-    return base64ToUrl(mood.image)
-  }, [mood], undefined)
+  console.log({state, mood})
 
   const [description, setDescription] = useState('')
 
@@ -43,10 +40,10 @@ export function AddEntry() {
 
   const [favoriteMoods] = useFavoriteMoods([] as Mood[])
   const visibleFavoriteMoods = useMemo(() => favoriteMoods.slice(-5), [favoriteMoods])
-  const favoriteMoodsWithImageUrls = useAsyncMemo(
-    () => Promise.all(visibleFavoriteMoods.map(async mood => [mood, await base64ToUrl(mood.image)] as [Mood, string])),
+  const expandedFavoriteMoods = useAsyncMemo(
+    () => Promise.all(visibleFavoriteMoods.map(expandMood)),
     [visibleFavoriteMoods],
-    [] as Array<[Mood, string]>,
+    [] as ExpandedMood[],
   )
 
   function pickFromMoodCollection() {
@@ -82,12 +79,12 @@ export function AddEntry() {
 
           {/* favorite moods */}
           <div className="flex gap-4">
-            {favoriteMoodsWithImageUrls.map(([m, imageUrl]) => (
+            {expandedFavoriteMoods.map((m) => (
               <MoodSwatch
                 key={m.id}
                 size="single-line-height"
                 color={m.color}
-                imgSrc={imageUrl}
+                imgSrc={m.imageUrl}
                 onClick={() => {
                   setMood(m)
                 }}
@@ -108,7 +105,7 @@ export function AddEntry() {
             <MoodSwatch
               size="single-line-height"
               color={mood?.color}
-              imgSrc={moodImageUrl}
+              imgSrc={mood?.imageUrl}
               onClick={
                 mood
                   ? () => {
@@ -146,14 +143,14 @@ function validateState(state: Record<string, unknown>): state is State {
     return false
   }
 
-  const { id, color, imagePath } = selectedMood as Record<string, unknown>
+  const { id, color, imageUrl } = selectedMood as Record<string, unknown>
   if (typeof id !== 'string') {
     return false
   }
   if (typeof color !== 'string') {
     return false
   }
-  if (typeof imagePath !== 'string') {
+  if (typeof imageUrl !== 'string') {
     return false
   }
 
