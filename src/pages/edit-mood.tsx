@@ -138,9 +138,6 @@ export function EditMood() {
   }
 
   async function handleEditMood() {
-    let favoritesIds: string[]
-    let generalIds: string[]
-    let archivedIds: string[]
     const db = await getDb()
 
     if (db) {
@@ -164,17 +161,11 @@ export function EditMood() {
           const request = event.target as IDBRequest
           const generalIds = request.result as string[]
           //remove if no longer here
-          if (
-            generalIds.includes(moodId!) &&
-            category != 'general'
-          ) {
+          if (generalIds.includes(moodId!) && category != 'general') {
             generalIds.splice(generalIds.indexOf(moodId!, 1))
           }
           //add if not yet in category
-          else if (
-            !generalIds.includes(moodId!) &&
-            category == 'general'
-          ) {
+          else if (!generalIds.includes(moodId!) && category == 'general') {
             generalIds.push(moodId!)
           }
           db.transaction('moodCollection', 'readwrite')
@@ -195,17 +186,11 @@ export function EditMood() {
           const favoritesIds = request.result as string[]
           console.log(favoritesIds)
           //remove if no longer here
-          if (
-            favoritesIds.includes(moodId!) &&
-            category != 'favorite'
-          ) {
+          if (favoritesIds.includes(moodId!) && category != 'favorite') {
             favoritesIds.splice(favoritesIds.indexOf(moodId!, 1))
           }
           //add if not yet in category
-          else if (
-            !favoritesIds.includes(moodId!) &&
-            category == 'favorite'
-          ) {
+          else if (!favoritesIds.includes(moodId!) && category == 'favorite') {
             favoritesIds.push(moodId!)
           }
           db.transaction('moodCollection', 'readwrite')
@@ -225,17 +210,11 @@ export function EditMood() {
           const request = event.target as IDBRequest
           const archivedIds = request.result as string[]
           //remove if no longer here
-          if (
-            archivedIds.includes(moodId!) &&
-            category != 'archived'
-          ) {
+          if (archivedIds.includes(moodId!) && category != 'archived') {
             archivedIds.splice(archivedIds.indexOf(moodId!, 1))
           }
           //add if not yet in category
-          else if (
-            !archivedIds.includes(moodId!) &&
-            category == 'archived'
-          ) {
+          else if (!archivedIds.includes(moodId!) && category == 'archived') {
             archivedIds.push(moodId!)
           }
           db.transaction('moodCollection', 'readwrite')
