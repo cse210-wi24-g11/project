@@ -1,4 +1,3 @@
-// db.ts
 const DB_NAME = 'user_db'
 
 export type DbStore = 'mood' | 'moodCollection' | 'entry' | 'settings'
@@ -23,8 +22,8 @@ export type DbRecord<T extends DbStore> = {
     timestamp: Date
   }
   settings: {
-    defaultView: 'lastVisited' | 'day' | 'week' | 'month'
-    lastVisited?: 'day' | 'week' | 'month'
+    defaultView: 'lastVisited' | 'day' | 'week'
+    lastVisited?: 'day' | 'week'
     remindMe?: 'daily' | 'weekdays' | 'weekends' | 'none'
     reminderTimes?: '9am' | '3pm' | '6pm' | 'none'
   }
@@ -51,15 +50,17 @@ export function openDb() {
       })
       db.createObjectStore('entry', { keyPath: 'id' })
       db.createObjectStore('settings', { keyPath: null })
-      db.createObjectStore('dateCollection', { keyPath: null })
+      db.createObjectStore('dateCollection', {
+        keyPath: null,
+      })
 
       /* add default data to the mood store */
       const colors = ['blue', 'green', 'yellow', 'orange', 'red']
-      const defaultMoodIDs = ['1', '2', '3', '4', '5']
+      const defaultMoodIds = ['1', '2', '3', '4', '5']
       for (let i = 1; i <= 5; i++) {
-        moodStore.add({ id: defaultMoodIDs[i-1], color: colors[i - 1], image: new Blob() })
+        moodStore.add({ id: defaultMoodIds[i-1], color: colors[i - 1], image: new Blob() })
       }
-      moodCollectionStore.add({ moods: defaultMoodIDs }, 'favorite')
+      moodCollectionStore.add({ moods: defaultMoodIds }, 'favorite')
       moodCollectionStore.add({ moods: [] }, 'general')
       moodCollectionStore.add({ moods: [] }, 'archived')
 
@@ -128,7 +129,7 @@ export async function putEntry(
 
 export function getFavoriteMoods(
   db: IDBDatabase,
-) /*: Promise<DbRecord<'mood'>[]>*/ {
+): DbRecord<'mood'>[] /*: Promise<DbRecord<'mood'>[]>*/ {
   const favoritesRequest = db
     .transaction('moodCollection', 'readwrite')
     .objectStore('moodCollection')
@@ -147,6 +148,7 @@ export function getFavoriteMoods(
 
     return favoriteIdData.moods
   }
+  return [] // TODO: fix
   /*
   const transaction = db.transaction(['mood', 'moodCollection'], 'readonly')
   const moodStore = transaction.objectStore('mood')
@@ -160,6 +162,25 @@ export function getFavoriteMoods(
     moodStore.get(favoriteMoodIds),
   )
   return favoriteMoods*/
+}
+
+export async function getEntriesOfDate(
+  db: IDBDatabase,
+  date: Date,
+): Promise<DbRecord<'entry'>[] | undefined> {
+  const dayKey = getEntryDateKey(date)
+  const objectStore = db
+    .transaction('dateCollection', 'readonly')
+    .objectStore('dateCollection')
+  return await toPromise<DbRecord<'entry'>[]>(objectStore.get(dayKey))
+}
+
+export async function getMoodById(
+  db: IDBDatabase,
+  moodId: string,
+): Promise<DbRecord<'mood'> | undefined> {
+  const objectStore = db.transaction('mood', 'readonly').objectStore('mood')
+  return await toPromise<DbRecord<'mood'>>(objectStore.get(moodId))
 }
 
 const DEFAULT_SETTINGS: DbRecord<'settings'> = {
@@ -207,6 +228,6 @@ export function updateSettingsInDb(
   }
 }
 
-function getEntryDateKey(date: Date): string {
+export function getEntryDateKey(date: Date): string {
   return `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`
 }
