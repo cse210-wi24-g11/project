@@ -144,7 +144,7 @@ export async function getFavoriteMoods(
   const favoriteMoods = await toPromise<DbRecord<'mood'>[]>(
     moodStore.get(favoriteMoodIds),
   )
-  return favoriteMoods
+  return favoriteMoods ?? []
 }
 
 export async function getEntriesOfDate(
