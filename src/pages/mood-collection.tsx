@@ -5,7 +5,6 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { CUSTOM_MOOD_ROUTE } from '@/routes.ts'
 import { DbRecord } from '@/utils/db.ts'
 
-
 import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { useDb } from '@/context/db.tsx'
