@@ -64,9 +64,9 @@ export function openDb() {
           image: new Blob(),
         })
       }
-      moodCollectionStore.add({ moods: defaultMoodIds }, 'favorite')
-      moodCollectionStore.add({ moods: [] }, 'general')
-      moodCollectionStore.add({ moods: [] }, 'archived')
+      moodCollectionStore.add(defaultMoodIds, 'favorite')
+      moodCollectionStore.add([], 'general')
+      moodCollectionStore.add([], 'archived')
 
       /*
       moodCollectionStore.add(
