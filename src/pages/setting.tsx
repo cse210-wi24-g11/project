@@ -24,6 +24,7 @@ const REMIND_ME_LABEL_ID = 'settings-remind-me-label'
 const REMINDER_TIMES_LABEL_ID = 'settings-reminder-times-label'
 
 const defaultViewOptions: PickerOptions<SettingsDefaultViewOption> = [
+  { key: 'lastVisited', label: 'Last Visited' },
   { key: 'week', label: 'Week' },
   { key: 'day', label: 'Day' },
 ]
