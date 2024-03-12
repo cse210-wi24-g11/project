@@ -131,29 +131,48 @@ export async function putEntry(
   ])
 }
 
-export function getFavoriteMoods(
+export async function getFavoriteMoods(
   db: IDBDatabase,
-): DbRecord<'mood'>[] /*: Promise<DbRecord<'mood'>[]>*/ {
-  const favoritesRequest = db
-    .transaction('moodCollection', 'readwrite')
-    .objectStore('moodCollection')
-    .get('favorite')
-  favoritesRequest.onsuccess = function (event) {
-    const request = event.target as IDBRequest
-    let favoriteIdData: { moods: string[] }
+): Promise<DbRecord<'mood'>[]> {
+  const transaction = db.transaction(['moodCollection'], 'readonly')
+  const store = transaction.objectStore('moodCollection')
+  const favoriteMoodsRequest = store.get('favorite')
 
-    if (request.result) {
-      // If the favorite record exists, use it
-      favoriteIdData = request.result as { moods: string[] }
-    } else {
-      // If the favorite record doesn't exist, create a new one
-      favoriteIdData = { moods: [] }
-    }
+  const favoriteMoodIds = await toPromise<{ moods: string[] } | undefined>(
+    favoriteMoodsRequest,
+  )
 
-    return favoriteIdData.moods
+  if (!favoriteMoodIds || !favoriteMoodIds.moods.length) {
+    return []
   }
-  return [] // TODO: fix
-  /*
+  const moods = await Promise.all(
+    favoriteMoodIds.moods.map((moodId) => getMoodById(db, moodId)),
+  )
+  return moods.filter((mood): mood is DbRecord<'mood'> => mood !== undefined)
+}
+// export function getFavoriteMoods(
+//   db: IDBDatabase,
+// ): DbRecord<'mood'>[] /*: Promise<DbRecord<'mood'>[]>*/ {
+//   const favoritesRequest = db
+//     .transaction('moodCollection', 'readwrite')
+//     .objectStore('moodCollection')
+//     .get('favorite')
+//   favoritesRequest.onsuccess = function (event) {
+//     const request = event.target as IDBRequest
+//     let favoriteIdData: { moods: string[] }
+
+//     if (request.result) {
+//       // If the favorite record exists, use it
+//       favoriteIdData = request.result as { moods: string[] }
+//     } else {
+//       // If the favorite record doesn't exist, create a new one
+//       favoriteIdData = { moods: [] }
+//     }
+
+//     return favoriteIdData.moods
+//   }
+//   return [] // TODO: fix
+/*
   const transaction = db.transaction(['mood', 'moodCollection'], 'readonly')
   const moodStore = transaction.objectStore('mood')
   const moodCollectionStore = transaction.objectStore('moodCollection')
@@ -166,7 +185,6 @@ export function getFavoriteMoods(
     moodStore.get(favoriteMoodIds),
   )
   return favoriteMoods*/
-}
 
 export async function getEntriesOfDate(
   db: IDBDatabase,

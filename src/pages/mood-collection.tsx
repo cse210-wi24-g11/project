@@ -1,6 +1,6 @@
 import { Button, Text } from '@adobe/react-spectrum'
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 import { CUSTOM_MOOD_ROUTE } from '@/routes.ts'
 
@@ -18,7 +18,7 @@ export type MoodSectionProps = {
   moods: Mood[]
 }
 
-const MoodSection: React.FC<MoodSectionProps> = function ({ moods }) {
+const MoodSection: React.FC<MoodSectionProps & { onSelectMood: (mood: Mood) => void }> = function ({ moods, onSelectMood }) {
   return (
     <div className={'grid grid-cols-5 gap-2'}>
       {moods.map(
@@ -29,6 +29,7 @@ const MoodSection: React.FC<MoodSectionProps> = function ({ moods }) {
               color={mood.color}
               imgSrc={URL.createObjectURL(mood.image)}
               size="single-line-height"
+               onClick={() => onSelectMood(mood)}
             />
           ),
       )}
@@ -36,12 +37,15 @@ const MoodSection: React.FC<MoodSectionProps> = function ({ moods }) {
   )
 }
 
+
 export function MoodCollection() {
   const { getDb } = useDb()
   const [favoriteMoods, setFavorites] = useState<Mood[]>([])
   const [generalMoods, setGeneral] = useState<Mood[]>([])
   const [archivedMoods, setArchived] = useState<Mood[]>([])
   const navigate = useNavigate()
+  const location = useLocation()
+  const returnTo = location.state?.returnTo
 
   useEffect(() => {
     async function run() {
@@ -87,6 +91,14 @@ export function MoodCollection() {
     return () => {}
   }, [getDb])
 
+  const handleSelectMood = (selectedMood: Mood) => {
+    if (returnTo) {
+      navigate(returnTo, { state: { selectedMoodId: selectedMood.id } });
+    } else {
+      console.log("No returnTo path specified.");
+    }
+  };
+
   const addCustomMood = () => {
     navigate(CUSTOM_MOOD_ROUTE)
   }
@@ -97,11 +109,11 @@ export function MoodCollection() {
           <Text>Add New Mood</Text>
         </Button>
         <h1>Favorites</h1>
-        <MoodSection moods={favoriteMoods} />
+        <MoodSection moods={favoriteMoods} onSelectMood={handleSelectMood} />
         <h1>General</h1>
-        <MoodSection moods={generalMoods} />
+        <MoodSection moods={generalMoods} onSelectMood={handleSelectMood} />
         <h1>Archived</h1>
-        <MoodSection moods={archivedMoods} />
+        <MoodSection moods={archivedMoods} onSelectMood={handleSelectMood} />
       </div>
       <MainNavBar />
     </>

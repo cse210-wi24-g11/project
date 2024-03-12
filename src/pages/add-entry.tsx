@@ -41,9 +41,7 @@ export function AddEntry() {
   useEffect(() => {
     async function loadFavoriteMoods() {
       const db = await getDb()
-      // TODO: fix the await.
-      const favoriteMoods = getFavoriteMoods(db)
-
+      const favoriteMoods = await getFavoriteMoods(db)
       setFavoriteMoods(favoriteMoods?.length ? favoriteMoods : MOCK_FAVORITES)
     }
 
