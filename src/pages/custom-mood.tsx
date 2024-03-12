@@ -64,31 +64,30 @@ export function CustomMood() {
       //
 
       //append to favorite category
-      if (category == 'favorite') {
+      if (category == 'favorites') {
         const favoritesRequest = db
           .transaction('moodCollection', 'readwrite')
           .objectStore('moodCollection')
-          .get('favorite')
+          .get('favorites')
 
         // console.log(favoritesRequest)
 
         favoritesRequest.onsuccess = function (event) {
           const request = event.target as IDBRequest
-          let favoriteIdData: { moods: string[] }
+          let favoritesIds: string[]
 
           if (request.result) {
             // If the favorite record exists, use it
-            favoriteIdData = request.result as { moods: string[] }
+            favoritesIds = request.result as string[]
           } else {
             // If the favorite record doesn't exist, create a new one
-            favoriteIdData = { moods: [] }
+            favoritesIds = []
           }
 
-          const storedFavoriteIds = favoriteIdData.moods
-          storedFavoriteIds.push(generatedUuid)
+          favoritesIds.push(generatedUuid)
           db.transaction('moodCollection', 'readwrite')
             .objectStore('moodCollection')
-            .put({ moods: storedFavoriteIds }, 'favorite')
+            .put(favoritesIds, 'favorites')
         }
       }
       //append to general category
@@ -100,21 +99,20 @@ export function CustomMood() {
 
         generalRequest.onsuccess = function (event) {
           const request = event.target as IDBRequest
-          let generalIdData: { moods: string[] }
+          let generalIds: string[]
 
           if (request.result) {
             // If the favorite record exists, use it
-            generalIdData = request.result as { moods: string[] }
+            generalIds = request.result as string[]
           } else {
             // If the favorite record doesn't exist, create a new one
-            generalIdData = { moods: [] }
+            generalIds = []
           }
 
-          const storedGeneralIds = generalIdData.moods
-          storedGeneralIds.push(generatedUuid)
+          generalIds.push(generatedUuid)
           db.transaction('moodCollection', 'readwrite')
             .objectStore('moodCollection')
-            .put({ moods: storedGeneralIds }, 'general')
+            .put(generalIds, 'general')
         }
       }
       ToastQueue.positive('Custom Mood Added!', { timeout: 5000 })

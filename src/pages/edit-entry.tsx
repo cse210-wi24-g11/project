@@ -1,44 +1,85 @@
-import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useMemo, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Button } from '@react-spectrum/button'
 import { TextField } from '@react-spectrum/textfield'
-import Send from '@spectrum-icons/workflow/Send'
+import Edit from '@spectrum-icons/workflow/Edit'
 import More from '@spectrum-icons/workflow/More'
 
 import {
-  ADD_ENTRY_ROUTE,
   DAY_SUMMARY_ROUTE,
+  EDIT_ENTRY_ROUTE,
   MOOD_COLLECTION_ROUTE,
 } from '@/routes.ts'
 import { useLocationState } from '@/hooks/use-location-state.ts'
 import {
   DbRecord,
+  getEntry,
   getFavoriteMoods,
-  putEntry,
   getMoodById,
+  updateEntry,
 } from '@/utils/db.ts'
 
 import { useDb } from '@/context/db.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
 
-// const MOCK_FAVORITES = [
-//   { id: 'sdfa;sdf', color: '#ff0000', imagePath: '/vite.svg ' },
-// ]
+const MOCK_FAVORITES = [
+  { id: 'sdfa;sdf', color: '#ff0000', imagePath: '/vite.svg ' },
+]
 
-type State = {
+export type Params = {
+  entryId: DbRecord<'entry'>['id']
+}
+
+export type State = {
   selectedMood: DbRecord<'mood'>
 }
 
-export function AddEntry() {
+export function EditEntry() {
+  const { entryId } = useParams()
   const state = useLocationState(validateState)
   const navigate = useNavigate()
   const { getDb } = useDb()
 
+  const selectedMood = useMemo(() => state?.selectedMood ?? null, [state])
+
   const [mood, setMood] = useState<DbRecord<'mood'> | null>(() =>
-    state === null ? null : state.selectedMood,
+    state === null ? null : selectedMood,
   )
   const [description, setDescription] = useState('')
+
+  const [entryMood, setEntryMood] = useState<DbRecord<'mood'> | null>(null)
+  useEffect(() => {
+    async function loadEntry() {
+      const db = await getDb()
+      const entry = await getEntry(db, entryId!)
+
+      if (!entry) {
+        // @ts-expect-error -1 is a valid argument, representing going back. see https://reactrouter.com/en/main/hooks/use-navigate
+        navigate(-1, { replace: true })
+        return
+      }
+
+      const entryMood = await getMoodById(db, entry.moodId)
+
+      if (!entryMood) {
+        // @ts-expect-error -1 is a valid argument, representing going back. see https://reactrouter.com/en/main/hooks/use-navigate
+        navigate(-1, { replace: true })
+        return
+      }
+
+      setEntryMood(entryMood)
+
+      // if there's a selected mood, we prefer that as the initial value
+      // over whatever mood was initially associated with the entry
+      if (!selectedMood) {
+        setMood(entryMood)
+      }
+
+      setDescription(entry.description)
+    }
+    void loadEntry()
+  }, [entryId, getDb, navigate, selectedMood])
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -46,40 +87,22 @@ export function AddEntry() {
   useEffect(() => {
     async function loadFavoriteMoods() {
       const db = await getDb()
-      // TODO: fix the await.
       const favoriteMoods = await getFavoriteMoods(db)
-      const newFavoriteMoods = favoriteMoods?.length
-        ? favoriteMoods.slice(-5)
-        : []
-      setFavoriteMoods(newFavoriteMoods)
+
       setFavoriteMoods(favoriteMoods?.length ? favoriteMoods : MOCK_FAVORITES)
     }
-
     void loadFavoriteMoods()
   }, [getDb])
-
-  useEffect(() => {
-    async function fetchSelectedMood() {
-      const selectedMoodId = state?.selectedMood.id
-      if (!selectedMoodId) return
-
-      const db = await getDb()
-      const fetchedMood = await getMoodById(db, selectedMoodId)
-      setMood(fetchedMood || null)
-    }
-
-    fetchSelectedMood()
-  }, [state, getDb])
 
   function pickFromMoodCollection() {
     navigate(MOOD_COLLECTION_ROUTE, {
       state: {
-        returnTo: ADD_ENTRY_ROUTE,
+        returnTo: EDIT_ENTRY_ROUTE(entryId!),
       },
     })
   }
 
-  async function addMoodEntry() {
+  async function updateMoodEntry() {
     // sanity check
     if (mood === null) {
       return
@@ -87,15 +110,8 @@ export function AddEntry() {
 
     setIsSubmitting(true)
 
-    const entry: DbRecord<'entry'> = {
-      id: window.crypto.randomUUID(),
-      moodId: mood.id,
-      description,
-      timestamp: new Date(),
-    }
-
     const db = await getDb()
-    await putEntry(db, entry)
+    await updateEntry(db, entryId!, { moodId: mood.id, description })
     setIsSubmitting(false)
 
     navigate(DAY_SUMMARY_ROUTE)
@@ -104,10 +120,8 @@ export function AddEntry() {
   return (
     <>
       <main className="max-w-120 flex w-full grow flex-col items-center gap-4 pt-4">
-        Add entry
+        Edit entry
         <div className="flex w-full grow flex-col items-center justify-center gap-4">
-          {/* day overview (TODO) */}
-
           {/* favorite moods */}
           <div className="flex gap-4">
             {favoriteMoods.map((m) => (
@@ -115,7 +129,7 @@ export function AddEntry() {
                 key={m.id}
                 size="single-line-height"
                 color={m.color}
-                imgSrc={URL.createObjectURL(m.image)}
+                imgSrc={m.imagePath}
                 onClick={() => {
                   setMood(m)
                 }}
@@ -136,13 +150,11 @@ export function AddEntry() {
             <MoodSwatch
               size="single-line-height"
               color={mood?.color}
-              imgSrc={
-                mood && mood.image ? URL.createObjectURL(mood.image) : undefined
-              }
+              imgSrc={mood?.imagePath}
               onClick={
                 mood
                   ? () => {
-                      setMood(null)
+                      setMood(entryMood)
                     }
                   : undefined
               }
@@ -154,10 +166,10 @@ export function AddEntry() {
               isDisabled={mood === null}
               isPending={isSubmitting}
               onPress={() => {
-                void addMoodEntry()
+                void updateMoodEntry()
               }}
             >
-              <Send />
+              <Edit />
             </Button>
           </div>
         </div>
