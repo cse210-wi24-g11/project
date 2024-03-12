@@ -2,7 +2,6 @@ import * as d3 from 'd3'
 import { RGBColor } from 'd3'
 
 import { ExpandedEntry, serializeDateForEntry } from '@/db/utils.ts'
-import imagePlaceholderUrl from '@/assets/No-Image-Placeholder.png'
 
 export interface SummaryDayMoodRecord {
   id: number
@@ -179,7 +178,7 @@ export function mockEntriesOnDate(date: Date, n: number = 10): ExpandedEntry[] {
     mood: {
       id: `mood-${i + 100 * date.getDay()}`,
       color: mockMoodColors[Math.floor(Math.random() * 6)].toString(),
-      imageUrl: imagePlaceholderUrl,
+      imageBlob: new Blob(),
     },
   }))
 }

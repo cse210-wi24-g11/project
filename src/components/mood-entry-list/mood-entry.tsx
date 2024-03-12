@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { rgb } from 'd3'
 
-import { ExpandedEntry } from '@/db/utils.ts'
+import { ExpandedEntry, blobToUrl } from '@/db/utils.ts'
 import { displayTime, displayMonthDay } from '@/utils/summary.ts'
 
 import type { Entry } from '@/db/types.ts'
@@ -11,8 +11,8 @@ interface MoodListItemProps {
   onClick: (entryId: Entry['id']) => void
 }
 
-export function MoodListItem(props: MoodListItemProps) {
-  const { entry, onClick } = props
+export function MoodListItem({ entry, onClick }: MoodListItemProps) {
+  const entryMoodImageUrl = useMemo(() => blobToUrl(entry.mood.imageBlob), [entry])
 
   const colorStr = useMemo(() => toCssStr(entry.mood.color), [entry.mood.color])
 
@@ -21,7 +21,7 @@ export function MoodListItem(props: MoodListItemProps) {
       className="h-30 left-0 right-0 flex flex-row items-start rounded-md border bg-white"
       onClick={() => onClick(entry.id)}
     >
-      <img className="rounded-l-md" src={entry.mood.imageUrl} />
+      <img className="rounded-l-md" src={entryMoodImageUrl} />
       <div className="grid-flow-col">
         <div className="ml-4 mt-2 flex content-center items-center rounded-md">
           <div

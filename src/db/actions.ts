@@ -57,7 +57,16 @@ export async function getMoodCollection(): Promise<MoodCollection> {
   return { favorites, general, archived }
 }
 
-export async function getExpandedMoodCollection(): Promise<Record<MoodCollectionCategory, ExpandedMood[]>> {
+export async function getExpandedMoodCollection(): Promise<Record<MoodCollectionCategory, Mood[]>> {
+  const moodCollection = await getMoodCollection()
+  return {
+    favorites: await expandMoodIds(moodCollection.favorites),
+    general: await expandMoodIds(moodCollection.general),
+    archived: await expandMoodIds(moodCollection.archived),
+  }
+}
+
+export async function getFullyExpandedMoodCollection(): Promise<Record<MoodCollectionCategory, ExpandedMood[]>> {
   const moodCollection = await getMoodCollection()
   return {
     favorites: await fullyExpandMoodIds(moodCollection.favorites),

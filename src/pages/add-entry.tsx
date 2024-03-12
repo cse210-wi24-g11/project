@@ -14,7 +14,7 @@ import { useAsyncMemo } from '@/hooks/use-async-memo.ts'
 import { useLocationState } from '@/hooks/use-location-state.ts'
 import { db } from '@/db/index.ts'
 import { useFavoriteMoods } from '@/db/actions.ts'
-import { ExpandedMood, createEntry, expandMood } from '@/db/utils.ts'
+import { ExpandedMood, blobToUrl, createEntry, expandMood } from '@/db/utils.ts'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
@@ -32,7 +32,10 @@ export function AddEntry() {
   const [mood, setMood] = useState<ExpandedMood | null>(() =>
     state === null ? null : state.selectedMood,
   )
-  console.log({state, mood})
+  const moodImageUrl = useMemo(() => {
+    if (mood === null) { return undefined }
+     return blobToUrl(mood.imageBlob)
+  }, [mood])
 
   const [description, setDescription] = useState('')
 
@@ -45,7 +48,11 @@ export function AddEntry() {
     [visibleFavoriteMoods],
     [] as ExpandedMood[],
   )
-
+  const expandedFavoriteMoodsWithImageUrls = useMemo(
+    () => expandedFavoriteMoods.map(mood => [mood, blobToUrl(mood.imageBlob)] as const),
+    [expandedFavoriteMoods],
+  )
+  
   function pickFromMoodCollection() {
     navigate(MOOD_COLLECTION_ROUTE, {
       state: {
@@ -79,12 +86,12 @@ export function AddEntry() {
 
           {/* favorite moods */}
           <div className="flex gap-4">
-            {expandedFavoriteMoods.map((m) => (
+            {expandedFavoriteMoodsWithImageUrls.map(([m, imageUrl]) => (
               <MoodSwatch
                 key={m.id}
                 size="single-line-height"
                 color={m.color}
-                imgSrc={m.imageUrl}
+                imgSrc={imageUrl}
                 onClick={() => {
                   setMood(m)
                 }}
@@ -105,7 +112,7 @@ export function AddEntry() {
             <MoodSwatch
               size="single-line-height"
               color={mood?.color}
-              imgSrc={mood?.imageUrl}
+              imgSrc={moodImageUrl}
               onClick={
                 mood
                   ? () => {
@@ -143,14 +150,14 @@ function validateState(state: Record<string, unknown>): state is State {
     return false
   }
 
-  const { id, color, imageUrl } = selectedMood as Record<string, unknown>
+  const { id, color, imageBlob } = selectedMood as Record<string, unknown>
   if (typeof id !== 'string') {
     return false
   }
   if (typeof color !== 'string') {
     return false
   }
-  if (typeof imageUrl !== 'string') {
+  if (!(imageBlob instanceof Blob)) {
     return false
   }
 

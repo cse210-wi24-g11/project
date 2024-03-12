@@ -117,7 +117,7 @@ export function getTodayRange(
 }
 
 export type ExpandedMood = Omit<Mood, 'image'> & {
-  imageUrl: string
+  imageBlob: Blob
 }
 
 export type ExpandedEntry = Omit<Entry, 'moodId' | 'timestamp' | 'image'> & {
@@ -128,8 +128,7 @@ export type ExpandedEntry = Omit<Entry, 'moodId' | 'timestamp' | 'image'> & {
 export async function expandMood(mood: Mood): Promise<ExpandedMood> {
   const { image, ...rest } = mood
   const blob = await base64ToBlob(image)
-  const imageUrl = blobToUrl(blob)
-  return { ...rest, imageUrl }
+  return { ...rest, imageBlob: blob }
 }
 
 /**

@@ -4,8 +4,8 @@ import { Button, Text } from '@adobe/react-spectrum'
 
 import { CUSTOM_MOOD_ROUTE, Route } from '@/routes.ts'
 import { useQuery } from '@/db/index.ts'
-import { getExpandedMoodCollection } from '@/db/actions.ts'
-import { ExpandedMood } from '@/db/utils.ts'
+import { getFullyExpandedMoodCollection } from '@/db/actions.ts'
+import { ExpandedMood, blobToUrl } from '@/db/utils.ts'
 import { useLocationState } from '@/hooks/use-location-state.ts'
 
 import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
@@ -21,8 +21,8 @@ export function MoodCollection() {
   const state = useLocationState(validateState)
   const navigate = useNavigate()
 
-  const [expandedMoodCollection] = useQuery(
-    getExpandedMoodCollection,
+  const [moodCollection] = useQuery(
+    getFullyExpandedMoodCollection,
     [],
     { general: [], favorites: [], archived: [] } as Record<MoodCollectionCategory, ExpandedMood[]>
   )
@@ -48,11 +48,11 @@ export function MoodCollection() {
           <Text>Add New Mood</Text>
         </Button>
         <h1>Favorites</h1>
-        <MoodSection moods={expandedMoodCollection.favorites} onClickMood={onClickMood} />
+        <MoodSection moods={moodCollection.favorites} onClickMood={onClickMood} />
         <h1>General</h1>
-        <MoodSection moods={expandedMoodCollection.general} onClickMood={onClickMood} />
+        <MoodSection moods={moodCollection.general} onClickMood={onClickMood} />
         <h1>Archived</h1>
-        <MoodSection moods={expandedMoodCollection.archived} onClickMood={onClickMood} />
+        <MoodSection moods={moodCollection.archived} onClickMood={onClickMood} />
       </div>
       <MainNavBar />
     </>
@@ -77,7 +77,7 @@ function MoodSection({ moods, onClickMood }: MoodSectionProps) {
         <MoodSwatch
           key={i}
           color={mood.color}
-          imgSrc={mood.imageUrl}
+          imgSrc={blobToUrl(mood.imageBlob)}
           onClick={getOnClick?.(mood)}
           size="single-line-height"
         />

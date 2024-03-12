@@ -12,7 +12,7 @@ import {
 } from '@/routes.ts'
 import { db, useQuery } from '@/db/index.ts'
 import { useFavoriteMoods } from '@/db/actions.ts'
-import { ExpandedMood, expandMood } from '@/db/utils.ts'
+import { ExpandedMood, blobToUrl, expandMood } from '@/db/utils.ts'
 import { useAsyncMemo } from '@/hooks/use-async-memo.ts'
 import { useLocationState } from '@/hooks/use-location-state.ts'
 
@@ -62,6 +62,10 @@ export function EditEntry() {
   const [mood, setMood] = useState<ExpandedMood | null>(() =>
     state === null ? null : selectedMood,
   )
+  const moodImageUrl = useMemo(() => {
+    if (mood === null) { return undefined }
+    return blobToUrl(mood.imageBlob)
+  }, [mood])
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -70,6 +74,10 @@ export function EditEntry() {
     () => Promise.all(favoriteMoods.map(expandMood)),
     [favoriteMoods],
     [] as ExpandedMood[],
+  )
+  const expandedFavoriteMoodsWithImageUrls = useMemo(
+    () => expandedFavoriteMoods.map(mood => [mood, blobToUrl(mood.imageBlob)] as const),
+    [expandedFavoriteMoods],
   )
 
   function pickFromMoodCollection() {
@@ -100,12 +108,12 @@ export function EditEntry() {
         <div className="flex w-full grow flex-col items-center justify-center gap-4">
           {/* favorite moods */}
           <div className="flex gap-4">
-            {expandedFavoriteMoods.map((m) => (
+            {expandedFavoriteMoodsWithImageUrls.map(([m, imageUrl]) => (
               <MoodSwatch
                 key={m.id}
                 size="single-line-height"
                 color={m.color}
-                imgSrc={m.imageUrl}
+                imgSrc={imageUrl}
                 onClick={() => {
                   setMood(m)
                 }}
@@ -126,7 +134,7 @@ export function EditEntry() {
             <MoodSwatch
               size="single-line-height"
               color={mood?.color}
-              imgSrc={mood?.imageUrl}
+              imgSrc={moodImageUrl}
               onClick={
                 mood
                   ? () => {
@@ -164,14 +172,14 @@ function validateState(state: Record<string, unknown>): state is State {
     return false
   }
 
-  const { id, color, imageUrl } = selectedMood as Record<string, unknown>
+  const { id, color, imageBlob } = selectedMood as Record<string, unknown>
   if (typeof id !== 'string') {
     return false
   }
   if (typeof color !== 'string') {
     return false
   }
-  if (typeof imageUrl !== 'string') {
+  if (!(imageBlob instanceof Blob)) {
     return false
   }
 
