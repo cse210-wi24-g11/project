@@ -76,7 +76,7 @@ class DexieDb extends Dexie {
       const GENERAL_MOODS = await resolveDefaultMoods(DEFAULT_GENERAL_MOODS)
       await db.moods.bulkAdd(GENERAL_MOODS)
       await db.moodCollection.add(DEFAULT_MOOD_COLLECTION['general'], 'general')
-      
+
       const ARCHIVED_MOODS = await resolveDefaultMoods(DEFAULT_ARCHIVED_MOODS)
       await db.moods.bulkAdd(ARCHIVED_MOODS)
       await db.moodCollection.add(

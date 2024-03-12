@@ -8,16 +8,21 @@ export const DEFAULT_SETTINGS: Settings = {
   reminderTimes: 'none',
 }
 
-export type DefaultMoodTemplate = { id: Mood['id'], color: string, image: string }
+export type DefaultMoodTemplate = {
+  id: Mood['id']
+  color: string
+  image: string
+}
 
 export const DEFAULT_FAVORITE_MOODS: DefaultMoodTemplate[] = [
   { color: '#ff0000', image: '/vite.svg' },
+  // add here
 ].map(addId)
 export const DEFAULT_GENERAL_MOODS: DefaultMoodTemplate[] = [
-  
+  // add here
 ].map(addId)
 export const DEFAULT_ARCHIVED_MOODS: DefaultMoodTemplate[] = [
-  
+  // add heres
 ].map(addId)
 
 export const DEFAULT_MOOD_COLLECTION: MoodCollection = {
