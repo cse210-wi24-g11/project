@@ -13,6 +13,7 @@ import { ImageUploadComponent } from '@/components/custom-mood/upload-image.tsx'
 import { DisplayImageComponent } from '@/components/custom-mood/display-image.tsx'
 
 import type { MoodCollectionCategory } from '@/db/types.ts'
+import background from "@/assets/background.png"
 
 type PickerOptions<KeyType extends React.Key> = Array<{
   key: KeyType
@@ -68,7 +69,7 @@ export function CustomMood() {
   }
 
   return (
-    <>
+    <div style={{backgroundImage: `url(${background})`}}>
       <div className="mt-12 flex flex-col items-center space-y-4">
         <ImageUploadComponent
           onImageUpload={handleImageUpload}
@@ -97,6 +98,6 @@ export function CustomMood() {
         </div>
       </div>
       <MainNavBar />
-    </>
+    </div>
   )
 }

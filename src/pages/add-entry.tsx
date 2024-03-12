@@ -5,6 +5,8 @@ import { TextField } from '@react-spectrum/textfield'
 import Send from '@spectrum-icons/workflow/Send'
 import More from '@spectrum-icons/workflow/More'
 
+
+
 import {
   ADD_ENTRY_ROUTE,
   DAY_SUMMARY_ROUTE,
@@ -20,7 +22,8 @@ import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
 
 import type { Mood } from '@/db/types.ts'
-
+import { DisplayImageComponent } from '@/components/custom-mood/display-image'
+import background from '@/assets/background.png'
 type State = {
   selectedMood: ExpandedMood
 }
@@ -85,12 +88,20 @@ export function AddEntry() {
     navigate(DAY_SUMMARY_ROUTE)
   }
 
+  
+
   return (
-    <>
-      <main className="max-w-120 flex w-full grow flex-col items-center gap-4 pt-4">
+    <div style={{backgroundImage: `url(${background})`}} className="h-full w-full">
+      <main  className="max-w-120 flex w-full grow flex-col items-center gap-4 pt-4">
         Add entry
         <div className="flex w-full grow flex-col items-center justify-center gap-4">
           {/* day overview (TODO) */}
+          <div
+          className="m-4 h-max w-max rounded-lg"
+          style={{ border: `20px solid ${mood?.color}` }}
+        >
+          <DisplayImageComponent uploadedImage={moodImageUrl as string} />
+        </div>
 
           {/* favorite moods */}
           <div className="flex gap-4">
@@ -117,18 +128,6 @@ export function AddEntry() {
 
           {/* submission row */}
           <div className="mt-single-line-height flex h-single-line-height items-end gap-4">
-            <MoodSwatch
-              size="single-line-height"
-              color={mood?.color}
-              imgSrc={moodImageUrl}
-              onClick={
-                mood
-                  ? () => {
-                      setMood(null)
-                    }
-                  : undefined
-              }
-            />
             <TextField label="entry" onChange={setDescription} />
             <Button
               variant="primary"
@@ -145,7 +144,7 @@ export function AddEntry() {
         </div>
       </main>
       <MainNavBar />
-    </>
+    </div>
   )
 }
 
