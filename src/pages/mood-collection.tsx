@@ -21,14 +21,17 @@ export type MoodSectionProps = {
 const MoodSection: React.FC<MoodSectionProps> = function ({ moods }) {
   return (
     <div className={'grid grid-cols-5 gap-2'}>
-      {moods.map((mood, i) => (
-        mood && <MoodSwatch
-          key={i}
-          color={mood.color}
-          imgSrc={URL.createObjectURL(mood.image)}
-          size="single-line-height"
-        />
-      ))}
+      {moods.map(
+        (mood, i) =>
+          mood && (
+            <MoodSwatch
+              key={i}
+              color={mood.color}
+              imgSrc={URL.createObjectURL(mood.image)}
+              size="single-line-height"
+            />
+          ),
+      )}
     </div>
   )
 }
