@@ -17,9 +17,9 @@ import { useDb } from '@/context/db.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
 
-// const MOCK_FAVORITES = [
-//   { id: 'sdfa;sdf', color: '#ff0000', imagePath: '/vite.svg ' },
-// ]
+const MOCK_FAVORITES = [
+  { id: 'sdfa;sdf', color: '#ff0000', imagePath: '/vite.svg ' },
+]
 
 type State = {
   selectedMood: DbRecord<'mood'>
@@ -44,7 +44,7 @@ export function AddEntry() {
       const favoriteMoods = await getFavoriteMoods(db)
       const newFavoriteMoods = favoriteMoods?.length
         ? favoriteMoods.slice(-5)
-        : []
+        : MOCK_FAVORITES
       setFavoriteMoods(newFavoriteMoods)
     }
 
