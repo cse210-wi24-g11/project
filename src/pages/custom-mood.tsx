@@ -120,32 +120,34 @@ export function CustomMood() {
   }
 
   return (
-    <div>
+    <>
       <ToastContainer />
-      <ImageUploadComponent
-        onImageUpload={handleImageUpload}
-        uploadedImage={uploadedImage}
-      />
-      <div
-        className="rounded-lg"
-        style={{ border: `20px solid ${selectedColor}`, padding: '1px' }}
-      >
-        <DisplayImageComponent uploadedImage={uploadedImage} />
-      </div>
-      <ColorPicker color={selectedColor} onChange={handleColorChange} />
-      <Picker
-        selectedKey={category}
-        onSelectionChange={(selected) => setCategory(selected)}
-      >
-        <Item key="favorite">Favorite</Item>
-        <Item key="general">General</Item>
-      </Picker>
-      <div>
-        <Button onPress={() => void handleSubmitMood()} variant="primary">
-          Submit Mood
-        </Button>
+      <div className="mt-12 flex flex-col items-center space-y-4">
+        <ImageUploadComponent
+          onImageUpload={handleImageUpload}
+          uploadedImage={uploadedImage}
+        />
+        <div
+          className="m-4 h-max w-max rounded-lg"
+          style={{ border: `20px solid ${selectedColor}` }}
+        >
+          <DisplayImageComponent uploadedImage={uploadedImage} />
+        </div>
+        <ColorPicker color={selectedColor} onChange={handleColorChange} />
+        <Picker
+          selectedKey={category}
+          onSelectionChange={(selected) => setCategory(selected)}
+        >
+          <Item key="favorite">Favorite</Item>
+          <Item key="general">General</Item>
+        </Picker>
+        <div>
+          <Button onPress={() => void handleSubmitMood()} variant="primary">
+            Submit Mood
+          </Button>
+        </div>
       </div>
       <MainNavBar />
-    </div>
+    </>
   )
 }
