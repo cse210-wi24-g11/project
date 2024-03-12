@@ -63,6 +63,7 @@ export function DaySummary({ day }: DaySummaryPageProps) {
           imagePath: mood?.imagePath ?? 'https://i.imgur.com/yXOvdOSs.jpg', // TODO: remove link
         })
       }
+      records.sort((a, b) => new Date(b.day).getTime() - new Date(a.day).getTime());
       setListItems(records)
     }
 
