@@ -46,7 +46,7 @@ export function MoodCollection() {
   const [archivedMoods, setArchived] = useState<Mood[]>([])
   const navigate = useNavigate()
   const location = useLocation()
-  const returnTo = location.state?.returnTo
+  const returnTo = (location.state as { returnTo?: string })?.returnTo;
 
   useEffect(() => {
     async function run() {
