@@ -17,10 +17,6 @@ import { useDb } from '@/context/db.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
 
-// const MOCK_FAVORITES = [
-//   { id: 'sdfa;sdf', color: '#ff0000', imagePath: '/vite.svg ' },
-// ]
-
 type State = {
   selectedMood: DbRecord<'mood'>
 }
@@ -115,7 +111,9 @@ export function AddEntry() {
             <MoodSwatch
               size="single-line-height"
               color={mood?.color}
-              imgSrc={mood && mood.image ? URL.createObjectURL(mood.image) : undefined}
+              imgSrc={
+                mood && mood.image ? URL.createObjectURL(mood.image) : undefined
+              }
               onClick={
                 mood
                   ? () => {

@@ -161,16 +161,16 @@ export async function getFavoriteMoods(
   const moodCollectionStore = transaction.objectStore('moodCollection')
 
   const favoriteMoodIds: string[] = await toPromise<string[]>(
-    moodCollectionStore.get('favorites')
-  );
+    moodCollectionStore.get('favorites'),
+  )
   if (!favoriteMoodIds || favoriteMoodIds.length === 0) {
-    return [];
+    return []
   }
-  const favoriteMoodsPromises = favoriteMoodIds.map(id =>
-    toPromise<DbRecord<'mood'>>(moodStore.get(id))
-  );
-  const favoriteMoods = await Promise.all(favoriteMoodsPromises);
-  return favoriteMoods.filter(mood => mood !== undefined);
+  const favoriteMoodsPromises = favoriteMoodIds.map((id) =>
+    toPromise<DbRecord<'mood'>>(moodStore.get(id)),
+  )
+  const favoriteMoods = await Promise.all(favoriteMoodsPromises)
+  return favoriteMoods.filter((mood) => mood !== undefined)
 }
 
 export async function getEntriesOfDate(
