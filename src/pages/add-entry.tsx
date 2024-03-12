@@ -11,11 +11,7 @@ import {
   MOOD_COLLECTION_ROUTE,
 } from '@/routes.ts'
 import { useLocationState } from '@/hooks/use-location-state.ts'
-import {
-  DbRecord,
-  getFavoriteMoods,
-  putEntry,
-} from '@/utils/db.ts'
+import { DbRecord, getFavoriteMoods, putEntry } from '@/utils/db.ts'
 
 import { useDb } from '@/context/db.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
