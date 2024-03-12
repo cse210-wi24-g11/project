@@ -1,7 +1,7 @@
 import type { Mood, MoodCollection, Settings } from './types.ts'
 
 export const DEFAULT_SETTINGS: Settings = {
-  defaultView: 'month',
+  defaultView: 'week',
   remindMe: 'none',
   reminderTimes: 'none',
 }
