@@ -47,7 +47,7 @@ export function DaySummary({ day }: DaySummaryPageProps) {
     [today],
     [] as ExpandedEntry[],
   )
-  console.log({ todayEntries })
+  
 
   return (
     <div className="flex h-screen flex-col">
