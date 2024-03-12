@@ -42,7 +42,7 @@ export function MoodCollection() {
 
   useEffect(() => {
     async function run() {
-      const collectionTypes: string[] = ['favorite', 'general', 'archived']
+      const collectionTypes: string[] = ['favorites', 'general', 'archived']
       const tempFavorites: Mood[] = []
       const tempGeneral: Mood[] = []
       const tempArchived: Mood[] = []
@@ -64,7 +64,7 @@ export function MoodCollection() {
             requestMood.onsuccess = (event) => {
               const targetMood = event.target as IDBRequest
               const moodData = targetMood.result as Mood
-              if (type === 'favorite' && targetMood) {
+              if (type === 'favorites' && targetMood) {
                 tempFavorites.push(moodData)
                 setFavorites(tempFavorites)
               } else if (type === 'general' && targetMood) {

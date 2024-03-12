@@ -77,13 +77,13 @@ export function EditMood() {
             const favoriteRequest = db
               .transaction('moodCollection', 'readwrite')
               .objectStore('moodCollection')
-              .get('favorite')
+              .get('favorites')
 
             favoriteRequest.onsuccess = function (event) {
               const request = event.target as IDBRequest
               const favoritesIds = request.result as string[]
               if (favoritesIds.includes(moodId as string)) {
-                setCategory('favorite')
+                setCategory('favorites')
               }
             }
           } catch (error) {
@@ -179,23 +179,23 @@ export function EditMood() {
         const favoriteRequest = db
           .transaction('moodCollection', 'readwrite')
           .objectStore('moodCollection')
-          .get('favorite')
+          .get('favorites')
 
         favoriteRequest.onsuccess = function (event) {
           const request = event.target as IDBRequest
           const favoritesIds = request.result as string[]
           console.log(favoritesIds)
           //remove if no longer here
-          if (favoritesIds.includes(moodId!) && category != 'favorite') {
+          if (favoritesIds.includes(moodId!) && category != 'favorites') {
             favoritesIds.splice(favoritesIds.indexOf(moodId!, 1))
           }
           //add if not yet in category
-          else if (!favoritesIds.includes(moodId!) && category == 'favorite') {
+          else if (!favoritesIds.includes(moodId!) && category == 'favorites') {
             favoritesIds.push(moodId!)
           }
           db.transaction('moodCollection', 'readwrite')
             .objectStore('moodCollection')
-            .put(favoritesIds, 'favorite')
+            .put(favoritesIds, 'favorites')
         }
       } catch (error) {
         console.error('Error fetching "favorite" mood information:', error)
