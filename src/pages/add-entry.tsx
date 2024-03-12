@@ -52,24 +52,10 @@ export function AddEntry() {
         ? favoriteMoods.slice(-5)
         : []
       setFavoriteMoods(newFavoriteMoods)
-      setFavoriteMoods(favoriteMoods?.length ? favoriteMoods : MOCK_FAVORITES)
     }
 
     void loadFavoriteMoods()
   }, [getDb])
-
-  useEffect(() => {
-    async function fetchSelectedMood() {
-      const selectedMoodId = state?.selectedMood.id
-      if (!selectedMoodId) return
-
-      const db = await getDb()
-      const fetchedMood = await getMoodById(db, selectedMoodId)
-      setMood(fetchedMood || null)
-    }
-
-    fetchSelectedMood()
-  }, [state, getDb])
 
   function pickFromMoodCollection() {
     navigate(MOOD_COLLECTION_ROUTE, {
@@ -115,7 +101,7 @@ export function AddEntry() {
                 key={m.id}
                 size="single-line-height"
                 color={m.color}
-                imgSrc={URL.createObjectURL(m.image)}
+                imgSrc={m.imagePath}
                 onClick={() => {
                   setMood(m)
                 }}
@@ -136,9 +122,7 @@ export function AddEntry() {
             <MoodSwatch
               size="single-line-height"
               color={mood?.color}
-              imgSrc={
-                mood && mood.image ? URL.createObjectURL(mood.image) : undefined
-              }
+              imgSrc={mood?.imagePath}
               onClick={
                 mood
                   ? () => {

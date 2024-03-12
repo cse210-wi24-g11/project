@@ -8,7 +8,7 @@ export type DbRecord<T extends DbStore> = {
   mood: {
     id: MoodId
     color: string
-    image: Blob
+    imagePath: string
   }
   moodCollection: {
     favorites: MoodId[]
