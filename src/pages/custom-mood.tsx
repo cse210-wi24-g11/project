@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button, Picker, Item } from '@adobe/react-spectrum'
-import { ToastContainer, ToastQueue } from '@react-spectrum/toast'
 
 import { db } from '@/db/index.ts'
 import { createMood, urlToBlob } from '@/db/utils.ts'
@@ -65,12 +64,11 @@ export function CustomMood() {
     collection.push(mood.id)
     await db.moodCollection.put(collection, category)
 
-    ToastQueue.positive('Custom Mood Added!', { timeout: 5000 })
+    moodCollection()
   }
 
   return (
     <>
-      <ToastContainer />
       <div className="mt-12 flex flex-col items-center space-y-4">
         <ImageUploadComponent
           onImageUpload={handleImageUpload}
@@ -84,11 +82,13 @@ export function CustomMood() {
         </div>
         <ColorPicker color={selectedColor} onChange={handleColorChange} />
         <Picker
+          items={categoryOptions}
           selectedKey={category}
-          onSelectionChange={(selected) => setCategory(selected)}
+          onSelectionChange={(selected) =>
+            setCategory(selected as MoodCollectionCategory)
+          }
         >
-          <Item key="favorite">Favorite</Item>
-          <Item key="general">General</Item>
+          {(categoryOptions) => <Item>{categoryOptions.label}</Item>}
         </Picker>
         <div>
           <Button onPress={() => void handleSubmitMood()} variant="primary">
