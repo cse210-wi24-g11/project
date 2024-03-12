@@ -64,7 +64,7 @@ export function openDb() {
           image: new Blob(),
         })
       }
-      moodCollectionStore.add(defaultMoodIds, 'favorite')
+      moodCollectionStore.add(defaultMoodIds, 'favorites')
       moodCollectionStore.add([], 'general')
       moodCollectionStore.add([], 'archived')
 
@@ -139,7 +139,7 @@ export async function getFavoriteMoods(
   const moodCollectionStore = transaction.objectStore('moodCollection')
   const favoriteMoodIds = await toPromise<
     DbRecord<'moodCollection'>['favorites']
-  >(moodCollectionStore.get('favorite'))
+  >(moodCollectionStore.get('favorites'))
 
   const favoriteMoods = await toPromise<DbRecord<'mood'>[]>(
     moodStore.get(favoriteMoodIds),

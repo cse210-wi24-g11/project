@@ -59,11 +59,11 @@ export function CustomMood() {
       //
 
       //append to favorite category
-      if (category == 'favorite') {
+      if (category == 'favorites') {
         const favoritesRequest = db
           .transaction('moodCollection', 'readwrite')
           .objectStore('moodCollection')
-          .get('favorite')
+          .get('favorites')
 
         // console.log(favoritesRequest)
 
@@ -82,7 +82,7 @@ export function CustomMood() {
           favoritesIds.push(generatedUuid)
           db.transaction('moodCollection', 'readwrite')
             .objectStore('moodCollection')
-            .put(favoritesIds, 'favorite')
+            .put(favoritesIds, 'favorites')
         }
       }
       //append to general category
