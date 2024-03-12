@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { Button, Picker, Item } from '@adobe/react-spectrum'
-import { ToastContainer, ToastQueue } from '@react-spectrum/toast'
 import { useParams } from 'react-router-dom'
 import { ActionButton } from '@adobe/react-spectrum'
 import { useNavigate } from 'react-router-dom'
@@ -8,6 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import { db } from '@/db/index.ts'
 import { getMoodIdsInCategory, moveOrAddToInCollection } from '@/db/actions.ts'
 import { base64ToBlob, blobToUrl, createMood } from '@/db/utils.ts'
+import { MOOD_COLLECTION_ROUTE } from '@/routes.ts'
 
 import { DisplayImageComponent } from '@/components/custom-mood/display-image.tsx'
 
@@ -24,6 +24,10 @@ export function EditMood() {
   )
 
   const [category, setCategory] = useState<MoodCollectionCategory>('general')
+
+  const moodCollection = () => {
+    navigate(MOOD_COLLECTION_ROUTE)
+  }
 
   useEffect(() => {
     async function fetchData() {
@@ -64,6 +68,8 @@ export function EditMood() {
         // Handle any errors that occurred during the asynchronous operations
         console.error('Error in handleButtonPress:', error)
       })
+
+    moodCollection()
   }
 
   async function handleEditMood() {
@@ -73,35 +79,34 @@ export function EditMood() {
     //update categories (TODO: not working )
     // get category information and set picker
     await moveOrAddToInCollection(mood.id, category)
-
-    ToastQueue.positive(' Mood Collection Updated!!', { timeout: 5000 })
   }
   // Render your component with moodData
   // NOTE: warn user that the choosing archived means mood can not be retrieved
   return (
-    <div>
-      <ToastContainer />
-      <div
-        className="rounded-lg"
-        style={{ border: `20px solid ${selectedColor}`, padding: '1px' }}
-      >
-        <DisplayImageComponent uploadedImage={uploadedImage} />
+    <>
+      <div className="mt-12 flex flex-col items-center space-y-4">
+        <div
+          className="rounded-lg"
+          style={{ border: `20px solid ${selectedColor}`, padding: '1px' }}
+        >
+          <DisplayImageComponent uploadedImage={uploadedImage} />
+        </div>
+        <Picker
+          selectedKey={category}
+          onSelectionChange={(selected) =>
+            setCategory(selected as MoodCollectionCategory)
+          }
+        >
+          <Item key="favorite">Favorite</Item>
+          <Item key="general">General</Item>
+          <Item key="archived">Archived</Item>
+        </Picker>
+        <div>
+          <Button onPress={handleButtonPress} variant="primary">
+            Change Category
+          </Button>
+        </div>
       </div>
-      <Picker
-        selectedKey={category}
-        onSelectionChange={(selected) =>
-          setCategory(selected as MoodCollectionCategory)
-        }
-      >
-        <Item key="favorite">Favorite</Item>
-        <Item key="general">General</Item>
-        <Item key="archived">Archived</Item>
-      </Picker>
-      <div>
-        <Button onPress={handleButtonPress} variant="primary">
-          Change Category
-        </Button>
-      </div>
-    </div>
+    </>
   )
 }
