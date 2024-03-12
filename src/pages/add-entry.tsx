@@ -158,7 +158,7 @@ function validateState(state: unknown): state is State {
     return false
   }
 
-  const { id, color} = selectedMood as Record<string, unknown>
+  const { id, color } = selectedMood as Record<string, unknown>
   if (typeof id !== 'string') {
     return false
   }
