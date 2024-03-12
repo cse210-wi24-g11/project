@@ -2,16 +2,11 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { DAY_SUMMARY_ROUTE, Route, WEEK_SUMMARY_ROUTE } from '@/routes.ts'
-import { DbRecord, getSettings } from '@/utils/db.ts'
+import { useSettings } from '@/db/actions.ts'
 
-import { useDb } from '@/context/db.tsx'
+import type { Settings } from '@/db/types.ts'
 
-const FALLBACK_DEFAULT_SUMMARY_ROUTE = DAY_SUMMARY_ROUTE
-
-const DEFAULT_VIEW_TO_ROUTE: Record<
-  DbRecord<'settings'>['defaultView'],
-  Route
-> = {
+const DEFAULT_VIEW_TO_ROUTE: Record<Settings['defaultView'], Route> = {
   day: DAY_SUMMARY_ROUTE,
   week: WEEK_SUMMARY_ROUTE,
   lastVisited: DAY_SUMMARY_ROUTE,
@@ -19,26 +14,27 @@ const DEFAULT_VIEW_TO_ROUTE: Record<
 
 export function Summary() {
   const navigate = useNavigate()
-  const { getDb, ready } = useDb()
+
+  const [settings, isLoadingData] = useSettings(null)
 
   useEffect(() => {
-    if (!ready) {
-      navigate(FALLBACK_DEFAULT_SUMMARY_ROUTE)
+    // query has not resolved yet
+    if (isLoadingData) {
       return
     }
 
-    async function run() {
-      const db = await getDb()
-      const settings = await getSettings(db)
-      if (settings.defaultView === 'lastVisited' && settings.lastVisited) {
-        navigate(DEFAULT_VIEW_TO_ROUTE[settings.lastVisited], { replace: true })
-      } else {
-        navigate(DEFAULT_VIEW_TO_ROUTE[settings.defaultView], { replace: true })
-      }
-    }
+    // settings should always be defined, this is just an extra sanity check, just in case
+    const { defaultView, lastVisited } = settings ?? {}
 
-    void run()
-  }, [ready, getDb, navigate])
+    const target =
+      defaultView === 'lastVisited' && lastVisited
+        ? // if the default view is lastVisited and there is indeed a last visited, go to that view
+          DEFAULT_VIEW_TO_ROUTE[lastVisited]
+        : // otherwise go to whatever the default view is, or the default view for lastVisited when there is no last visited
+          DEFAULT_VIEW_TO_ROUTE[defaultView]
+
+    navigate(target, { replace: true })
+  }, [settings, isLoadingData, navigate])
 
   return null
 }

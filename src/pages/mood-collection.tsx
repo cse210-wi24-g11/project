@@ -1,51 +1,35 @@
+import { useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Button, Text } from '@adobe/react-spectrum'
-import React, { useEffect, useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
 
-import { CUSTOM_MOOD_ROUTE } from '@/routes.ts'
-import { DbRecord } from '@/utils/db.ts'
+import { CUSTOM_MOOD_ROUTE, Route } from '@/routes.ts'
+import { useQuery } from '@/db/index.ts'
+import { getFullyExpandedMoodCollection } from '@/db/actions.ts'
+import { ExpandedMood, blobToUrl } from '@/db/utils.ts'
+import { useLocationState } from '@/hooks/use-location-state.ts'
 
 import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
+<<<<<<< HEAD
 import { useDb } from '@/context/db.tsx'
 type Mood = {
   id: string
   color: string
   image: Blob
 }
+=======
+>>>>>>> main
 
-//favorite section
-export type MoodSectionProps = {
-  moods: Mood[]
-}
+import type { MoodCollection, MoodCollectionCategory } from '@/db/types.ts'
 
-const MoodSection: React.FC<
-  MoodSectionProps & { onSelectMood: (mood: Mood) => void }
-> = function ({ moods, onSelectMood }) {
-  return (
-    <div className={'grid grid-cols-5 gap-2'}>
-      {moods.map(
-        (mood, i) =>
-          mood && (
-            <MoodSwatch
-              key={i}
-              color={mood.color}
-              imgSrc={URL.createObjectURL(mood.image)}
-              size="single-line-height"
-              onClick={() => onSelectMood(mood)}
-            />
-          ),
-      )}
-    </div>
-  )
+type State = {
+  returnTo?: Route
 }
 
 export function MoodCollection() {
-  const { getDb } = useDb()
-  const [favoriteMoods, setFavorites] = useState<Mood[]>([])
-  const [generalMoods, setGeneral] = useState<Mood[]>([])
-  const [archivedMoods, setArchived] = useState<Mood[]>([])
+  const state = useLocationState(validateState)
   const navigate = useNavigate()
+<<<<<<< HEAD
   const location = useLocation()
   const returnTo = (location.state as { returnTo?: string })?.returnTo
 
@@ -99,24 +83,91 @@ export function MoodCollection() {
       console.log('No returnTo path specified.')
     }
   }
+=======
+
+  const [moodCollection] = useQuery(getFullyExpandedMoodCollection, [], {
+    general: [],
+    favorites: [],
+    archived: [],
+  } as Record<MoodCollectionCategory, ExpandedMood[]>)
+>>>>>>> main
 
   const addCustomMood = () => {
     navigate(CUSTOM_MOOD_ROUTE)
   }
+
+  const onClickMood = useMemo(() => {
+    if (!state?.returnTo) {
+      return undefined
+    }
+
+    function onClick(mood: ExpandedMood) {
+      console.log(state!.returnTo, mood)
+      navigate(state!.returnTo as Route, { state: { selectedMood: mood } })
+    }
+    return onClick
+  }, [state, navigate])
+
   return (
     <>
-      <div>
+      <div className="mt-8 flex flex-col items-center space-y-4">
         <Button variant="primary" onPress={addCustomMood}>
           <Text>Add New Mood</Text>
         </Button>
         <h1>Favorites</h1>
-        <MoodSection moods={favoriteMoods} onSelectMood={handleSelectMood} />
+        <MoodSection
+          moods={moodCollection.favorites}
+          onClickMood={onClickMood}
+        />
         <h1>General</h1>
-        <MoodSection moods={generalMoods} onSelectMood={handleSelectMood} />
+        <MoodSection moods={moodCollection.general} onClickMood={onClickMood} />
         <h1>Archived</h1>
-        <MoodSection moods={archivedMoods} onSelectMood={handleSelectMood} />
+        <MoodSection
+          moods={moodCollection.archived}
+          onClickMood={onClickMood}
+        />
       </div>
       <MainNavBar />
     </>
   )
+}
+
+//favorite section
+type MoodSectionProps = {
+  moods: ExpandedMood[]
+  onClickMood?: (mood: ExpandedMood) => unknown
+}
+
+function MoodSection({ moods, onClickMood }: MoodSectionProps) {
+  const getOnClick = useMemo(() => {
+    if (!onClickMood) {
+      return undefined
+    }
+    return (mood: ExpandedMood) => () => onClickMood(mood)
+  }, [onClickMood])
+
+  return (
+    <div className={'grid grid-cols-5 gap-2'}>
+      {moods.map((mood, i) => (
+        <MoodSwatch
+          key={i}
+          color={mood.color}
+          imgSrc={blobToUrl(mood.imageBlob)}
+          onClick={getOnClick?.(mood)}
+          size="single-line-height"
+        />
+      ))}
+    </div>
+  )
+}
+
+function validateState(state: Record<string, unknown>): state is State {
+  const { returnTo } = state
+  if (!returnTo) {
+    return false
+  }
+  if (typeof returnTo !== 'string') {
+    return false
+  }
+  return true
 }

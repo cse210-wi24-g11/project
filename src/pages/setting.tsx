@@ -1,16 +1,18 @@
-import React, { useState } from 'react'
-import { useEffect } from 'react'
+import React from 'react'
 import { Picker, Item } from '@adobe/react-spectrum'
 import { Button } from '@react-spectrum/button'
 import { useNavigate } from 'react-router-dom'
 
 import { CUSTOM_MOOD_ROUTE } from '@/routes.ts'
-import { DbRecord, getSettings, updateSettingsInDb } from '@/utils/db.ts'
+import { updateSettings, useSettings } from '@/db/actions.ts'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
-import { useDb } from '@/context/db.tsx'
 
-type SettingsShape = DbRecord<'settings'>
+import type {
+  SettingsDefaultViewOption,
+  SettingsRemindMeOption,
+  SettingsReminderTimeOption,
+} from '@/db/types.ts'
 
 type PickerOptions<KeyType extends React.Key> = Array<{
   key: KeyType
@@ -21,24 +23,20 @@ const DEFAULT_VIEW_LABEL_ID = 'settings-default-view-label'
 const REMIND_ME_LABEL_ID = 'settings-remind-me-label'
 const REMINDER_TIMES_LABEL_ID = 'settings-reminder-times-label'
 
-const defaultViewOptions: PickerOptions<
-  Required<SettingsShape>['defaultView']
-> = [
+const defaultViewOptions: PickerOptions<SettingsDefaultViewOption> = [
   { key: 'lastVisited', label: 'Last Visited' },
   { key: 'week', label: 'Week' },
   { key: 'day', label: 'Day' },
 ]
 
-const remindMeOptions: PickerOptions<Required<SettingsShape>['remindMe']> = [
+const remindMeOptions: PickerOptions<SettingsRemindMeOption> = [
   { key: 'daily', label: 'Daily' },
   { key: 'weekdays', label: 'Weekdays' },
   { key: 'weekends', label: 'Weekends' },
   { key: 'none', label: 'None' },
 ]
 
-const reminderTimesOptions: PickerOptions<
-  Required<SettingsShape>['reminderTimes']
-> = [
+const reminderTimesOptions: PickerOptions<SettingsReminderTimeOption> = [
   { key: '9am', label: '9:00 AM' },
   { key: '3pm', label: '3:00 PM' },
   { key: '6pm', label: '6:00 PM' },
@@ -46,49 +44,29 @@ const reminderTimesOptions: PickerOptions<
 ]
 
 export function Settings() {
-  const [defaultView, setDefaultView] = useState<
-    SettingsShape['defaultView'] | null
-  >(null)
-  const [remindMe, setRemindMe] = useState<SettingsShape['remindMe'] | null>(
-    null,
-  )
-  const [reminderTimes, setReminderTimes] = useState<
-    SettingsShape['reminderTimes'] | null
-  >(null)
-  const { getDb } = useDb()
-  useEffect(() => {
-    async function run() {
-      const db = await getDb()
-      const settings = await getSettings(db)
-      setDefaultView(settings.defaultView)
-      setRemindMe(settings.remindMe)
-      setReminderTimes(settings.reminderTimes)
-    }
+  const [{ defaultView, remindMe, reminderTimes }] = useSettings({
+    defaultView: null,
+    remindMe: null,
+    reminderTimes: null,
+  })
 
-    void run()
-  }, [getDb])
+  const handleDefaultViewChange = (selectedKey: React.Key) => {
+    const newDefaultView = selectedKey.toString() as SettingsDefaultViewOption
 
-  const handleDefaultViewChange = async (selectedKey: React.Key) => {
-    const newDefaultView =
-      selectedKey.toString() as SettingsShape['defaultView']
-    setDefaultView(newDefaultView)
-    const db = await getDb()
-    updateSettingsInDb(db, { defaultView: newDefaultView })
+    void updateSettings({ defaultView: newDefaultView })
   }
 
-  const handleRemindMeChange = async (selectedKey: React.Key) => {
-    const newRemindMe = selectedKey.toString() as SettingsShape['remindMe']
-    setRemindMe(newRemindMe)
-    const db = await getDb()
-    updateSettingsInDb(db, { remindMe: newRemindMe })
+  const handleRemindMeChange = (selectedKey: React.Key) => {
+    const newRemindMe = selectedKey.toString() as SettingsRemindMeOption
+
+    void updateSettings({ remindMe: newRemindMe })
   }
 
-  const handleAtTimesChange = async (selectedKey: React.Key) => {
+  const handleAtTimesChange = (selectedKey: React.Key) => {
     const newReminderTimes =
-      selectedKey.toString() as SettingsShape['reminderTimes']
-    setReminderTimes(newReminderTimes)
-    const db = await getDb()
-    updateSettingsInDb(db, { reminderTimes: newReminderTimes })
+      selectedKey.toString() as SettingsReminderTimeOption
+
+    void updateSettings({ reminderTimes: newReminderTimes })
   }
 
   const navigate = useNavigate()

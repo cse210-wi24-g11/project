@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@react-spectrum/button'
 import { TextField } from '@react-spectrum/textfield'
@@ -10,29 +10,47 @@ import {
   DAY_SUMMARY_ROUTE,
   MOOD_COLLECTION_ROUTE,
 } from '@/routes.ts'
+import { useAsyncMemo } from '@/hooks/use-async-memo.ts'
 import { useLocationState } from '@/hooks/use-location-state.ts'
-import { DbRecord, getFavoriteMoods, putEntry } from '@/utils/db.ts'
+import {
+  DAY_SUMMARY_SESSIONSTORAGE_KEY,
+  date2SessionStorageStr,
+} from '@/utils/summary.ts'
+import { db } from '@/db/index.ts'
+import { useFavoriteMoods } from '@/db/actions.ts'
+import { ExpandedMood, blobToUrl, createEntry, expandMood } from '@/db/utils.ts'
 
-import { useDb } from '@/context/db.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
 
+<<<<<<< HEAD
+=======
+import type { Mood } from '@/db/types.ts'
+
+>>>>>>> main
 type State = {
-  selectedMood: DbRecord<'mood'>
+  selectedMood: ExpandedMood
 }
 
 export function AddEntry() {
   const state = useLocationState(validateState)
   const navigate = useNavigate()
-  const { getDb } = useDb()
 
-  const [mood, setMood] = useState<DbRecord<'mood'> | null>(() =>
+  const [mood, setMood] = useState<ExpandedMood | null>(() =>
     state === null ? null : state.selectedMood,
   )
+  const moodImageUrl = useMemo(() => {
+    if (mood === null) {
+      return undefined
+    }
+    return blobToUrl(mood.imageBlob)
+  }, [mood])
+
   const [description, setDescription] = useState('')
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+<<<<<<< HEAD
   const [favoriteMoods, setFavoriteMoods] = useState<DbRecord<'mood'>[]>([])
   useEffect(() => {
     async function loadFavoriteMoods() {
@@ -45,6 +63,25 @@ export function AddEntry() {
     }
     void loadFavoriteMoods()
   }, [getDb])
+=======
+  const [favoriteMoods] = useFavoriteMoods([] as Mood[])
+  const visibleFavoriteMoods = useMemo(
+    () => favoriteMoods.slice(-5),
+    [favoriteMoods],
+  )
+  const expandedFavoriteMoods = useAsyncMemo(
+    () => Promise.all(visibleFavoriteMoods.map(expandMood)),
+    [visibleFavoriteMoods],
+    [] as ExpandedMood[],
+  )
+  const expandedFavoriteMoodsWithImageUrls = useMemo(
+    () =>
+      expandedFavoriteMoods.map(
+        (mood) => [mood, blobToUrl(mood.imageBlob)] as const,
+      ),
+    [expandedFavoriteMoods],
+  )
+>>>>>>> main
 
   function pickFromMoodCollection() {
     navigate(MOOD_COLLECTION_ROUTE, {
@@ -62,17 +99,16 @@ export function AddEntry() {
 
     setIsSubmitting(true)
 
-    const entry: DbRecord<'entry'> = {
-      id: window.crypto.randomUUID(),
-      moodId: mood.id,
-      description,
-      timestamp: new Date(),
-    }
+    const date = new Date()
+    const entry = createEntry(mood.id, description, date)
 
-    const db = await getDb()
-    await putEntry(db, entry)
+    await db.entries.add(entry)
     setIsSubmitting(false)
 
+    sessionStorage.setItem(
+      DAY_SUMMARY_SESSIONSTORAGE_KEY,
+      date2SessionStorageStr(date),
+    )
     navigate(DAY_SUMMARY_ROUTE)
   }
 
@@ -85,12 +121,16 @@ export function AddEntry() {
 
           {/* favorite moods */}
           <div className="flex gap-4">
-            {favoriteMoods.map((m) => (
+            {expandedFavoriteMoodsWithImageUrls.map(([m, imageUrl]) => (
               <MoodSwatch
                 key={m.id}
                 size="single-line-height"
                 color={m.color}
+<<<<<<< HEAD
                 imgSrc={URL.createObjectURL(m.image)}
+=======
+                imgSrc={imageUrl}
+>>>>>>> main
                 onClick={() => {
                   setMood(m)
                 }}
@@ -111,9 +151,13 @@ export function AddEntry() {
             <MoodSwatch
               size="single-line-height"
               color={mood?.color}
+<<<<<<< HEAD
               imgSrc={
                 mood && mood.image ? URL.createObjectURL(mood.image) : undefined
               }
+=======
+              imgSrc={moodImageUrl}
+>>>>>>> main
               onClick={
                 mood
                   ? () => {
@@ -142,15 +186,8 @@ export function AddEntry() {
   )
 }
 
-function validateState(state: unknown): state is State {
-  if (!state) {
-    return false
-  }
-  if (typeof state !== 'object') {
-    return false
-  }
-
-  const { selectedMood } = state as Record<string, unknown>
+function validateState(state: Record<string, unknown>): state is State {
+  const { selectedMood } = state
   if (!selectedMood) {
     return false
   }
@@ -158,12 +195,23 @@ function validateState(state: unknown): state is State {
     return false
   }
 
+<<<<<<< HEAD
   const { id, color } = selectedMood as Record<string, unknown>
+=======
+  const { id, color, imageBlob } = selectedMood as Record<string, unknown>
+>>>>>>> main
   if (typeof id !== 'string') {
     return false
   }
   if (typeof color !== 'string') {
     return false
   }
+<<<<<<< HEAD
+=======
+  if (!(imageBlob instanceof Blob)) {
+    return false
+  }
+
+>>>>>>> main
   return true
 }

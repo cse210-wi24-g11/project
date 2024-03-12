@@ -1,121 +1,54 @@
-import { useState, useEffect, MutableRefObject, useRef } from 'react'
-import { Button, Picker, Item, Key } from '@adobe/react-spectrum'
-import { ToastContainer, ToastQueue } from '@react-spectrum/toast'
+import { useState, useEffect } from 'react'
+import { Button, Picker, Item } from '@adobe/react-spectrum'
 import { useParams } from 'react-router-dom'
 import { ActionButton } from '@adobe/react-spectrum'
 import { useNavigate } from 'react-router-dom'
 
+import { db } from '@/db/index.ts'
+import { getMoodIdsInCategory, moveOrAddToInCollection } from '@/db/actions.ts'
+import { base64ToBlob, blobToUrl, createMood } from '@/db/utils.ts'
+import { MOOD_COLLECTION_ROUTE } from '@/routes.ts'
+
 import { DisplayImageComponent } from '@/components/custom-mood/display-image.tsx'
-import { useDb } from '@/context/db.tsx'
+
+import type { MoodCollectionCategory } from '@/db/types.ts'
 
 export function EditMood() {
   const navigate = useNavigate()
-
   const { moodId } = useParams()
-  const { getDb } = useDb()
-  const moodBlob: MutableRefObject<Blob | null> = useRef<Blob | null>(null)
-  const [selectedColor, setSelectedColor] = useState<string | undefined>(
-    '#000000',
-  )
+
+  const [moodBlob, setMoodBlob] = useState<Blob | null>(null)
+  const [selectedColor, setSelectedColor] = useState<string>('#000000')
   const [uploadedImage, setUploadedImage] = useState<string>(
     'src/assets/No-Image-Placeholder.png',
   )
 
-  const [category, setCategory] = useState<Key>('general')
+  const [category, setCategory] = useState<MoodCollectionCategory>('general')
+
+  const moodCollection = () => {
+    navigate(MOOD_COLLECTION_ROUTE)
+  }
 
   useEffect(() => {
     async function fetchData() {
-      try {
-        console.log('Mood ID:', moodId)
-        const db = await getDb()
-        const moodRequest = db
-          .transaction('mood', 'readwrite')
-          .objectStore('mood')
-          .get(moodId as string)
+      const mood = (await db.moods.get(moodId!))!
+      const blob = await base64ToBlob(mood.image)
+      const blobUrl = blobToUrl(blob)
 
-        const moodData = await new Promise<{ color: string; image: Blob }>(
-          (resolve, reject) => {
-            moodRequest.onsuccess = function (event) {
-              const request = event.target as IDBRequest
-              const data = request.result as { color: string; image: Blob }
-              resolve(data)
-            }
+      setMoodBlob(blob)
+      setSelectedColor(mood.color)
+      setUploadedImage(blobUrl)
 
-            moodRequest.onerror = function (event) {
-              reject(event)
-            }
-          },
-        )
-        //get mood data to initalize components
-
-        if (moodData) {
-          const blobUrl = URL.createObjectURL(moodData.image)
-          console.log(blobUrl)
-          moodBlob.current = moodData.image
-          setCategory(moodData.color)
-          setSelectedColor(moodData.color)
-          setUploadedImage(blobUrl) // Set the image source to the Blob URL
-
-          //get category information and set picker
-          try {
-            const generalRequest = db
-              .transaction('moodCollection', 'readwrite')
-              .objectStore('moodCollection')
-              .get('general')
-
-            generalRequest.onsuccess = function (event) {
-              const request = event.target as IDBRequest
-              const generalIds = request.result as string[]
-              if (generalIds.includes(moodId as string)) {
-                setCategory('general')
-              }
-            }
-          } catch (error) {
-            console.error('Error fetching "general" mood information:', error)
-          }
-          try {
-            const favoriteRequest = db
-              .transaction('moodCollection', 'readwrite')
-              .objectStore('moodCollection')
-              .get('favorites')
-
-            favoriteRequest.onsuccess = function (event) {
-              const request = event.target as IDBRequest
-              const favoritesIds = request.result as string[]
-              if (favoritesIds.includes(moodId as string)) {
-                setCategory('favorites')
-              }
-            }
-          } catch (error) {
-            console.error('Error fetching "favorite" mood information:', error)
-          }
-          try {
-            const archivedRequest = db
-              .transaction('moodCollection', 'readwrite')
-              .objectStore('moodCollection')
-              .get('archived')
-
-            archivedRequest.onsuccess = function (event) {
-              const request = event.target as IDBRequest
-              const archivedIds = request.result as string[]
-              if (archivedIds.includes(moodId as string)) {
-                setCategory('archived')
-              }
-            }
-          } catch (error) {
-            console.error('Error fetching "archived" mood information:', error)
-          }
-        } else {
-          console.log('Invalid mood data')
+      for (const cat of ['general', 'favorites', 'archived'] as const) {
+        const collection = await getMoodIdsInCategory(cat)
+        if (collection.includes(mood.id)) {
+          setCategory(cat)
+          break
         }
-        //}
-      } catch (error) {
-        console.error('Error fetching mood information:', error)
-      } //end fetchData
+      }
     }
     void fetchData()
-    return () => {}
-  }, [moodId, getDb]) // Dependency array to re-run the effect when moodID changes
+  }, [moodId])
 
   if (!moodId) {
     return (
@@ -135,125 +68,45 @@ export function EditMood() {
         // Handle any errors that occurred during the asynchronous operations
         console.error('Error in handleButtonPress:', error)
       })
+
+    moodCollection()
   }
 
   async function handleEditMood() {
-    const db = await getDb()
+    const mood = await createMood(selectedColor, moodBlob!, moodId)
+    await db.moods.put(mood)
 
-    if (db) {
-      //update mood to data base
-      console.log('success: db connection is established')
-      db.transaction('mood', 'readwrite')
-        .objectStore('mood')
-        .put({ id: moodId, color: selectedColor, image: moodBlob.current })
-
-      //update categories (TODO: not working )
-
-      //get category information and set picker
-
-      try {
-        const generalRequest = db
-          .transaction('moodCollection', 'readwrite')
-          .objectStore('moodCollection')
-          .get('general')
-
-        generalRequest.onsuccess = function (event) {
-          const request = event.target as IDBRequest
-          const generalIds = request.result as string[]
-          //remove if no longer here
-          if (generalIds.includes(moodId!) && category != 'general') {
-            generalIds.splice(generalIds.indexOf(moodId!, 1))
-          }
-          //add if not yet in category
-          else if (!generalIds.includes(moodId!) && category == 'general') {
-            generalIds.push(moodId!)
-          }
-          db.transaction('moodCollection', 'readwrite')
-            .objectStore('moodCollection')
-            .put(generalIds, 'general')
-        }
-      } catch (error) {
-        console.error('Error fetching "general" mood information:', error)
-      }
-      try {
-        const favoriteRequest = db
-          .transaction('moodCollection', 'readwrite')
-          .objectStore('moodCollection')
-          .get('favorites')
-
-        favoriteRequest.onsuccess = function (event) {
-          const request = event.target as IDBRequest
-          const favoritesIds = request.result as string[]
-          console.log(favoritesIds)
-          //remove if no longer here
-          if (favoritesIds.includes(moodId!) && category != 'favorites') {
-            favoritesIds.splice(favoritesIds.indexOf(moodId!, 1))
-          }
-          //add if not yet in category
-          else if (!favoritesIds.includes(moodId!) && category == 'favorites') {
-            favoritesIds.push(moodId!)
-          }
-          db.transaction('moodCollection', 'readwrite')
-            .objectStore('moodCollection')
-            .put(favoritesIds, 'favorites')
-        }
-      } catch (error) {
-        console.error('Error fetching "favorite" mood information:', error)
-      }
-      try {
-        const archivedRequest = db
-          .transaction('moodCollection', 'readwrite')
-          .objectStore('moodCollection')
-          .get('archived')
-
-        archivedRequest.onsuccess = function (event) {
-          const request = event.target as IDBRequest
-          const archivedIds = request.result as string[]
-          //remove if no longer here
-          if (archivedIds.includes(moodId!) && category != 'archived') {
-            archivedIds.splice(archivedIds.indexOf(moodId!, 1))
-          }
-          //add if not yet in category
-          else if (!archivedIds.includes(moodId!) && category == 'archived') {
-            archivedIds.push(moodId!)
-          }
-          db.transaction('moodCollection', 'readwrite')
-            .objectStore('moodCollection')
-            .put(archivedIds, 'archived')
-        }
-      } catch (error) {
-        console.error('Error fetching "archived" mood information:', error)
-      }
-
-      ToastQueue.positive(' Mood Collection Updated!!', { timeout: 5000 })
-    } else {
-      console.log('error: db is still null')
-    }
+    //update categories (TODO: not working )
+    // get category information and set picker
+    await moveOrAddToInCollection(mood.id, category)
   }
   // Render your component with moodData
   // NOTE: warn user that the choosing archived means mood can not be retrieved
   return (
-    <div>
-      <ToastContainer />
-      <div
-        className="rounded-lg"
-        style={{ border: `20px solid ${selectedColor}`, padding: '1px' }}
-      >
-        <DisplayImageComponent uploadedImage={uploadedImage} />
+    <>
+      <div className="mt-12 flex flex-col items-center space-y-4">
+        <div
+          className="rounded-lg"
+          style={{ border: `20px solid ${selectedColor}`, padding: '1px' }}
+        >
+          <DisplayImageComponent uploadedImage={uploadedImage} />
+        </div>
+        <Picker
+          selectedKey={category}
+          onSelectionChange={(selected) =>
+            setCategory(selected as MoodCollectionCategory)
+          }
+        >
+          <Item key="favorite">Favorite</Item>
+          <Item key="general">General</Item>
+          <Item key="archived">Archived</Item>
+        </Picker>
+        <div>
+          <Button onPress={handleButtonPress} variant="primary">
+            Change Category
+          </Button>
+        </div>
       </div>
-      <Picker
-        selectedKey={category}
-        onSelectionChange={(selected) => setCategory(selected)}
-      >
-        <Item key="favorite">Favorite</Item>
-        <Item key="general">General</Item>
-        <Item key="archived">Archived</Item>
-      </Picker>
-      <div>
-        <Button onPress={handleButtonPress} variant="primary">
-          Change Category
-        </Button>
-      </div>
-    </div>
+    </>
   )
 }

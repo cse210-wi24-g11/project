@@ -1,6 +1,6 @@
 export type Route =
   | typeof ADD_ENTRY_ROUTE
-  | typeof EDIT_ENTRY_ROUTE
+  | ReturnType<typeof EDIT_ENTRY_ROUTE>
   | typeof EDIT_MOOD_ROUTE
   | typeof CUSTOM_MOOD_ROUTE
   | typeof MOOD_COLLECTION_ROUTE

@@ -16,7 +16,7 @@ export function MainNavBar() {
   return (
     <nav className="fixed bottom-0 left-0 flex w-full bg-white">
       <NavbarItem to={SUMMARY_BASE_ROUTE} label="summary" icon={Calendar} />
-      <NavbarItem to={ADD_ENTRY_ROUTE} label="add mood" icon={Add} />
+      <NavbarItem to={ADD_ENTRY_ROUTE} label="add entry" icon={Add} />
       <NavbarItem to={SETTINGS_ROUTE} label="settings" icon={Settings} />
     </nav>
   )
