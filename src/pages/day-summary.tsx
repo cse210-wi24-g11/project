@@ -55,7 +55,8 @@ export function DaySummary({ day }: DaySummaryPageProps) {
       const records = Array<SummaryMoodRecord>()
       for (const entry of entries) {
         const mood = await getMoodById(db, entry.moodId)
-        const imagePath = mood && mood.image ? URL.createObjectURL(mood.image) : '';
+        const imagePath =
+          mood && mood.image ? URL.createObjectURL(mood.image) : ''
         records.push({
           id: entry.id,
           day: entry.timestamp,
@@ -64,7 +65,9 @@ export function DaySummary({ day }: DaySummaryPageProps) {
           imagePath: imagePath,
         })
       }
-      records.sort((a, b) => new Date(b.day).getTime() - new Date(a.day).getTime());
+      records.sort(
+        (a, b) => new Date(b.day).getTime() - new Date(a.day).getTime(),
+      )
       setListItems(records)
     }
 
