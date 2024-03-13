@@ -63,13 +63,12 @@ export function EditMood() {
     handleEditMood()
       .then(() => {
         // Any additional synchronous logic after the asynchronous operations
+        moodCollection()
       })
       .catch((error) => {
         // Handle any errors that occurred during the asynchronous operations
         console.error('Error in handleButtonPress:', error)
       })
-
-    moodCollection()
   }
 
   async function handleEditMood() {
@@ -103,7 +102,7 @@ export function EditMood() {
             setCategory(selected as MoodCollectionCategory)
           }
         >
-          <Item key="favorite">Favorite</Item>
+          <Item key="favorites">Favorite</Item>
           <Item key="general">General</Item>
           <Item key="archived">Archived</Item>
         </Picker>

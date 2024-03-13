@@ -3,7 +3,7 @@ import { Picker, Item } from '@adobe/react-spectrum'
 import { Button } from '@react-spectrum/button'
 import { useNavigate } from 'react-router-dom'
 
-import { CUSTOM_MOOD_ROUTE } from '@/routes.ts'
+import { MOOD_COLLECTION_ROUTE } from '@/routes.ts'
 import { updateSettings, useSettings } from '@/db/actions.ts'
 import background from '@/assets/background.png'
 
@@ -72,7 +72,7 @@ export function Settings() {
 
   const navigate = useNavigate()
   const addCustomMood = () => {
-    navigate(CUSTOM_MOOD_ROUTE)
+    navigate(MOOD_COLLECTION_ROUTE)
   }
   return (
     <div
@@ -143,7 +143,7 @@ export function Settings() {
           aria-label="customize mood collection"
           onPress={addCustomMood}
         >
-          Customize mood collection
+          Customize Mood Collection
         </Button>
       </div>
       <MainNavBar />

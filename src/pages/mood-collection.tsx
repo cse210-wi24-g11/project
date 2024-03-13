@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button, Text } from '@adobe/react-spectrum'
 
-import { CUSTOM_MOOD_ROUTE, Route } from '@/routes.ts'
+import { CUSTOM_MOOD_ROUTE, Route, EDIT_MOOD_ROUTE } from '@/routes.ts'
 import { useQuery } from '@/db/index.ts'
 import { getFullyExpandedMoodCollection } from '@/db/actions.ts'
 import { ExpandedMood, blobToUrl } from '@/db/utils.ts'
@@ -34,7 +34,10 @@ export function MoodCollection() {
 
   const onClickMood = useMemo(() => {
     if (!state?.returnTo) {
-      return undefined
+      function onClick(mood: ExpandedMood) {
+        navigate(`${EDIT_MOOD_ROUTE}/${mood.id}`)
+      }
+      return onClick
     }
 
     function onClick(mood: ExpandedMood) {
