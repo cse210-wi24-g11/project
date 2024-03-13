@@ -27,7 +27,7 @@ const categoryOptions: PickerOptions<MoodCollectionCategory> = [
 
 export function CustomMood() {
   const navigate = useNavigate()
-  const [selectedColor, setSelectedColor] = useState<string>('#000000') // default white
+  const [selectedColor, setSelectedColor] = useState<string>('#67b668') // default white
   const [uploadedImage, setUploadedImage] =
     useState<string>(imagePlaceholderUrl)
 
