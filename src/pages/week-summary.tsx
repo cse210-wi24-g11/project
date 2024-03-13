@@ -12,6 +12,7 @@ import {
   date2SessionStorageStr,
   WEEK_SUMMARY_SESSIONSTORAGE_KEY,
 } from '@/utils/summary.ts'
+import background from '@/assets/background.png'
 
 import { WeekPicker } from '@/components/WeekPicker/WeekPicker.tsx'
 import { MoodEntryList } from '@/components/mood-entry-list/mood-entry-list.tsx'
@@ -55,9 +56,15 @@ export function WeekSummary() {
   )
 
   return (
-    <div className="flex h-screen flex-col">
+    <div
+      style={{
+        backgroundImage: `url(${background})`,
+        backgroundSize: '100vw 100vh',
+      }}
+      className="flex h-screen flex-col"
+    >
       <SummaryBar />
-      <div className="fixed left-0 right-0 top-10 border bg-white pb-2 pt-2">
+      <div className="fixed left-0 right-0 top-10 border pb-2 pt-2">
         <WeekPicker
           startDay={startDay}
           onChangeWeek={(startDay: Date) => {
@@ -65,7 +72,7 @@ export function WeekSummary() {
           }}
         />
       </div>
-      <div className="mt-24 flex-grow overflow-y-auto bg-white px-8 pb-16">
+      <div className="mt-24 flex-grow overflow-y-auto px-8 pb-16">
         {expandedEntries.length != 0 ? (
           <MoodPieChart records={expandedEntries} />
         ) : (

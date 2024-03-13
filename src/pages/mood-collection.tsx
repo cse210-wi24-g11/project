@@ -7,6 +7,7 @@ import { useQuery } from '@/db/index.ts'
 import { getFullyExpandedMoodCollection } from '@/db/actions.ts'
 import { ExpandedMood, blobToUrl } from '@/db/utils.ts'
 import { useLocationState } from '@/hooks/use-location-state.ts'
+import background from '@/assets/background.png'
 
 import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
@@ -47,7 +48,13 @@ export function MoodCollection() {
   }, [state, navigate])
 
   return (
-    <>
+    <div
+      style={{
+        backgroundImage: `url(${background})`,
+        backgroundSize: '100vw 100vh',
+      }}
+      className="flex h-screen flex-col"
+    >
       <div className="mt-8 flex flex-col items-center space-y-4">
         <Button variant="primary" onPress={addCustomMood}>
           <Text>Add New Mood</Text>
@@ -66,7 +73,7 @@ export function MoodCollection() {
         />
       </div>
       <MainNavBar />
-    </>
+    </div>
   )
 }
 

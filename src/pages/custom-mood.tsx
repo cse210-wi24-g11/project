@@ -6,6 +6,7 @@ import { db } from '@/db/index.ts'
 import { createMood, urlToBlob } from '@/db/utils.ts'
 import imagePlaceholderUrl from '@/assets/No-Image-Placeholder.png'
 import { MOOD_COLLECTION_ROUTE } from '@/routes.ts'
+import background from '@/assets/background.png'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { ColorPicker } from '@/components/custom-mood/color-picker.tsx' // Adjust the import path based on the actual location
@@ -26,7 +27,7 @@ const categoryOptions: PickerOptions<MoodCollectionCategory> = [
 
 export function CustomMood() {
   const navigate = useNavigate()
-  const [selectedColor, setSelectedColor] = useState<string>('#000000') // default white
+  const [selectedColor, setSelectedColor] = useState<string>('#67b668') // default white
   const [uploadedImage, setUploadedImage] =
     useState<string>(imagePlaceholderUrl)
 
@@ -68,7 +69,13 @@ export function CustomMood() {
   }
 
   return (
-    <>
+    <div
+      style={{
+        backgroundImage: `url(${background})`,
+        backgroundSize: '100vw 100vh',
+      }}
+      className="h-full w-full"
+    >
       <div className="mt-12 flex flex-col items-center space-y-4">
         <ImageUploadComponent
           onImageUpload={handleImageUpload}
@@ -97,6 +104,6 @@ export function CustomMood() {
         </div>
       </div>
       <MainNavBar />
-    </>
+    </div>
   )
 }

@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { MOOD_COLLECTION_ROUTE } from '@/routes.ts'
 import { updateSettings, useSettings } from '@/db/actions.ts'
+import background from '@/assets/background.png'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 
@@ -74,8 +75,14 @@ export function Settings() {
     navigate(MOOD_COLLECTION_ROUTE)
   }
   return (
-    <div className="flex flex-col items-center">
-      <div className="w-full p-4 pl-2 pr-6">
+    <div
+      style={{
+        backgroundImage: `url(${background})`,
+        backgroundSize: '100vw 100vh',
+      }}
+      className="flex h-screen flex-col"
+    >
+      <div className="w-full  p-4 pl-2 pr-6">
         <h2 className="mb-4 text-left text-base font-bold">
           Calendar Settings
         </h2>

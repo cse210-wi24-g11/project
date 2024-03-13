@@ -19,12 +19,13 @@ import {
 import { db } from '@/db/index.ts'
 import { useFavoriteMoods } from '@/db/actions.ts'
 import { ExpandedMood, blobToUrl, createEntry, expandMood } from '@/db/utils.ts'
+import background from '@/assets/background.png'
 
+import { DisplayImageComponent } from '@/components/custom-mood/display-image.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
 
 import type { Mood } from '@/db/types.ts'
-
 type State = {
   selectedMood: ExpandedMood
 }
@@ -95,11 +96,23 @@ export function AddEntry() {
   }
 
   return (
-    <>
+    <div
+      style={{
+        backgroundImage: `url(${background})`,
+        backgroundSize: '100vw 100vh',
+      }}
+      className="h-full w-full"
+    >
       <main className="max-w-120 flex w-full grow flex-col items-center gap-4 pt-4">
         Add entry
         <div className="flex w-full grow flex-col items-center justify-center gap-4">
           {/* day overview (TODO) */}
+          <div
+            className="m-4 h-max w-max rounded-lg"
+            style={{ border: `20px solid ${mood?.color || '#67b668'}` }}
+          >
+            <DisplayImageComponent uploadedImage={moodImageUrl as string} />
+          </div>
 
           {/* favorite moods */}
           <div className="flex gap-4">
@@ -126,18 +139,6 @@ export function AddEntry() {
 
           {/* submission row */}
           <div className="mt-single-line-height flex h-single-line-height items-end gap-4">
-            <MoodSwatch
-              size="single-line-height"
-              color={mood?.color}
-              imgSrc={moodImageUrl}
-              onClick={
-                mood
-                  ? () => {
-                      setMood(null)
-                    }
-                  : undefined
-              }
-            />
             <TextField label="entry" onChange={setDescription} />
             <Button
               variant="primary"
@@ -154,7 +155,7 @@ export function AddEntry() {
         </div>
       </main>
       <MainNavBar />
-    </>
+    </div>
   )
 }
 

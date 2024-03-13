@@ -16,10 +16,12 @@ import { ExpandedMood, blobToUrl, expandMood } from '@/db/utils.ts'
 import { useAsyncMemo } from '@/hooks/use-async-memo.ts'
 import { useLocationState } from '@/hooks/use-location-state.ts'
 
+import { DisplayImageComponent } from '@/components/custom-mood/display-image.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
 
 import type { Entry, Mood } from '@/db/types.ts'
+import background from '@/assets/background.png'
 
 export type Params = {
   entryId: Entry['id']
@@ -133,9 +135,19 @@ export function EditEntry() {
   }
 
   return (
-    <>
+    <div  style={{
+      backgroundImage: `url(${background})`,
+      backgroundSize: '100vw 100vh',
+    }}
+    className="mt-12 flex h-full w-full flex-col items-center space-y-4 ">
       <main className="max-w-120 flex w-full grow flex-col items-center gap-4 pt-4">
         Edit entry
+        <div
+          className="m-4 h-max w-max rounded-lg"
+          style={{ border: `20px solid ${mood?.color}` }}
+        >
+          <DisplayImageComponent uploadedImage={moodImageUrl as string} />
+        </div>
         <div className="flex w-full grow flex-col items-center justify-center gap-4">
           {/* favorite moods */}
           <div className="flex gap-4">
@@ -162,18 +174,6 @@ export function EditEntry() {
 
           {/* submission row */}
           <div className="mt-single-line-height flex h-single-line-height items-end gap-4">
-            <MoodSwatch
-              size="single-line-height"
-              color={mood?.color}
-              imgSrc={moodImageUrl}
-              onClick={
-                mood
-                  ? () => {
-                      setMood(entryMood)
-                    }
-                  : undefined
-              }
-            />
             <TextField
               label="entry"
               value={description}
@@ -194,7 +194,7 @@ export function EditEntry() {
         </div>
       </main>
       <MainNavBar />
-    </>
+    </div>
   )
 }
 
