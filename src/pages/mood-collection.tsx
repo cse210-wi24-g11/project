@@ -34,7 +34,7 @@ export function MoodCollection() {
   const onClickMood = useMemo(() => {
     if (!state?.returnTo) {
       function onClick(mood: ExpandedMood) {
-        navigate(`${EDIT_MOOD_ROUTE}/${mood.id}`)
+        navigate(`${EDIT_MOOD_ROUTE}/${mood.id}`);
       }
       return onClick
     }
@@ -45,6 +45,8 @@ export function MoodCollection() {
     }
     return onClick
   }, [state, navigate])
+
+  
 
   return (
     <>
