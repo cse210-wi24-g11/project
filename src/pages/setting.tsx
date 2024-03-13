@@ -3,7 +3,7 @@ import { Picker, Item } from '@adobe/react-spectrum'
 import { Button } from '@react-spectrum/button'
 import { useNavigate } from 'react-router-dom'
 
-import { CUSTOM_MOOD_ROUTE } from '@/routes.ts'
+import { MOOD_COLLECTION_ROUTE } from '@/routes.ts'
 import { updateSettings, useSettings } from '@/db/actions.ts'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
@@ -13,6 +13,7 @@ import type {
   SettingsRemindMeOption,
   SettingsReminderTimeOption,
 } from '@/db/types.ts'
+import { MoodCollection } from './mood-collection'
 
 type PickerOptions<KeyType extends React.Key> = Array<{
   key: KeyType
@@ -71,7 +72,7 @@ export function Settings() {
 
   const navigate = useNavigate()
   const addCustomMood = () => {
-    navigate(CUSTOM_MOOD_ROUTE)
+    navigate(MOOD_COLLECTION_ROUTE)
   }
   return (
     <div className="flex flex-col items-center">
@@ -136,7 +137,7 @@ export function Settings() {
           aria-label="customize mood collection"
           onPress={addCustomMood}
         >
-          Customize mood collection
+          Customize Mood Collection
         </Button>
       </div>
       <MainNavBar />
