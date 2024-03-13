@@ -30,7 +30,7 @@ function MoodPieChart({ records }: MoodPieChartProps) {
     const height = width
     const radius = Math.min(width, height) / 2
 
-    const arc = d3.arc().innerRadius(0).outerRadius(radius)
+    const arc = d3.arc<d3.PieArcDatum<MoodPercentageData>>().innerRadius(0).outerRadius(radius)
 
     const pie = d3.pie<MoodPercentageData>().value((d) => d.percentage)
 
