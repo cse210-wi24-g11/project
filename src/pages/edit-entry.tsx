@@ -169,7 +169,6 @@ export function EditEntry() {
 
           {/* submission row */}
           <div className="mt-single-line-height flex h-single-line-height items-end gap-4">
-           
             <TextField
               label="entry"
               value={description}

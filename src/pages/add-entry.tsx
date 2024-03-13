@@ -5,8 +5,6 @@ import { TextField } from '@react-spectrum/textfield'
 import Send from '@spectrum-icons/workflow/Send'
 import More from '@spectrum-icons/workflow/More'
 
-
-
 import {
   ADD_ENTRY_ROUTE,
   DAY_SUMMARY_ROUTE,
@@ -97,20 +95,24 @@ export function AddEntry() {
     navigate(DAY_SUMMARY_ROUTE)
   }
 
-  
-
   return (
-    <div style={{backgroundImage: `url(${background})`, backgroundSize: '100vw 100vh'}} className="h-full w-full">
-      <main  className="max-w-120 flex w-full grow flex-col items-center gap-4 pt-4">
+    <div
+      style={{
+        backgroundImage: `url(${background})`,
+        backgroundSize: '100vw 100vh',
+      }}
+      className="h-full w-full"
+    >
+      <main className="max-w-120 flex w-full grow flex-col items-center gap-4 pt-4">
         Add entry
         <div className="flex w-full grow flex-col items-center justify-center gap-4">
           {/* day overview (TODO) */}
           <div
-          className="m-4 h-max w-max rounded-lg"
-          style={{ border: `20px solid ${mood?.color || "#888888"}` }}
-        >
-          <DisplayImageComponent uploadedImage={moodImageUrl as string} />
-        </div>
+            className="m-4 h-max w-max rounded-lg"
+            style={{ border: `20px solid ${mood?.color || '#888888'}` }}
+          >
+            <DisplayImageComponent uploadedImage={moodImageUrl as string} />
+          </div>
 
           {/* favorite moods */}
           <div className="flex gap-4">

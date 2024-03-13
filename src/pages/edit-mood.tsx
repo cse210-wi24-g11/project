@@ -84,7 +84,13 @@ export function EditMood() {
   // NOTE: warn user that the choosing archived means mood can not be retrieved
   return (
     <>
-      <div style={{backgroundImage: `url(${background})`, backgroundSize: '100vw 100vh'}} className="h-full w-full">
+      <div
+        style={{
+          backgroundImage: `url(${background})`,
+          backgroundSize: '100vw 100vh',
+        }}
+        className="h-full w-full"
+      >
         <div
           className="rounded-lg"
           style={{ border: `20px solid ${selectedColor}`, padding: '1px' }}

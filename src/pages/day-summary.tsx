@@ -50,7 +50,13 @@ export function DaySummary({ day }: DaySummaryPageProps) {
   )
 
   return (
-    <div style={{backgroundImage: `url(${background})`, backgroundSize: '100vw 100vh'}} className="flex h-screen flex-col">
+    <div
+      style={{
+        backgroundImage: `url(${background})`,
+        backgroundSize: '100vw 100vh',
+      }}
+      className="flex h-screen flex-col"
+    >
       <SummaryBar />
       <div className="fixed left-0 right-0 top-10 border pb-2 pt-2">
         <DayPicker

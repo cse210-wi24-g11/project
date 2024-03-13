@@ -12,7 +12,7 @@ import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 
 import type { MoodCollection, MoodCollectionCategory } from '@/db/types.ts'
-import background from "@/assets/background.png"
+import background from '@/assets/background.png'
 
 type State = {
   returnTo?: Route
@@ -45,7 +45,13 @@ export function MoodCollection() {
   }, [state, navigate])
 
   return (
-    <div style={{backgroundImage: `url(${background})`, backgroundSize: '100vw 100vh'}} className="flex h-screen flex-col">
+    <div
+      style={{
+        backgroundImage: `url(${background})`,
+        backgroundSize: '100vw 100vh',
+      }}
+      className="flex h-screen flex-col"
+    >
       <div className="mt-8 flex flex-col items-center space-y-4">
         <Button variant="primary" onPress={addCustomMood}>
           <Text>Add New Mood</Text>
@@ -64,7 +70,7 @@ export function MoodCollection() {
         />
       </div>
       <MainNavBar />
-    </div >
+    </div>
   )
 }
 

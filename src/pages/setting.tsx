@@ -76,7 +76,13 @@ export function Settings() {
     navigate(CUSTOM_MOOD_ROUTE)
   }
   return (
-    <div  style={{backgroundImage: `url(${background})`, backgroundSize: '100vw 100vh'}} className="flex h-screen flex-col">
+    <div
+      style={{
+        backgroundImage: `url(${background})`,
+        backgroundSize: '100vw 100vh',
+      }}
+      className="flex h-screen flex-col"
+    >
       <div className="w-full  p-4 pl-2 pr-6">
         <h2 className="mb-4 text-left text-base font-bold">
           Calendar Settings
