@@ -4,7 +4,13 @@
  * but notably do NOT involve actually interfacing with the database.
  */
 
-import type { Entry, Mood, MoodId } from './types.ts'
+import type {
+  Entry,
+  Mood,
+  MoodCollection,
+  MoodCollectionCategory,
+  MoodId,
+} from './types.ts'
 
 export async function base64ToUrl(base64Str: string) {
   return blobToUrl(await base64ToBlob(base64Str))
@@ -164,4 +170,26 @@ export async function expandEntry(
  */
 export function generateId() {
   return window.crypto.randomUUID()
+}
+
+export function moveInVirtualCollection(
+  collection: MoodCollection,
+  moodId: MoodId,
+  from: MoodCollectionCategory,
+  to: MoodCollectionCategory,
+  toI?: number,
+): MoodCollection {
+  if (toI === undefined) {
+    toI = collection[to].length
+  }
+
+  return {
+    ...collection,
+    [from]: collection[from].filter((id) => id !== moodId),
+    [to]: [
+      ...collection[to].slice(0, toI),
+      moodId,
+      ...collection[to].slice(toI),
+    ],
+  }
 }

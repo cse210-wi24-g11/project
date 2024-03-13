@@ -48,6 +48,17 @@ export async function updateSettings(settings: Partial<Settings>) {
   return db.settings.update(SETTINGS_KEY, settings)
 }
 
+export async function updateMoodCollection(
+  moodCollection: Partial<MoodCollection>,
+) {
+  const items = Object.entries(moodCollection) as Array<
+    [MoodCollectionCategory, MoodId[]]
+  >
+  return Promise.all(
+    items.map(([category, value]) => db.moodCollection.put(value, category)),
+  )
+}
+
 export async function getMoodCollection(): Promise<MoodCollection> {
   const [favorites, general, archived] = await Promise.all([
     getMoodIdsInCategory('favorites'),
@@ -116,7 +127,7 @@ export async function getFavoriteMoods() {
 export async function moveInCollection<
   From extends MoodCollectionCategory,
   To extends Exclude<MoodCollectionCategory, From>,
->(moodId: MoodId, from: From, to: To, i?: number) {
+>(moodId: MoodId, from: From, to: To, toI?: number) {
   const [fromCollection, toCollection] = await Promise.all([
     getMoodIdsInCategory(from),
     getMoodIdsInCategory(to),
@@ -128,7 +139,7 @@ export async function moveInCollection<
   }
 
   const [id] = fromCollection.splice(j, 1)
-  toCollection.splice(i ?? toCollection.length, 0, id)
+  toCollection.splice(toI ?? toCollection.length, 0, id)
 
   const result = await Promise.all([
     db.moodCollection.put(fromCollection, from),

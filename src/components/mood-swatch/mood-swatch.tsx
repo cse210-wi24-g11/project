@@ -1,10 +1,10 @@
-import { MouseEventHandler } from 'react'
+import { MouseEventHandler, useMemo } from 'react'
 
-type MoodSwatchSize = 'single-line-height'
+type MoodSwatchSize = 'single-line-height' | '2rem' | 'full' | { width: string }
 
 type MoodSwatchColor = string
 
-interface MoodSwatchProps {
+export interface MoodSwatchProps {
   size: MoodSwatchSize
   imgSrc?: string
   color?: MoodSwatchColor
@@ -12,11 +12,16 @@ interface MoodSwatchProps {
 }
 
 export function MoodSwatch({ size, imgSrc, color, onClick }: MoodSwatchProps) {
+  const style = useMemo(
+    () => (typeof size === 'object' ? size : undefined),
+    [size],
+  )
   return (
     <div
       role={onClick ? 'button' : undefined}
       onClick={onClick}
       className={`relative m-0 rounded-full border border-black bg-white p-0 ${resolveSizeClassname(size)}`}
+      style={style}
     >
       {imgSrc && (
         <img
@@ -43,8 +48,20 @@ function ColorPreview({ color }: ColorPreviewProps) {
 }
 
 function resolveSizeClassname(size: MoodSwatchSize) {
-  if (size === 'single-line-height') {
-    return 'w-single-line-height h-single-line-height'
+  switch (size) {
+    case 'single-line-height': {
+      return 'w-single-line-height h-single-line-height'
+    }
+    case '2rem': {
+      return 'w-8 h-8'
+    }
+    case 'full': {
+      return 'w-full h-full'
+    }
+  }
+
+  if (typeof size === 'object') {
+    return 'aspect-square'
   }
 
   throw new Error('unrecognized size')
