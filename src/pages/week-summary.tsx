@@ -17,7 +17,7 @@ import { WeekPicker } from '@/components/WeekPicker/WeekPicker.tsx'
 import { MoodEntryList } from '@/components/mood-entry-list/mood-entry-list.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { SummaryBar } from '@/components/navigation/summary-bar.tsx'
-import background from '@/assets/background.png'
+import MoodPieChart from '@/components/MoodPieChart/MoodPieChart.tsx'
 
 export function WeekSummary() {
   const navigate = useNavigate()
@@ -71,7 +71,13 @@ export function WeekSummary() {
           }}
         />
       </div>
-      <div className="mt-24 flex-grow overflow-y-auto px-8 pb-16">
+      <div className="mt-24 flex-grow overflow-y-auto bg-white px-8 pb-16">
+        {expandedEntries.length != 0 ? (
+          <MoodPieChart records={expandedEntries} />
+        ) : (
+          <div />
+        )}
+        {/*<MoodPieChart records={expandedEntries} />*/}
         <MoodEntryList
           entries={expandedEntries}
           onClickEntry={(entry) => {
