@@ -88,7 +88,7 @@ export function EditMood() {
           backgroundImage: `url(${background})`,
           backgroundSize: '100vw 100vh',
         }}
-        className="h-full w-full mt-12 flex flex-col items-center space-y-4 "
+        className="mt-12 flex h-full w-full flex-col items-center space-y-4 "
       >
         <div
           className="rounded-lg"

@@ -21,6 +21,7 @@ import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
 
 import type { Entry, Mood } from '@/db/types.ts'
+import background from '@/assets/background.png'
 
 export type Params = {
   entryId: Entry['id']
@@ -134,7 +135,11 @@ export function EditEntry() {
   }
 
   return (
-    <>
+    <div  style={{
+      backgroundImage: `url(${background})`,
+      backgroundSize: '100vw 100vh',
+    }}
+    className="mt-12 flex h-full w-full flex-col items-center space-y-4 ">
       <main className="max-w-120 flex w-full grow flex-col items-center gap-4 pt-4">
         Edit entry
         <div
@@ -189,7 +194,7 @@ export function EditEntry() {
         </div>
       </main>
       <MainNavBar />
-    </>
+    </div>
   )
 }
 
