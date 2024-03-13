@@ -16,11 +16,11 @@ import { ExpandedMood, blobToUrl, expandMood } from '@/db/utils.ts'
 import { useAsyncMemo } from '@/hooks/use-async-memo.ts'
 import { useLocationState } from '@/hooks/use-location-state.ts'
 
+import { DisplayImageComponent } from '@/components/custom-mood/display-image.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
 
 import type { Entry, Mood } from '@/db/types.ts'
-import { DisplayImageComponent } from '@/components/custom-mood/display-image'
 
 export type Params = {
   entryId: Entry['id']

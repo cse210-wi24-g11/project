@@ -7,12 +7,12 @@ import { useQuery } from '@/db/index.ts'
 import { getFullyExpandedMoodCollection } from '@/db/actions.ts'
 import { ExpandedMood, blobToUrl } from '@/db/utils.ts'
 import { useLocationState } from '@/hooks/use-location-state.ts'
+import background from '@/assets/background.png'
 
 import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 
 import type { MoodCollection, MoodCollectionCategory } from '@/db/types.ts'
-import background from '@/assets/background.png'
 
 type State = {
   returnTo?: Route

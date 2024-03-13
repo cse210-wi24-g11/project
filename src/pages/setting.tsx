@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { CUSTOM_MOOD_ROUTE } from '@/routes.ts'
 import { updateSettings, useSettings } from '@/db/actions.ts'
+import background from '@/assets/background.png'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 
@@ -13,8 +14,6 @@ import type {
   SettingsRemindMeOption,
   SettingsReminderTimeOption,
 } from '@/db/types.ts'
-
-import background from '@/assets/background.png'
 
 type PickerOptions<KeyType extends React.Key> = Array<{
   key: KeyType

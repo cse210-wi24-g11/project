@@ -10,12 +10,12 @@ import {
 import { useQuery } from '@/db/index.ts'
 import { getResolvedEntriesForDate, updateSettings } from '@/db/actions.ts'
 import { type ExpandedEntry } from '@/db/utils.ts'
+import background from '@/assets/background.png'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { SummaryBar } from '@/components/navigation/summary-bar.tsx'
 import { MoodEntryList } from '@/components/mood-entry-list/mood-entry-list.tsx'
 import { DayPicker } from '@/components/DayPicker/DayPicker.tsx'
-import background from '@/assets/background.png'
 interface DaySummaryPageProps {
   day?: Date
 }

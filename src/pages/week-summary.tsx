@@ -12,12 +12,12 @@ import {
   date2SessionStorageStr,
   WEEK_SUMMARY_SESSIONSTORAGE_KEY,
 } from '@/utils/summary.ts'
+import background from '@/assets/background.png'
 
 import { WeekPicker } from '@/components/WeekPicker/WeekPicker.tsx'
 import { MoodEntryList } from '@/components/mood-entry-list/mood-entry-list.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { SummaryBar } from '@/components/navigation/summary-bar.tsx'
-import background from '@/assets/background.png'
 
 export function WeekSummary() {
   const navigate = useNavigate()

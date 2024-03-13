@@ -6,6 +6,7 @@ import { db } from '@/db/index.ts'
 import { createMood, urlToBlob } from '@/db/utils.ts'
 import imagePlaceholderUrl from '@/assets/No-Image-Placeholder.png'
 import { MOOD_COLLECTION_ROUTE } from '@/routes.ts'
+import background from '@/assets/background.png'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { ColorPicker } from '@/components/custom-mood/color-picker.tsx' // Adjust the import path based on the actual location
@@ -13,7 +14,6 @@ import { ImageUploadComponent } from '@/components/custom-mood/upload-image.tsx'
 import { DisplayImageComponent } from '@/components/custom-mood/display-image.tsx'
 
 import type { MoodCollectionCategory } from '@/db/types.ts'
-import background from '@/assets/background.png'
 
 type PickerOptions<KeyType extends React.Key> = Array<{
   key: KeyType

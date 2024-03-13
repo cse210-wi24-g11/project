@@ -8,11 +8,11 @@ import { db } from '@/db/index.ts'
 import { getMoodIdsInCategory, moveOrAddToInCollection } from '@/db/actions.ts'
 import { base64ToBlob, blobToUrl, createMood } from '@/db/utils.ts'
 import { MOOD_COLLECTION_ROUTE } from '@/routes.ts'
+import background from '@/assets/background.png'
 
 import { DisplayImageComponent } from '@/components/custom-mood/display-image.tsx'
 
 import type { MoodCollectionCategory } from '@/db/types.ts'
-import background from '@/assets/background.png'
 export function EditMood() {
   const navigate = useNavigate()
   const { moodId } = useParams()

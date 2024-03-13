@@ -19,13 +19,13 @@ import {
 import { db } from '@/db/index.ts'
 import { useFavoriteMoods } from '@/db/actions.ts'
 import { ExpandedMood, blobToUrl, createEntry, expandMood } from '@/db/utils.ts'
+import background from '@/assets/background.png'
 
+import { DisplayImageComponent } from '@/components/custom-mood/display-image.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
 
 import type { Mood } from '@/db/types.ts'
-import { DisplayImageComponent } from '@/components/custom-mood/display-image'
-import background from '@/assets/background.png'
 type State = {
   selectedMood: ExpandedMood
 }
