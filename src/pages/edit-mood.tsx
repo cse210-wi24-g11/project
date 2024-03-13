@@ -8,11 +8,11 @@ import { db } from '@/db/index.ts'
 import { getMoodIdsInCategory, moveOrAddToInCollection } from '@/db/actions.ts'
 import { base64ToBlob, blobToUrl, createMood } from '@/db/utils.ts'
 import { MOOD_COLLECTION_ROUTE } from '@/routes.ts'
+import background from '@/assets/background.png'
 
 import { DisplayImageComponent } from '@/components/custom-mood/display-image.tsx'
 
 import type { MoodCollectionCategory } from '@/db/types.ts'
-import background from '@/assets/background.png'
 export function EditMood() {
   const navigate = useNavigate()
   const { moodId } = useParams()
@@ -84,7 +84,13 @@ export function EditMood() {
   // NOTE: warn user that the choosing archived means mood can not be retrieved
   return (
     <>
-      <div style={{backgroundImage: `url(${background})`, backgroundSize: '100vw 100vh'}} className="h-full w-full">
+      <div
+        style={{
+          backgroundImage: `url(${background})`,
+          backgroundSize: '100vw 100vh',
+        }}
+        className="h-full w-full"
+      >
         <div
           className="rounded-lg"
           style={{ border: `20px solid ${selectedColor}`, padding: '1px' }}

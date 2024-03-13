@@ -5,8 +5,6 @@ import { TextField } from '@react-spectrum/textfield'
 import Send from '@spectrum-icons/workflow/Send'
 import More from '@spectrum-icons/workflow/More'
 
-
-
 import {
   ADD_ENTRY_ROUTE,
   DAY_SUMMARY_ROUTE,
@@ -14,16 +12,20 @@ import {
 } from '@/routes.ts'
 import { useAsyncMemo } from '@/hooks/use-async-memo.ts'
 import { useLocationState } from '@/hooks/use-location-state.ts'
+import {
+  DAY_SUMMARY_SESSIONSTORAGE_KEY,
+  date2SessionStorageStr,
+} from '@/utils/summary.ts'
 import { db } from '@/db/index.ts'
 import { useFavoriteMoods } from '@/db/actions.ts'
 import { ExpandedMood, blobToUrl, createEntry, expandMood } from '@/db/utils.ts'
+import background from '@/assets/background.png'
 
+import { DisplayImageComponent } from '@/components/custom-mood/display-image.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
 
 import type { Mood } from '@/db/types.ts'
-import { DisplayImageComponent } from '@/components/custom-mood/display-image'
-import background from '@/assets/background.png'
 type State = {
   selectedMood: ExpandedMood
 }
@@ -80,28 +82,37 @@ export function AddEntry() {
 
     setIsSubmitting(true)
 
-    const entry = createEntry(mood.id, description)
+    const date = new Date()
+    const entry = createEntry(mood.id, description, date)
 
     await db.entries.add(entry)
     setIsSubmitting(false)
 
+    sessionStorage.setItem(
+      DAY_SUMMARY_SESSIONSTORAGE_KEY,
+      date2SessionStorageStr(date),
+    )
     navigate(DAY_SUMMARY_ROUTE)
   }
 
-  
-
   return (
-    <div style={{backgroundImage: `url(${background})`, backgroundSize: '100vw 100vh'}} className="h-full w-full">
-      <main  className="max-w-120 flex w-full grow flex-col items-center gap-4 pt-4">
+    <div
+      style={{
+        backgroundImage: `url(${background})`,
+        backgroundSize: '100vw 100vh',
+      }}
+      className="h-full w-full"
+    >
+      <main className="max-w-120 flex w-full grow flex-col items-center gap-4 pt-4">
         Add entry
         <div className="flex w-full grow flex-col items-center justify-center gap-4">
           {/* day overview (TODO) */}
           <div
-          className="m-4 h-max w-max rounded-lg"
-          style={{ border: `20px solid ${mood?.color || "#888888"}` }}
-        >
-          <DisplayImageComponent uploadedImage={moodImageUrl as string} />
-        </div>
+            className="m-4 h-max w-max rounded-lg"
+            style={{ border: `20px solid ${mood?.color || '#888888'}` }}
+          >
+            <DisplayImageComponent uploadedImage={moodImageUrl as string} />
+          </div>
 
           {/* favorite moods */}
           <div className="flex gap-4">

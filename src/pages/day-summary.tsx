@@ -3,23 +3,22 @@ import { useNavigate } from 'react-router-dom'
 
 import { EDIT_ENTRY_ROUTE } from '@/routes.ts'
 import {
+  DAY_SUMMARY_SESSIONSTORAGE_KEY,
   date2SessionStorageStr,
   sessionStorageStr2Date,
 } from '@/utils/summary.ts'
 import { useQuery } from '@/db/index.ts'
 import { getResolvedEntriesForDate, updateSettings } from '@/db/actions.ts'
 import { type ExpandedEntry } from '@/db/utils.ts'
+import background from '@/assets/background.png'
 
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { SummaryBar } from '@/components/navigation/summary-bar.tsx'
 import { MoodEntryList } from '@/components/mood-entry-list/mood-entry-list.tsx'
 import { DayPicker } from '@/components/DayPicker/DayPicker.tsx'
-import background from '@/assets/background.png'
 interface DaySummaryPageProps {
   day?: Date
 }
-
-const DAY_SUMMARY_KEY = 'day_summary'
 
 export function DaySummary({ day }: DaySummaryPageProps) {
   const navigate = useNavigate()
@@ -29,7 +28,7 @@ export function DaySummary({ day }: DaySummaryPageProps) {
   }, [])
 
   const [today, setToday] = useState<Date>(() => {
-    const saved = sessionStorage?.getItem?.(DAY_SUMMARY_KEY)
+    const saved = sessionStorage?.getItem?.(DAY_SUMMARY_SESSIONSTORAGE_KEY)
     if (!saved) {
       return day ?? new Date()
     } else {
@@ -38,7 +37,10 @@ export function DaySummary({ day }: DaySummaryPageProps) {
   })
 
   useEffect(() => {
-    sessionStorage.setItem(DAY_SUMMARY_KEY, date2SessionStorageStr(today))
+    sessionStorage.setItem(
+      DAY_SUMMARY_SESSIONSTORAGE_KEY,
+      date2SessionStorageStr(today),
+    )
   }, [today])
 
   const [todayEntries] = useQuery(
@@ -48,7 +50,13 @@ export function DaySummary({ day }: DaySummaryPageProps) {
   )
 
   return (
-    <div style={{backgroundImage: `url(${background})`, backgroundSize: '100vw 100vh'}} className="flex h-screen flex-col">
+    <div
+      style={{
+        backgroundImage: `url(${background})`,
+        backgroundSize: '100vw 100vh',
+      }}
+      className="flex h-screen flex-col"
+    >
       <SummaryBar />
       <div className="fixed left-0 right-0 top-10 border pb-2 pt-2">
         <DayPicker

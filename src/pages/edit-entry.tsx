@@ -16,11 +16,11 @@ import { ExpandedMood, blobToUrl, expandMood } from '@/db/utils.ts'
 import { useAsyncMemo } from '@/hooks/use-async-memo.ts'
 import { useLocationState } from '@/hooks/use-location-state.ts'
 
+import { DisplayImageComponent } from '@/components/custom-mood/display-image.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
 
 import type { Entry, Mood } from '@/db/types.ts'
-import { DisplayImageComponent } from '@/components/custom-mood/display-image'
 
 export type Params = {
   entryId: Entry['id']
@@ -95,8 +95,12 @@ export function EditEntry() {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const [favoriteMoods] = useFavoriteMoods([] as Mood[])
+  const visibleFavoriteMoods = useMemo(
+    () => favoriteMoods.slice(-5),
+    [favoriteMoods],
+  )
   const expandedFavoriteMoods = useAsyncMemo(
-    () => Promise.all(favoriteMoods.map(expandMood)),
+    () => Promise.all(visibleFavoriteMoods.map(expandMood)),
     [favoriteMoods],
     [] as ExpandedMood[],
   )
@@ -165,7 +169,6 @@ export function EditEntry() {
 
           {/* submission row */}
           <div className="mt-single-line-height flex h-single-line-height items-end gap-4">
-           
             <TextField
               label="entry"
               value={description}

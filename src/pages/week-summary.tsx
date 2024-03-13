@@ -10,15 +10,15 @@ import {
   get1stDayInWeek,
   sessionStorageStr2Date,
   date2SessionStorageStr,
+  WEEK_SUMMARY_SESSIONSTORAGE_KEY,
 } from '@/utils/summary.ts'
+import background from '@/assets/background.png'
 
 import { WeekPicker } from '@/components/WeekPicker/WeekPicker.tsx'
 import { MoodEntryList } from '@/components/mood-entry-list/mood-entry-list.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { SummaryBar } from '@/components/navigation/summary-bar.tsx'
-import background from '@/assets/background.png'
-
-const WEEK_SUMMARY_KEY = 'week_summary'
+import MoodPieChart from '@/components/MoodPieChart/MoodPieChart.tsx'
 
 export function WeekSummary() {
   const navigate = useNavigate()
@@ -28,7 +28,7 @@ export function WeekSummary() {
   }, [])
 
   const [startDay, setStartDay] = useState<Date>(() => {
-    const saved = sessionStorage?.getItem?.(WEEK_SUMMARY_KEY)
+    const saved = sessionStorage?.getItem?.(WEEK_SUMMARY_SESSIONSTORAGE_KEY)
     if (!saved) {
       return get1stDayInWeek(new Date())
     } else {
@@ -37,7 +37,10 @@ export function WeekSummary() {
   })
 
   useEffect(() => {
-    sessionStorage.setItem(WEEK_SUMMARY_KEY, date2SessionStorageStr(startDay))
+    sessionStorage.setItem(
+      WEEK_SUMMARY_SESSIONSTORAGE_KEY,
+      date2SessionStorageStr(startDay),
+    )
   }, [startDay])
 
   const expandedEntries = useAsyncMemo(
@@ -53,7 +56,13 @@ export function WeekSummary() {
   )
 
   return (
-    <div style={{backgroundImage: `url(${background})`, backgroundSize: '100vw 100vh'}} className="flex h-screen flex-col">
+    <div
+      style={{
+        backgroundImage: `url(${background})`,
+        backgroundSize: '100vw 100vh',
+      }}
+      className="flex h-screen flex-col"
+    >
       <SummaryBar />
       <div className="fixed left-0 right-0 top-10 border pb-2 pt-2">
         <WeekPicker
@@ -64,6 +73,12 @@ export function WeekSummary() {
         />
       </div>
       <div className="mt-24 flex-grow overflow-y-auto px-8 pb-16">
+        {expandedEntries.length != 0 ? (
+          <MoodPieChart records={expandedEntries} />
+        ) : (
+          <div />
+        )}
+        {/*<MoodPieChart records={expandedEntries} />*/}
         <MoodEntryList
           entries={expandedEntries}
           onClickEntry={(entry) => {
