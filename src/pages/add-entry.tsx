@@ -98,7 +98,7 @@ export function AddEntry() {
           {/* day overview (TODO) */}
           <div
           className="m-4 h-max w-max rounded-lg"
-          style={{ border: `20px solid ${mood?.color}` }}
+          style={{ border: `20px solid ${mood?.color || "#888888"}` }}
         >
           <DisplayImageComponent uploadedImage={moodImageUrl as string} />
         </div>
