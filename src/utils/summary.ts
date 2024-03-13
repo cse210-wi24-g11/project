@@ -3,6 +3,9 @@ import { RGBColor } from 'd3'
 
 import { ExpandedEntry, serializeDateForEntry } from '@/db/utils.ts'
 
+export const DAY_SUMMARY_SESSIONSTORAGE_KEY = 'day_summary'
+export const WEEK_SUMMARY_SESSIONSTORAGE_KEY = 'week_summary'
+
 export interface SummaryDayMoodRecord {
   id: number
   day: Date

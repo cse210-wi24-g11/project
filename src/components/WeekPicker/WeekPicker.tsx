@@ -10,8 +10,9 @@ import {
 
 import {
   get1stDayInWeek,
-  displayTime,
   getDatesInWeek,
+  displayMonthDay,
+  displayMonthDayYear,
 } from '@/utils/summary.ts'
 
 import { WeekPickerCalendar } from '@/components/ICalendar/ICalendar.tsx'
@@ -68,5 +69,9 @@ function displayWeekRange(date: Date): string {
   }
   const first = days[0]
   const last = days[days.length - 1]
-  return displayTime(first) + ' ~ ' + displayTime(last)
+  if (first.getFullYear() == last.getFullYear()) {
+    return displayMonthDay(first) + ' ~ ' + displayMonthDay(last)
+  } else {
+    return displayMonthDayYear(first) + ' ~ ' + displayMonthDayYear(last)
+  }
 }

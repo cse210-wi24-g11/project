@@ -26,6 +26,7 @@ const REMIND_ME_LABEL_ID = 'settings-remind-me-label'
 const REMINDER_TIMES_LABEL_ID = 'settings-reminder-times-label'
 
 const defaultViewOptions: PickerOptions<SettingsDefaultViewOption> = [
+  { key: 'lastVisited', label: 'Last Visited' },
   { key: 'week', label: 'Week' },
   { key: 'day', label: 'Day' },
 ]
@@ -76,7 +77,7 @@ export function Settings() {
   }
   return (
     <div  style={{backgroundImage: `url(${background})`, backgroundSize: '100vw 100vh'}} className="flex h-screen flex-col">
-      <section className="w-full  p-4 pl-2 pr-6 shadow-md">
+      <div className="w-full  p-4 pl-2 pr-6">
         <h2 className="mb-4 text-left text-base font-bold">
           Calendar Settings
         </h2>
@@ -94,9 +95,9 @@ export function Settings() {
         >
           {(item) => <Item key={item.key}>{item.label}</Item>}
         </Picker>
-      </section>
+      </div>
 
-      <section className="w-full p-4 pl-2 pr-6 shadow-md">
+      <section className="w-full p-4 pl-2 pr-6">
         <h2 className="mb-4 text-left text-base font-bold">
           Notification Settings
         </h2>
@@ -130,7 +131,7 @@ export function Settings() {
         </Picker>
       </section>
 
-      <div className="w-full  p-4 shadow-md">
+      <div className="w-full p-4">
         <h2 className="mb-4 text-left font-semibold">Mood collection</h2>
         <Button
           variant="primary"

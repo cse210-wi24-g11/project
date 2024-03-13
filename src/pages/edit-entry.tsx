@@ -95,8 +95,12 @@ export function EditEntry() {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const [favoriteMoods] = useFavoriteMoods([] as Mood[])
+  const visibleFavoriteMoods = useMemo(
+    () => favoriteMoods.slice(-5),
+    [favoriteMoods],
+  )
   const expandedFavoriteMoods = useAsyncMemo(
-    () => Promise.all(favoriteMoods.map(expandMood)),
+    () => Promise.all(visibleFavoriteMoods.map(expandMood)),
     [favoriteMoods],
     [] as ExpandedMood[],
   )
