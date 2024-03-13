@@ -71,7 +71,13 @@ export function WeekSummary() {
           }}
         />
       </div>
-      <div className="mt-24 flex-grow overflow-y-auto px-8 pb-16">
+      <div className="mt-24 flex-grow overflow-y-auto bg-white px-8 pb-16">
+        {expandedEntries.length != 0 ? (
+          <MoodPieChart records={expandedEntries} />
+        ) : (
+          <div />
+        )}
+        {/*<MoodPieChart records={expandedEntries} />*/}
         <MoodEntryList
           entries={expandedEntries}
           onClickEntry={(entry) => {
