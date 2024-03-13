@@ -14,7 +14,7 @@ import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { SummaryBar } from '@/components/navigation/summary-bar.tsx'
 import { MoodEntryList } from '@/components/mood-entry-list/mood-entry-list.tsx'
 import { DayPicker } from '@/components/DayPicker/DayPicker.tsx'
-
+import background from '@/assets/background.png'
 interface DaySummaryPageProps {
   day?: Date
 }
@@ -48,9 +48,9 @@ export function DaySummary({ day }: DaySummaryPageProps) {
   )
 
   return (
-    <div className="flex h-screen flex-col">
+    <div style={{backgroundImage: `url(${background})`, backgroundSize: '100vw 100vh'}} className="flex h-screen flex-col">
       <SummaryBar />
-      <div className="fixed left-0 right-0 top-10 border bg-white pb-2 pt-2">
+      <div className="fixed left-0 right-0 top-10 border pb-2 pt-2">
         <DayPicker
           initialDay={today}
           onChangeDay={(day: Date) => {
@@ -58,7 +58,7 @@ export function DaySummary({ day }: DaySummaryPageProps) {
           }}
         />
       </div>
-      <div className="mt-24 flex-grow overflow-y-auto bg-white px-8 pb-16">
+      <div className="mt-24 flex-grow overflow-y-auto px-8 pb-16">
         <MoodEntryList
           entries={todayEntries}
           onClickEntry={(entry) => {

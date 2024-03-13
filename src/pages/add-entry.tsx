@@ -91,7 +91,7 @@ export function AddEntry() {
   
 
   return (
-    <div style={{backgroundImage: `url(${background})`}} className="h-full w-full">
+    <div style={{backgroundImage: `url(${background})`, backgroundSize: '100vw 100vh'}} className="h-full w-full">
       <main  className="max-w-120 flex w-full grow flex-col items-center gap-4 pt-4">
         Add entry
         <div className="flex w-full grow flex-col items-center justify-center gap-4">

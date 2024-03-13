@@ -69,7 +69,7 @@ export function CustomMood() {
   }
 
   return (
-    <div style={{backgroundImage: `url(${background})`}}>
+    <div style={{backgroundImage: `url(${background})`, backgroundSize: '100vw 100vh'}} className="h-full w-full">
       <div className="mt-12 flex flex-col items-center space-y-4">
         <ImageUploadComponent
           onImageUpload={handleImageUpload}

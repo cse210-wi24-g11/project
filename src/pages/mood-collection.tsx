@@ -45,7 +45,7 @@ export function MoodCollection() {
   }, [state, navigate])
 
   return (
-    <div style={{backgroundImage: `url(${background})`}} >
+    <div style={{backgroundImage: `url(${background})`, backgroundSize: '100vw 100vh'}} className="flex h-screen flex-col">
       <div className="mt-8 flex flex-col items-center space-y-4">
         <Button variant="primary" onPress={addCustomMood}>
           <Text>Add New Mood</Text>

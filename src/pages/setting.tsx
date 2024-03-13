@@ -14,6 +14,8 @@ import type {
   SettingsReminderTimeOption,
 } from '@/db/types.ts'
 
+import background from '@/assets/background.png'
+
 type PickerOptions<KeyType extends React.Key> = Array<{
   key: KeyType
   label: string
@@ -73,8 +75,8 @@ export function Settings() {
     navigate(CUSTOM_MOOD_ROUTE)
   }
   return (
-    <div className="flex flex-col items-center bg-white">
-      <section className="w-full bg-white p-4 pl-2 pr-6 shadow-md">
+    <div  style={{backgroundImage: `url(${background})`, backgroundSize: '100vw 100vh'}} className="flex h-screen flex-col">
+      <section className="w-full  p-4 pl-2 pr-6 shadow-md">
         <h2 className="mb-4 text-left text-base font-bold">
           Calendar Settings
         </h2>
@@ -94,7 +96,7 @@ export function Settings() {
         </Picker>
       </section>
 
-      <section className="w-full bg-white p-4 pl-2 pr-6 shadow-md">
+      <section className="w-full p-4 pl-2 pr-6 shadow-md">
         <h2 className="mb-4 text-left text-base font-bold">
           Notification Settings
         </h2>
@@ -128,7 +130,7 @@ export function Settings() {
         </Picker>
       </section>
 
-      <div className="w-full bg-white p-4 shadow-md">
+      <div className="w-full  p-4 shadow-md">
         <h2 className="mb-4 text-left font-semibold">Mood collection</h2>
         <Button
           variant="primary"
