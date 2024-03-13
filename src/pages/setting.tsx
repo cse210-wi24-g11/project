@@ -13,7 +13,6 @@ import type {
   SettingsRemindMeOption,
   SettingsReminderTimeOption,
 } from '@/db/types.ts'
-import { MoodCollection } from './mood-collection'
 
 type PickerOptions<KeyType extends React.Key> = Array<{
   key: KeyType
