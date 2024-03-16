@@ -23,8 +23,11 @@ import { ExpandedMood, blobToUrl, createEntry, expandMood } from '@/db/utils.ts'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
 
+<<<<<<< HEAD
+=======
 import type { Mood } from '@/db/types.ts'
 
+>>>>>>> main
 type State = {
   selectedMood: ExpandedMood
 }
@@ -47,6 +50,20 @@ export function AddEntry() {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+<<<<<<< HEAD
+  const [favoriteMoods, setFavoriteMoods] = useState<DbRecord<'mood'>[]>([])
+  useEffect(() => {
+    async function loadFavoriteMoods() {
+      const db = await getDb()
+      const favoriteMoods = await getFavoriteMoods(db)
+      const newFavoriteMoods = favoriteMoods?.length
+        ? favoriteMoods.slice(-5)
+        : []
+      setFavoriteMoods(newFavoriteMoods)
+    }
+    void loadFavoriteMoods()
+  }, [getDb])
+=======
   const [favoriteMoods] = useFavoriteMoods([] as Mood[])
   const visibleFavoriteMoods = useMemo(
     () => favoriteMoods.slice(-5),
@@ -64,6 +81,7 @@ export function AddEntry() {
       ),
     [expandedFavoriteMoods],
   )
+>>>>>>> main
 
   function pickFromMoodCollection() {
     navigate(MOOD_COLLECTION_ROUTE, {
@@ -108,7 +126,11 @@ export function AddEntry() {
                 key={m.id}
                 size="single-line-height"
                 color={m.color}
+<<<<<<< HEAD
+                imgSrc={URL.createObjectURL(m.image)}
+=======
                 imgSrc={imageUrl}
+>>>>>>> main
                 onClick={() => {
                   setMood(m)
                 }}
@@ -129,7 +151,13 @@ export function AddEntry() {
             <MoodSwatch
               size="single-line-height"
               color={mood?.color}
+<<<<<<< HEAD
+              imgSrc={
+                mood && mood.image ? URL.createObjectURL(mood.image) : undefined
+              }
+=======
               imgSrc={moodImageUrl}
+>>>>>>> main
               onClick={
                 mood
                   ? () => {
@@ -167,16 +195,23 @@ function validateState(state: Record<string, unknown>): state is State {
     return false
   }
 
+<<<<<<< HEAD
+  const { id, color } = selectedMood as Record<string, unknown>
+=======
   const { id, color, imageBlob } = selectedMood as Record<string, unknown>
+>>>>>>> main
   if (typeof id !== 'string') {
     return false
   }
   if (typeof color !== 'string') {
     return false
   }
+<<<<<<< HEAD
+=======
   if (!(imageBlob instanceof Blob)) {
     return false
   }
 
+>>>>>>> main
   return true
 }

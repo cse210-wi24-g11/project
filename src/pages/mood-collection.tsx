@@ -10,6 +10,15 @@ import { useLocationState } from '@/hooks/use-location-state.ts'
 
 import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
+<<<<<<< HEAD
+import { useDb } from '@/context/db.tsx'
+type Mood = {
+  id: string
+  color: string
+  image: Blob
+}
+=======
+>>>>>>> main
 
 import type { MoodCollection, MoodCollectionCategory } from '@/db/types.ts'
 
@@ -20,12 +29,68 @@ type State = {
 export function MoodCollection() {
   const state = useLocationState(validateState)
   const navigate = useNavigate()
+<<<<<<< HEAD
+  const location = useLocation()
+  const returnTo = (location.state as { returnTo?: string })?.returnTo
+
+  useEffect(() => {
+    async function run() {
+      const collectionTypes: string[] = ['favorites', 'general', 'archived']
+      const tempFavorites: Mood[] = []
+      const tempGeneral: Mood[] = []
+      const tempArchived: Mood[] = []
+      const db = await getDb()
+      for (const type of collectionTypes) {
+        const requestType = db
+          .transaction('moodCollection', 'readonly')
+          .objectStore('moodCollection')
+          .get(type)
+        requestType.onsuccess = (event) => {
+          const targetCollection = event.target as IDBRequest
+          const moodIDs = targetCollection.result as string[]
+          for (const moodID of moodIDs) {
+            const requestMood = db
+              .transaction('mood', 'readonly')
+              .objectStore('mood')
+              .get(moodID)
+            requestMood.onsuccess = (event) => {
+              const targetMood = event.target as IDBRequest
+              const moodData = targetMood.result as Mood
+              if (type === 'favorites' && targetMood) {
+                tempFavorites.push(moodData)
+                setFavorites(tempFavorites)
+              } else if (type === 'general' && targetMood) {
+                tempGeneral.push(moodData)
+                setGeneral(tempGeneral)
+              } else if (type == 'archived' && targetMood) {
+                tempArchived.push(moodData)
+                setArchived(tempArchived)
+              }
+            }
+          }
+        }
+      }
+    }
+
+    void run()
+    return () => {}
+  }, [getDb])
+
+  const handleSelectMood = (selectedMood: DbRecord<'mood'>) => {
+    if (returnTo) {
+      navigate(returnTo, { state: { selectedMood: selectedMood } })
+    } else {
+      console.log('No returnTo path specified.')
+    }
+  }
+=======
 
   const [moodCollection] = useQuery(getFullyExpandedMoodCollection, [], {
     general: [],
     favorites: [],
     archived: [],
   } as Record<MoodCollectionCategory, ExpandedMood[]>)
+>>>>>>> main
 
   const addCustomMood = () => {
     navigate(CUSTOM_MOOD_ROUTE)

@@ -45,6 +45,26 @@ export function WeekSummary() {
   const expandedEntries = useAsyncMemo(
     async () => {
       const daysInWeek = getDatesInWeek(startDay)
+<<<<<<< HEAD
+      for (const day of daysInWeek) {
+        const entries = (await getEntriesOfDate(db, day)) ?? []
+        for (const entry of entries) {
+          const mood = await getMoodById(db, entry.moodId)
+          records.push({
+            id: entry.id,
+            day: entry.timestamp,
+            title: entry.description,
+            color: d3.rgb(mood?.color ?? 'blue'),
+            imagePath: URL.createObjectURL(mood!.image),
+          })
+        }
+      }
+      setRecords(records)
+    }
+
+    void run()
+  }, [startDay, getDb])
+=======
       const entries = await Promise.all(
         daysInWeek.map(getResolvedEntriesForDate),
       )
@@ -53,6 +73,7 @@ export function WeekSummary() {
     [startDay],
     [] as ExpandedEntry[],
   )
+>>>>>>> main
 
   return (
     <div className="flex h-screen flex-col">

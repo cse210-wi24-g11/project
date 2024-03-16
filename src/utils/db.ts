@@ -8,7 +8,7 @@ export type DbRecord<T extends DbStore> = {
   mood: {
     id: MoodId
     color: string
-    imagePath: string
+    image: Blob
   }
   moodCollection: {
     favorites: MoodId[]
@@ -159,14 +159,18 @@ export async function getFavoriteMoods(
   const transaction = db.transaction(['mood', 'moodCollection'], 'readonly')
   const moodStore = transaction.objectStore('mood')
   const moodCollectionStore = transaction.objectStore('moodCollection')
-  const favoriteMoodIds = await toPromise<
-    DbRecord<'moodCollection'>['favorites']
-  >(moodCollectionStore.get('favorites'))
 
-  const favoriteMoods = await toPromise<DbRecord<'mood'>[]>(
-    moodStore.get(favoriteMoodIds),
+  const favoriteMoodIds: string[] = await toPromise<string[]>(
+    moodCollectionStore.get('favorites'),
   )
-  return favoriteMoods ?? []
+  if (!favoriteMoodIds || favoriteMoodIds.length === 0) {
+    return []
+  }
+  const favoriteMoodsPromises = favoriteMoodIds.map((id) =>
+    toPromise<DbRecord<'mood'>>(moodStore.get(id)),
+  )
+  const favoriteMoods = await Promise.all(favoriteMoodsPromises)
+  return favoriteMoods.filter((mood) => mood !== undefined)
 }
 
 export async function getEntriesOfDate(

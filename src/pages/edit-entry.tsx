@@ -19,8 +19,11 @@ import { useLocationState } from '@/hooks/use-location-state.ts'
 import { MainNavBar } from '@/components/navigation/main-navbar.tsx'
 import { MoodSwatch } from '@/components/mood-swatch/mood-swatch.tsx'
 
+<<<<<<< HEAD
+=======
 import type { Entry, Mood } from '@/db/types.ts'
 
+>>>>>>> main
 export type Params = {
   entryId: Entry['id']
 }
@@ -93,6 +96,20 @@ export function EditEntry() {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+<<<<<<< HEAD
+  const [favoriteMoods, setFavoriteMoods] = useState<DbRecord<'mood'>[]>([])
+  useEffect(() => {
+    async function loadFavoriteMoods() {
+      const db = await getDb()
+      const favoriteMoods = await getFavoriteMoods(db)
+      const newFavoriteMoods = favoriteMoods?.length
+        ? favoriteMoods.slice(-5)
+        : []
+      setFavoriteMoods(newFavoriteMoods)
+    }
+    void loadFavoriteMoods()
+  }, [getDb])
+=======
   const [favoriteMoods] = useFavoriteMoods([] as Mood[])
   const visibleFavoriteMoods = useMemo(
     () => favoriteMoods.slice(-5),
@@ -110,6 +127,7 @@ export function EditEntry() {
       ),
     [expandedFavoriteMoods],
   )
+>>>>>>> main
 
   function pickFromMoodCollection() {
     navigate(MOOD_COLLECTION_ROUTE, {
@@ -144,7 +162,11 @@ export function EditEntry() {
                 key={m.id}
                 size="single-line-height"
                 color={m.color}
+<<<<<<< HEAD
+                imgSrc={URL.createObjectURL(m.image)}
+=======
                 imgSrc={imageUrl}
+>>>>>>> main
                 onClick={() => {
                   setMood(m)
                 }}
@@ -165,7 +187,13 @@ export function EditEntry() {
             <MoodSwatch
               size="single-line-height"
               color={mood?.color}
+<<<<<<< HEAD
+              imgSrc={
+                mood && mood.image ? URL.createObjectURL(mood.image) : undefined
+              }
+=======
               imgSrc={moodImageUrl}
+>>>>>>> main
               onClick={
                 mood
                   ? () => {

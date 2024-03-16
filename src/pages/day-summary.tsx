@@ -43,11 +43,44 @@ export function DaySummary({ day }: DaySummaryPageProps) {
     )
   }, [today])
 
+<<<<<<< HEAD
+    void updateLastVisited()
+  }, [getDb])
+
+  useEffect(() => {
+    sessionStorage.setItem(DAY_SUMMARY_KEY, date2sessionStr(today))
+
+    async function run() {
+      const db = await getDb()
+      const entries = (await getEntriesOfDate(db, today)) ?? []
+      const records = Array<SummaryMoodRecord>()
+      for (const entry of entries) {
+        const mood = await getMoodById(db, entry.moodId)
+        const imagePath =
+          mood && mood.image ? URL.createObjectURL(mood.image) : ''
+        records.push({
+          id: entry.id,
+          day: entry.timestamp,
+          title: entry.description,
+          color: d3.rgb(mood?.color ?? 'blue'),
+          imagePath: imagePath,
+        })
+      }
+      records.sort(
+        (a, b) => new Date(b.day).getTime() - new Date(a.day).getTime(),
+      )
+      setListItems(records)
+    }
+
+    void run()
+  }, [today, getDb])
+=======
   const [todayEntries] = useQuery(
     () => getResolvedEntriesForDate(today),
     [today],
     [] as ExpandedEntry[],
   )
+>>>>>>> main
 
   return (
     <div className="flex h-screen flex-col">
